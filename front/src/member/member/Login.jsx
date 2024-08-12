@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [login, setLogin] = useState({
     mid: '',
     mpw: ''
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,14 +18,13 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:8080/members/login', login) // 백엔드의 로그인 URL로 수정
+      .post('http://localhost:8080/members/login', login) // 백엔드의 로그인 URL
       .then((response) => {
         alert('로그인에 성공했습니다.');
-        // 성공 후 동작 (예: 메인 페이지로 리다이렉션)
-        // 예를 들어: window.location.href = '/main';
+        navigate('/main');
       })
       .catch((error) => {
-        console.error('로그인 에러:', error); // 에러 메시지 확인
+        console.error('로그인 에러:', error);
         alert('로그인에 실패했습니다.');
         // 오류 처리
       });

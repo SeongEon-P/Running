@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class MemberDTO {
-        private Long id;
         private String mid;
         private String mpw;
         private String name;

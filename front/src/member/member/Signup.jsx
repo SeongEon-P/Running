@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +12,10 @@ const Signup = () => {
     address: '',
     role: 'USER'
   });
-  
+
+  const [isSubmitting, setIsSubmitting] = useState(false); // 중복 클릭 방지 상태
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,17 +24,23 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (isSubmitting) return; // 중복 클릭 방지
+    
+    setIsSubmitting(true); // 제출 중 상태로 변경
+    
     axios
-      .post('http://localhost:8080/members/signup', formData) // 백엔드 URL로 수정
+      .post('http://localhost:8080/members/signup', formData)
       .then((response) => {
         alert('회원가입이 완료되었습니다.');
-        // 성공 후 동작 (예: 로그인 페이지로 리다이렉션)
-        Navigate(`/member/login`);
+        navigate('/login');
       })
       .catch((error) => {
-        console.error('회원가입 에러:', error); // 에러 메시지 확인
+        console.error('회원가입 에러:', error);
         alert('회원가입에 실패했습니다.');
-        // 오류 처리
+      })
+      .finally(() => {
+        setIsSubmitting(false); // 요청 완료 후 제출 상태 초기화
       });
   };
 
@@ -105,7 +114,7 @@ const Signup = () => {
           />
         </label>
         <br />
-        <button type="submit">회원가입</button>
+        <button type="submit" disabled={isSubmitting}>회원가입</button>
       </form>
     </div>
   );
