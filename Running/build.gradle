@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     //스프링 부트 시큐리티_필요시 주석해제
-//    implementation 'org.springframework.boot:spring-boot-starter-security:3.2.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.2.5'
 
     // JJWT 라이브러
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -45,7 +45,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:3.1.0'
 
     //스프링 시큐리티_필요시 주석해제
-//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
 
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor("com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta")
