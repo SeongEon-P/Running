@@ -8,7 +8,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/members/signup" element={<Signup />} />
           {/* 다른 라우트들 */}
         </Routes>
       </div>

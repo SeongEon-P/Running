@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 @Data

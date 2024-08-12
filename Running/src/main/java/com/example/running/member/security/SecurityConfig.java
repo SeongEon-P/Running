@@ -44,17 +44,17 @@ public class SecurityConfig {
                         authorizeRequests
                                 .anyRequest().permitAll() // 모든 요청 허용_나중에는 권한 다시 설정 필요
                 )
-//                .formLogin(formLogin ->
-//                        formLogin
-//                                .loginPage("/login")
-//                                .usernameParameter("mid")
-//                                .defaultSuccessUrl("/") // 로그인 성공 시 리다이렉트 URL 설정
-//                                .permitAll()
-//                )
-//                .logout(logout ->
-//                        logout
-//                                .permitAll()
-//                )
+                .formLogin(formLogin ->
+                        formLogin
+                                .loginPage("/login")
+                                .usernameParameter("mid")
+                                .defaultSuccessUrl("/") // 로그인 성공 시 리다이렉트 URL 설정
+                                .permitAll()
+                )
+                .logout(logout ->
+                        logout
+                                .permitAll()
+                )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
