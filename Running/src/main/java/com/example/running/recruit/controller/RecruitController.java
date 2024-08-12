@@ -22,4 +22,9 @@ public class RecruitController {
         return new ResponseEntity<>(saveRecruit, HttpStatus.CREATED);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<Object> getAllRecruits() {
+        return new ResponseEntity<>(recruitService.findAllRecruits(), HttpStatus.OK);
+    }
+
 }

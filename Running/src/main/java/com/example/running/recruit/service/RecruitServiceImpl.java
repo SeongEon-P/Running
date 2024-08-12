@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -36,23 +37,54 @@ public class RecruitServiceImpl implements RecruitService {
     }
 
     @Override
-    public List<Recruit> getAllRecruits() {
-        return List.of();
+    public List<Recruit> findAllRecruits() {
+        return recruitRepository.findAll();
     }
 
     @Override
     public Optional<Recruit> findOneRecruit(Long rno) {
-        return Optional.empty();
+        return recruitRepository.findById(rno);
     }
 
     @Override
     public Recruit modifyRecruit(RecruitDTO recruitDTO) {
-        return null;
+        log.info("수정할 게시글 번호 : " + recruitDTO.getRno());
+        Optional<Recruit> result = recruitRepository.findById(recruitDTO.getRno());
+
+        if (!result.isPresent()) {
+            log.error("not found --------------- id : {}", recruitDTO.getRno());
+            throw new NoSuchElementException("not found --------------- id : " + recruitDTO.getRno());
+        }
+
+        Recruit recruit = result.get();
+        log.info("Recruit Found : {}" , recruit);
+
+        recruit.changeRecruit(
+                recruitDTO.getR_title(),
+                recruitDTO.getR_content(),
+                recruitDTO.getR_place(),
+                recruitDTO.getR_date(),
+                recruitDTO.getR_time(),
+                recruitDTO.getMax_number()
+        );
+
+        Optional<Member> memberResult = memberRepository.findById(recruitDTO.getId());
+        if (!memberResult.isPresent()) {
+            log.error("not found --------------- id : {}", recruitDTO.getId());
+            throw new NoSuchElementException("not found --------------- id : " + recruitDTO.getId());
+        }
+
+        recruit.setMember(memberResult.get());
+
+        Recruit modifyRecruit = recruitRepository.save(recruit);
+        log.info("Recruit post is modified and saved ------- : {]", modifyRecruit);
+
+        return modifyRecruit;
     }
 
     @Override
     public void deleteRecruit(Long rno) {
-
+        recruitRepository.deleteById(rno);
     }
 
     @Override

@@ -12,7 +12,7 @@ public interface RecruitService {
     RecruitDTO registerRecruit(RecruitDTO recruitDTO);
 
     // 게시글 목록 조회
-    List<Recruit> getAllRecruits();
+    List<Recruit> findAllRecruits();
 
     // 한 개의 게시글 조회
     Optional<Recruit> findOneRecruit(Long rno);
