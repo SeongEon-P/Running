@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Navigate } from 'react-router-dom';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const Signup = () => {
     address: '',
     role: 'USER'
   });
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +26,7 @@ const Signup = () => {
       .then((response) => {
         alert('회원가입이 완료되었습니다.');
         // 성공 후 동작 (예: 로그인 페이지로 리다이렉션)
+        Navigate(`/member/login`);
       })
       .catch((error) => {
         console.error('회원가입 에러:', error); // 에러 메시지 확인
