@@ -9,6 +9,7 @@ const Signup = () => {
     email: '',
     phone: '',
     address: '',
+    role: 'USER'
   });
 
   const handleChange = (e) => {

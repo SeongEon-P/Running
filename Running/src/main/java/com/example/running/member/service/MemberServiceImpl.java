@@ -15,7 +15,14 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member saveMember(Member member) {
-        member.setMpw(passwordEncoder.encode(member.getMpw()));
-        return null;
+        try {
+            member.setMpw(passwordEncoder.encode(member.getMpw()));
+            return memberRepository.save(member);
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외를 콘솔에 출력
+            throw new RuntimeException("회원가입 중 오류가 발생했습니다.", e);  // 예외를 다시 던짐
+        }
     }
+
+
 }
