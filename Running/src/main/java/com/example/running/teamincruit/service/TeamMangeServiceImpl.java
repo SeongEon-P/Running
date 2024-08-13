@@ -24,26 +24,27 @@ public class TeamMangeServiceImpl implements TeamMangeService {
 
     @Override
     public String registerTeam(TeamManageDTO teamManageDTO) {
+        // teamName이 null이거나 빈 문자열인 경우 예외를 던집니다.
+        if (teamManageDTO.getTeamName() == null || teamManageDTO.getTeamName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Team name must be provided and cannot be empty");
+        }
+
         try {
+            // ModelMapper를 사용하여 DTO를 엔티티로 매핑합니다.
             TeamManage teamManage = modelMapper.map(teamManageDTO, TeamManage.class);
-            teamManage = teamManageRepository.save(teamManage);
 
-            // 이 시점에서 regDate가 설정되었는지 확인하고, 설정되었다면 teamStartdate를 동기화합니다.
-            if (teamManage.getRegDate() != null) {
-                teamManage.setTeamStartdate(teamManage.getRegDate().toLocalDate());
-                teamManage = teamManageRepository.save(teamManage);
-            } else {
-                log.warn("regDate가 설정되지 않았습니다.");
-            }
+            // teamManage 엔티티를 데이터베이스에 저장합니다.
+            teamManageRepository.save(teamManage);
 
+            // 저장된 팀 이름을 반환합니다.
             return teamManage.getTeamName();
         } catch (Exception e) {
+            // 예외 발생 시 스택 트레이스를 출력하고 로그에 에러를 기록합니다.
             e.printStackTrace();
             log.error("팀 등록 에러: " + e.getMessage(), e);
             return null;
         }
     }
-
 
     @Override
     public TeamManageDTO getTeam(String team_name) {

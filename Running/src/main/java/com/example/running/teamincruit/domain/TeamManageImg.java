@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @Table(name = "team_manage_img", indexes = {
         @Index(name = "team_manage_team_name_idx", columnList = "team_name")})
-public class TeamManageImg {
+public class TeamManageImg implements Comparable<TeamManageImg>{
 
     @Id
     @Column(name = "team_manage_uuid", length = 200)
@@ -28,5 +28,12 @@ public class TeamManageImg {
     @JoinColumn(name = "team_name", referencedColumnName = "team_name", foreignKey = @ForeignKey(name = "team_manage_team_name_fk"), nullable = false)
     private TeamManage teamManage;
 
+    @Override
+    public int compareTo(TeamManageImg other) {
+        return this.teamManageOrd - other.teamManageOrd;
+    }
+    public void changeBoard(TeamManage teamManage){
+        this.teamManage = teamManage;
+    }
 }
 

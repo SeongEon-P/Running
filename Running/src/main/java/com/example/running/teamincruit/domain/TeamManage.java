@@ -2,9 +2,12 @@ package com.example.running.teamincruit.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -18,7 +21,11 @@ import java.util.List;
 public class TeamManage extends BaseEntity{
 
     @Id
-    @Column(name = "team_name", length = 30)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tno")
+    private Long tno;
+
+    @Column(name = "team_name", length = 30, unique = true, nullable = false)
     private String teamName;
 
     @Column(name = "team_member_count", nullable = false, columnDefinition = "INT(11) DEFAULT 1")
@@ -47,4 +54,35 @@ public class TeamManage extends BaseEntity{
 
     @OneToMany(mappedBy = "team")
     private List<Incruit> incruitList;
+
+
+
+    @OneToMany(mappedBy = "teamManage",
+            cascade = {CascadeType.ALL},
+            fetch = FetchType.LAZY,
+            orphanRemoval = true)
+    @Builder.Default
+    @BatchSize(size = 20)
+    private Set<TeamManageImg> imageSet = new HashSet<>();
+
+    public void addImage(String uuid, String fileName){
+        TeamManageImg teamManageImg = TeamManageImg.builder()
+                .teamManageUuid(uuid)
+                .teamManageFileName(fileName)
+                .teamManage(this)
+                .teamManageOrd(imageSet.size())
+                .build();
+        imageSet.add(teamManageImg);
+    }
+    public void clearImages(){
+        imageSet.forEach(teamManageImg -> teamManageImg.changeBoard(null));
+        this.imageSet.clear();
+    }
+
+    public void change(String teamName, String teamExplain){
+        this.teamName = teamName;
+        this.teamExplain = teamExplain;
+    }
 }
+
+
