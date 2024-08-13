@@ -18,6 +18,7 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
+    // 회원가입
     @Override
     public Member saveMember(Member member) {
         try {
@@ -29,9 +30,42 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 로그인
     @Override
     public Optional<Member> findByMid(String mid) {
         return memberRepository.findByMid(mid);
+    }
+
+    // 회원정보 수정
+    @Override
+    public void updateMember(Member member) {
+        Optional<Member> members = memberRepository.findById(member.getMid());
+
+        if (members.isPresent()) {
+            Member updateMember = members.get();
+
+            // 비밀번호가 존재하고 수정되었으면 암호화 처리 후 저장
+            if (!member.getMpw().isEmpty()) {
+                updateMember.setMpw(member.getMpw());
+            }
+
+            // 나머지 정보 업데이트
+            updateMember.setName(member.getName());
+            updateMember.setEmail(member.getEmail());
+            updateMember.setPhone(member.getPhone());
+            updateMember.setAddress(member.getAddress());
+            updateMember.setRole(member.getRole());
+
+            memberRepository.save(updateMember);
+        } else {
+            throw new IllegalArgumentException("해당 ID를 가진 회원을 찾을 수 없습니다.");
+        }
+    }
+
+    // 이메일로 회원찾기
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     @Override
