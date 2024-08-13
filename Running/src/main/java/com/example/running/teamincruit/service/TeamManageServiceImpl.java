@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,8 +16,8 @@ import java.util.stream.Collectors;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-@EnableJpaAuditing
-public class TeamMangeServiceImpl implements TeamMangeService {
+//@EnableJpaAuditing
+public class TeamManageServiceImpl implements TeamManageService {
     private final TeamManageRepository teamManageRepository;
     private final ModelMapper modelMapper;
 
@@ -30,8 +29,17 @@ public class TeamMangeServiceImpl implements TeamMangeService {
         }
 
         try {
-            // ModelMapper를 사용하여 DTO를 엔티티로 매핑합니다.
-            TeamManage teamManage = modelMapper.map(teamManageDTO, TeamManage.class);
+            // 수동으로 DTO를 Entity로 매핑
+            TeamManage teamManage = new TeamManage();
+            teamManage.setTeamName(teamManageDTO.getTeamName());
+            teamManage.setTeamMemberCount(teamManageDTO.getTeamMemberCount());
+            teamManage.setTeamMembers(teamManageDTO.getTeamMembers());
+            teamManage.setTeamStartdate(teamManageDTO.getTeamStartdate());
+            teamManage.setTeamLeader(teamManageDTO.getTeamLeader());
+            teamManage.setTeamLogo(teamManageDTO.getTeamLogo());
+            teamManage.setTeamExplain(teamManageDTO.getTeamExplain());
+            teamManage.setTeamFromPro(teamManageDTO.getTeamFromPro());
+            teamManage.setTeamLevel(teamManageDTO.getTeamLevel());
 
             // teamManage 엔티티를 데이터베이스에 저장합니다.
             teamManageRepository.save(teamManage);

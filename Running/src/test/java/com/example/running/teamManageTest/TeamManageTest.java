@@ -3,13 +3,11 @@ package com.example.running.teamManageTest;
 import com.example.running.teamincruit.domain.TeamManage;
 import com.example.running.teamincruit.dto.TeamManageDTO;
 import com.example.running.teamincruit.repository.TeamManageRepository;
-import com.example.running.teamincruit.service.TeamMangeServiceImpl;
+import com.example.running.teamincruit.service.TeamManageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class TeamManageTest {
 
     @Autowired
-    private TeamMangeServiceImpl teamMangeService;
+    private TeamManageServiceImpl teamMangeService;
 
     @Autowired
     private TeamManageRepository teamManageRepository;

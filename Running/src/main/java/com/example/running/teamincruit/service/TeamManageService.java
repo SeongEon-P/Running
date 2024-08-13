@@ -5,7 +5,7 @@ import com.example.running.teamincruit.dto.TeamManageDTO;
 
 import java.util.List;
 
-public interface TeamMangeService {
+public interface TeamManageService {
 
     String registerTeam(TeamManageDTO teamManageDTO);
 

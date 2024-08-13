@@ -35,35 +35,37 @@ const TeamRegister = () => {
     e.preventDefault();
   
     try {
-      // 파일 업로드 요청
-      const formData = new FormData();
-      teamData.teamLogoFiles.forEach((file) => {
-        formData.append('files', file); // 'files'로 이름을 맞추기
-      });
-  
-      const uploadResponse = await axios.post('/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      // 업로드된 파일 이름 확인
-      console.log("Upload Response:", uploadResponse.data);
-  
-      // 업로드된 파일 이름이 올바르게 전달되었는지 확인
-      if (!uploadResponse.data || uploadResponse.data.length === 0) {
-        throw new Error("No files were uploaded");
-      }
-  
-      // 팀 로고를 설정
-      const teamLogo = uploadResponse.data[0].fileName;
-  
-      // 팀 등록 요청
+      // 1. 팀 등록 요청
       const teamResponse = await axios.post('/teamManage/register', {
-        ...teamData,
-        teamLogo: teamLogo,
+        teamName: teamData.teamName,
+        teamMemberCount: teamData.teamMemberCount,
+        teamMembers: teamData.teamMembers,
+        teamStartdate: teamData.teamStartdate,
+        teamLeader: teamData.teamLeader,
+        teamExplain: teamData.teamExplain,
+        teamFromPro: teamData.teamFromPro,
+        teamLevel: teamData.teamLevel,
       });
-  
+
+      const registeredTeamName = teamResponse.data;
+
+      // 2. 이미지 업로드 요청
+      if (teamData.teamLogoFiles.length > 0) {
+        const formData = new FormData();
+        teamData.teamLogoFiles.forEach((file) => {
+          formData.append('files', file); // 'files'로 이름을 맞추기
+        });
+        formData.append('teamName', registeredTeamName);
+
+        const uploadResponse = await axios.post('/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        console.log("Upload Response:", uploadResponse.data);
+      }
+
       setSuccess('팀이 성공적으로 등록되고 로고 이미지가 업로드되었습니다!');
     } catch (error) {
       if (error.response && error.response.data) {
