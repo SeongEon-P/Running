@@ -4,7 +4,6 @@ import com.example.running.recruit.domain.Applied;
 import com.example.running.recruit.dto.AppliedDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AppliedService {
 
@@ -15,6 +14,6 @@ public interface AppliedService {
     void cancelApplication(Long ano);
 
     // 신청 목록
-    Optional<Applied> getAppliedByAno(Long ano);
+    List<Applied> getAppliedByRno(Long rno);
 
 }

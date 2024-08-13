@@ -13,7 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @Log4j2
@@ -40,13 +40,16 @@ public class AppliedServiceImpl implements AppliedService {
         return modelMapper.map(saveApplication, AppliedDTO.class);
     }
 
+    // 신청 취소
     @Override
     public void cancelApplication(Long ano) {
         appliedRepository.deleteById(ano);
     }
 
+    // 게시글 별로 신청한 사람 목록 보기
     @Override
-    public Optional<Applied> getAppliedByAno(Long ano) {
-        return Optional.empty();
+    public List<Applied> getAppliedByRno(Long rno) {
+        log.info("rno --------------------------- " + rno);
+        return appliedRepository.findByRno(rno);
     }
 }
