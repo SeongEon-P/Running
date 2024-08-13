@@ -1,0 +1,18 @@
+/* Navbar.css */
+.navbar {
+    display: flex;
+    justify-content: center; /* 네비게이션 바를 중앙에 정렬 */
+    align-items: center;
+    padding: 10px 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.logo {
+    height: 50px; /* 로고 크기 조정 */
+}

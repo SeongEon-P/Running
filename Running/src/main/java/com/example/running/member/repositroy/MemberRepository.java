@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, String> {
     Optional<Member> findByMid(String mid); // 이 부분 추가
+    Optional<Member> findByEmail(String email);
 }
