@@ -44,9 +44,13 @@ public class Recruit extends BaseEntity {
     @Column(name = "max_number", nullable = false)
     private Integer max_number;
 
+    // 현재 인원
+//    @Column(name = "current_number", nullable = false)
+//    private Integer current_number = 1;
+
     // 작성자 -> member의 mid
     @ManyToOne
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "mid", referencedColumnName = "mid")
     private Member memberRecruit;
 
 

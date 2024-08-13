@@ -29,5 +29,5 @@ public class RecruitDTO {
     // 모집 인원
     private Integer max_number;
 
-    private Long id;
+    private String mid;
 }

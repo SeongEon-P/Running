@@ -1,7 +1,8 @@
 package com.example.running.recruit.service;
 
-import com.example.running.member.Repository.MemberRepository;
+
 import com.example.running.member.domain.Member;
+import com.example.running.member.repositroy.MemberRepository;
 import com.example.running.recruit.domain.Recruit;
 import com.example.running.recruit.dto.RecruitDTO;
 import com.example.running.recruit.repository.RecruitRepository;
@@ -29,7 +30,7 @@ public class RecruitServiceImpl implements RecruitService {
     @Override
     public RecruitDTO registerRecruit(RecruitDTO recruitDTO) {
         Recruit recruit = modelMapper.map(recruitDTO, Recruit.class);
-        Member member = memberRepository.findById(recruitDTO.getId())
+        Member member = memberRepository.findById(recruitDTO.getMid())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
         recruit.setMember(member);
         Recruit savedRecruit = recruitRepository.save(recruit);
@@ -68,10 +69,10 @@ public class RecruitServiceImpl implements RecruitService {
                 recruitDTO.getMax_number()
         );
 
-        Optional<Member> memberResult = memberRepository.findById(recruitDTO.getId());
+        Optional<Member> memberResult = memberRepository.findById(recruitDTO.getMid());
         if (!memberResult.isPresent()) {
-            log.error("not found --------------- id : {}", recruitDTO.getId());
-            throw new NoSuchElementException("not found --------------- id : " + recruitDTO.getId());
+            log.error("not found --------------- id : {}", recruitDTO.getMid());
+            throw new NoSuchElementException("not found --------------- id : " + recruitDTO.getMid());
         }
 
         recruit.setMember(memberResult.get());

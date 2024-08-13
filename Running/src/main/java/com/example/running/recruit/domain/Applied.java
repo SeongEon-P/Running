@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"recruit", "memberApply"})
+@ToString(exclude = {"recruitApply", "memberApply"})
 @Builder
 public class Applied extends BaseEntity {
 
@@ -18,10 +18,18 @@ public class Applied extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "rno", referencedColumnName = "rno")
-    private Recruit recruit;
+    private Recruit recruitApply;
 
     @ManyToOne
     @JoinColumn(name = "mid", referencedColumnName = "mid")
     private Member memberApply;
+
+    public void setRecruit(Recruit recruitApply) {
+        this.recruitApply = recruitApply;
+    }
+
+    public void setMember(Member memberApply) {
+        this.memberApply = memberApply;
+    }
 
 }

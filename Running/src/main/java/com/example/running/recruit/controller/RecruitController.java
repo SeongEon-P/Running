@@ -59,7 +59,7 @@ public class RecruitController {
     @DeleteMapping("{rno}")
     public ResponseEntity<Object> deleteRecruit(@PathVariable Long rno) {
         recruitService.deleteRecruit(rno);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("post deleted successfully", HttpStatus.OK);
     }
 
 }
