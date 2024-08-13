@@ -42,7 +42,7 @@ public class AppliedServiceImpl implements AppliedService {
 
     @Override
     public void cancelApplication(Long ano) {
-
+        appliedRepository.deleteById(ano);
     }
 
     @Override

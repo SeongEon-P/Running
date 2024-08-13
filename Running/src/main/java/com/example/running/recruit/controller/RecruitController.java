@@ -1,7 +1,9 @@
 package com.example.running.recruit.controller;
 
 import com.example.running.recruit.domain.Recruit;
+import com.example.running.recruit.dto.AppliedDTO;
 import com.example.running.recruit.dto.RecruitDTO;
+import com.example.running.recruit.service.AppliedService;
 import com.example.running.recruit.service.RecruitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,11 +21,29 @@ import java.util.Optional;
 public class RecruitController {
 
     private final RecruitService recruitService;
+    private final AppliedService appliedService;
 
     @PostMapping
     public ResponseEntity<Object> register(@RequestBody RecruitDTO recruitDTO) {
-        RecruitDTO saveRecruit = recruitService.registerRecruit(recruitDTO);
-        return new ResponseEntity<>(saveRecruit, HttpStatus.CREATED);
+        try {
+            // 1. Recruit 엔티티 저장
+            RecruitDTO savedRecruit = recruitService.registerRecruit(recruitDTO);
+            log.info(savedRecruit.getRno());
+            log.info(savedRecruit.getMid());
+
+            // 2. Applied 엔티티 생성 및 저장
+            AppliedDTO appliedDTO = new AppliedDTO();
+            appliedDTO.setRno(savedRecruit.getRno());
+            appliedDTO.setMid(recruitDTO.getMid());
+
+            AppliedDTO saveApplication = appliedService.applicate(appliedDTO);
+
+            // 3. 결과 반환
+            return new ResponseEntity<>(saveApplication, HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/list")

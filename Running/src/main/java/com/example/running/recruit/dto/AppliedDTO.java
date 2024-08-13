@@ -15,4 +15,5 @@ public class AppliedDTO {
     private Long rno;
 
     private String mid;
+
 }
