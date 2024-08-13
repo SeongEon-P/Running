@@ -1,5 +1,6 @@
 package com.example.running.Notice.domain;
 
+import com.example.running.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -30,7 +31,7 @@ public class Notice extends BaseEntity {
     @Builder.Default
     private Set<NoticeResource> noticeResourceSet = new HashSet<>();
 
-    public void changeNotice(String n_title, String n_content, String n_image) {
+    public void changeNotice(String n_title, String n_content, String n_image, Member member) {
         this.n_title = n_title;
         this.n_content = n_content;
         this.n_image = n_image;

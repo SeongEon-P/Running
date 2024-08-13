@@ -6,6 +6,7 @@ import com.example.running.Notice.dto.NoticeDTO;
 import com.example.running.Notice.dto.NoticeResourceDTO;
 import com.example.running.Notice.repository.NoticeRepository;
 import com.example.running.Notice.repository.NoticeResourceRepository;
+import com.example.running.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -89,8 +90,8 @@ public class NoticeServiceImpl implements NoticeService {
         notice.changeNotice(
                 noticeDTO.getN_title(),
                 noticeDTO.getN_content(),
-                noticeDTO.getN_image()
-//                Member.builder().mno(noticeDTO.getWriter()).build()
+                noticeDTO.getN_image(),
+                Member.builder().mpw(noticeDTO.getWriter()).build()
         );
         Notice savedNotice = noticeRepository.save(notice);
         return savedNotice;

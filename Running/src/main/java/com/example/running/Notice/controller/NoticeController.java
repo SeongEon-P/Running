@@ -1,5 +1,6 @@
 package com.example.running.Notice.controller;
 
+import com.example.running.Notice.domain.Notice;
 import com.example.running.Notice.dto.NoticeDTO;
 import com.example.running.Notice.dto.NoticeResourceDTO;
 import com.example.running.Notice.service.NoticeResourceService;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,13 +27,14 @@ import java.util.List;
 public class NoticeController {
     private final NoticeService noticeService;
     private final NoticeResourceService noticeResourceService;
-    private final Path fileSotirageLocation = Paths.get("file-storage").toAbsolutePath().normalize();
+    private final Path fileStorageLocation = Paths.get("file-storage").toAbsolutePath().normalize();
     private NoticeDTO noticeDTO;
 
     @GetMapping("/list")
     public List<NoticeDTO> getNoticeList(){
         return noticeService.findAllNotice();
     }
+
     @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> registerNotice(NoticeDTO noticeDTO){
         List<NoticeResourceDTO> resourceDTOList = new ArrayList<NoticeResourceDTO>();
@@ -68,4 +71,43 @@ public class NoticeController {
         }
 
     }
+    @DeleteMapping("/{nno}")
+    public ResponseEntity<Object> deleteNotice(@PathVariable Long nno){
+        noticeService.deleteNotice(nno);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PutMapping("/{nno}")
+    public ResponseEntity<Object> modifyNotice(NoticeDTO noticeDTO){
+        try{
+            int ord = 0;
+            List<NoticeResourceDTO> resourceDTOList = new ArrayList<NoticeResourceDTO>();
+            for (MultipartFile file : noticeDTO.getFiles()) {
+                Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
+                try{
+                    file.transferTo(savePath);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                NoticeResourceDTO dto = NoticeResourceDTO.builder()
+                        .nr_name(file.getOriginalFilename())
+                        .nr_ord(ord)
+                        .nr_type(file.getContentType())
+                        .nno(noticeDTO.getNno())
+                        .build();
+                resourceDTOList.add(dto);
+                ord++;
+            }
+            noticeResourceService.deleteNoticeResource(noticeDTO.getNno());
+            noticeResourceService.saveAll(resourceDTOList);
+
+            Notice modifedNotice = noticeService.modifyNotice(noticeDTO);
+            return new ResponseEntity<>(modifedNotice, HttpStatus.OK);
+        }catch (NoSuchElementException e){
+            log.error("Notice not found with ID: " + noticeDTO.getNno(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new  ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

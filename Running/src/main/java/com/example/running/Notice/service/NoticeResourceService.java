@@ -8,4 +8,6 @@ import java.util.List;
 @Service
 public interface NoticeResourceService {
     void saveAll(List<NoticeResourceDTO> resourceDTOList);
+    void deleteNoticeResource(Long nrno);
+    int getMaxOrd(Long nno);
 }
