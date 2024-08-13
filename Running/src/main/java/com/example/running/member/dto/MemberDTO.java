@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class MemberDTO {
         private String mid;
-        private String mpw;
+//        private String mpw;
         private String name;
         private String email;
         private String phone;
