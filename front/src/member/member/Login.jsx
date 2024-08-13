@@ -22,8 +22,9 @@ const Login = () => {
       .then((response) => {
         const token = response.data.accessToken;
         localStorage.setItem('token', token); // 또는 sessionStorage.setItem('token', token);
+        localStorage.setItem('loginMethod', 'normal'); // 일반 로그인 방법 저장
         alert('로그인에 성공했습니다.');
-        navigate('/main');
+        navigate('/');
       })
       .catch((error) => {
         console.error('로그인 에러:', error);

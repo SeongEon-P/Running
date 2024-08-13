@@ -67,7 +67,7 @@ const Update = () => {
       .post('http://localhost:8080/members/update', member)
       .then((response) => {
         alert('회원 정보가 성공적으로 수정되었습니다.');
-        navigate('/main');
+        navigate('/');
       })
       .catch((error) => {
         console.error('회원 정보 수정 실패:', error);
