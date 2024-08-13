@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [login, setLogin] = useState({
     mid: '',
-    mpw: ''
+    mpw: '',
   });
 
   const navigate = useNavigate();
@@ -20,13 +20,14 @@ const Login = () => {
     axios
       .post('http://localhost:8080/members/login', login) // 백엔드의 로그인 URL
       .then((response) => {
+        const token = response.data.accessToken;
+        localStorage.setItem('token', token); // 또는 sessionStorage.setItem('token', token);
         alert('로그인에 성공했습니다.');
         navigate('/main');
       })
       .catch((error) => {
         console.error('로그인 에러:', error);
         alert('로그인에 실패했습니다.');
-        // 오류 처리
       });
   };
 

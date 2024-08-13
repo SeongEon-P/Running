@@ -1,13 +1,18 @@
 package com.example.running.member.controller;
 
 import com.example.running.member.domain.Member;
-import com.example.running.member.domain.Role;
+import com.example.running.member.dto.JwtAuthenticationResponse;
 import com.example.running.member.dto.MemberDTO;
+import com.example.running.member.security.jwt.JwtTokenProvider;
 import com.example.running.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +27,11 @@ public class MemberController {
     private MemberService memberService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
 
     // 회원가입
     @PostMapping("/signup")
@@ -32,13 +42,28 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Member member) {
-        // Optional에서 Member 객체를 추출
-        Member mid = memberService.findByMid(member.getMid()).orElse(null);
+    public ResponseEntity<?> login(@RequestBody Member member) {
+        // 사용자가 입력한 아이디로 회원 정보 조회
+        Member existingMember = memberService.findByMid(member.getMid()).orElse(null);
 
-        if (mid != null && passwordEncoder.matches(member.getMpw(), mid.getMpw())) {
-            return ResponseEntity.ok("로그인 성공");
+        if (existingMember != null && passwordEncoder.matches(member.getMpw(), existingMember.getMpw())) {
+            // 사용자가 존재하고 비밀번호가 일치하면, 인증 객체 생성
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            member.getMid(),
+                            member.getMpw()
+                    )
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // JWT 토큰 생성
+            String jwt = jwtTokenProvider.createToken(existingMember.getMid(), existingMember.getRole().name());
+
+            // JWT 토큰을 포함하여 응답 반환
+            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
         } else {
+            // 인증 실패 시 401 Unauthorized 응답 반환
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패: 잘못된 아이디 또는 비밀번호");
         }
     }
