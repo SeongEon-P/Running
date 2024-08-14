@@ -52,4 +52,10 @@ public class AppliedServiceImpl implements AppliedService {
         log.info("rno --------------------------- " + rno);
         return appliedRepository.findByRno(rno);
     }
+
+    // 신청한 인원 구하기
+    @Override
+    public Long getAppliedCountByRno(Long rno) {
+        return appliedRepository.countByRno(rno);
+    }
 }

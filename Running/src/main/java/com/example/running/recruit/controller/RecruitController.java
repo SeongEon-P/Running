@@ -18,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/recruit")
 @Log4j2
+@CrossOrigin(origins = "http://localhost:3000")
 public class RecruitController {
 
     private final RecruitService recruitService;
