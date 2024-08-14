@@ -55,6 +55,8 @@ public class SecurityConfig {
                         logout
                                 .permitAll()
                 )
+
+
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
