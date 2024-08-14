@@ -7,8 +7,8 @@ import Signup from './member/member/Signup';
 import Login from './member/member/Login';
 import Update from './member/member/Update';
 import MyPage from './member/page/MyPage';
-import NoticeList from './notice/Noticelist';
 import NoticeRegister from './notice/NoticeRegister';
+import Noticelist from './notice/Noticelist';
 
 const App = () => {
   return (
@@ -20,7 +20,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/update" element={<Update />} />
-        <Route path="/notice/list" element={<NoticeList/>}/>
+        <Route path="/notice/list" element={<Noticelist/>}/>
         <Route path="/notice/Register" element={<NoticeRegister/>}/>
       </Routes>
     </Router>

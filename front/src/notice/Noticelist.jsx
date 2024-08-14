@@ -12,16 +12,21 @@ function Noticelist() {
     const [showRegister, setShowRegister] = useState(false);
     const [selectedNotice, setSelectedNotice] = useState(null);
 
+    const maxPageNumbers = 5; // 여기에서 maxPageNumbers 정의
+
     const uploadRegister = async () => {
         try {
             const result = await axios.get("http://localhost:8080/notice/list");
-            if (Array.isArray(result.data)) {
-                setNoticeList(result.data);
+            console.log("Response data:", result.data); // 응답 데이터 확인
+            if (Array.isArray(result.data.notices)) {
+                setNoticeList(result.data.notices);
             } else {
                 console.error("Error: noticeList is not an array");
+                setNoticeList([]);
             }
         } catch (error) {
-            console.error("Error Fetching notice list :", error);
+            console.error("Error Fetching notice list:", error);
+            setNoticeList([]);
         }
     };
 
@@ -43,7 +48,6 @@ function Noticelist() {
             notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
         ).length / itemsPerPage
     );
-    const maxPageNumbers = 5;
 
     const handleClick = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -135,9 +139,9 @@ function Noticelist() {
 
     return (
         <div className="container notice_con">
-            {showRegister ? ( // showRegister가 true인 경우 NoticeRegister 표시
+            {showRegister ? (
                 <NoticeRegister />
-            ) : selectedNotice ? ( // selectedNotice가 있는 경우 NoticeDetail 표시
+            ) : selectedNotice ? (
                 <NoticeDetail nno={selectedNotice} />
             ) : (
                 <>
@@ -153,7 +157,7 @@ function Noticelist() {
                             <button
                                 className="btn btn-outline-dark"
                                 type="button"
-                                onClick={handleSearch} // 검색 버튼 클릭 시 handleSearch 호출
+                                onClick={handleSearch}
                             >
                                 Search
                             </button>
@@ -182,14 +186,14 @@ function Noticelist() {
                     </table>
 
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <div className="mx-auto"> {/* 페이지 번호를 가운데로 정렬 */}
+                        <div className="mx-auto">
                             {renderPageNumbers()}
                         </div>
                         <div className="text-end">
                             <button
                                 type="button"
                                 className="btn btn-outline-dark noticeRegisterBtn"
-                                onClick={handleRegisterClick} // 등록 버튼 클릭 시 handleRegisterClick 호출
+                                onClick={handleRegisterClick}
                             >
                                 등록
                             </button>

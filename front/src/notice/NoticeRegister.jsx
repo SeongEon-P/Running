@@ -15,7 +15,7 @@ const NoticeRegister = () => {
 
     const [showNoticeList, setShowNoticeList] = useState(false);
     const [showNoticeDetail, setShowNoticeDetail] = useState(false);
-    const [registeredNno, setRegisteredNno] = useState(null); // 등록된 공지사항 번호 저장
+    const [registeredNno, setRegisteredNno] = useState(null); 
 
 
     const onInputChange = (e) => {
@@ -44,7 +44,7 @@ const NoticeRegister = () => {
                 formData.append("files", nr_name);
             }
 
-            const response = await axios.post("/notice/register", formData, {
+            const response = await axios.post("http://localhost:8080/notice/register", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
