@@ -13,5 +13,5 @@ public interface MemberService {
     Optional<Member> findByEmail(String email);
 
     boolean authenticate(String mid, String password); // 사용자 인증
-
+    void deleteMember(String mid);
 }
