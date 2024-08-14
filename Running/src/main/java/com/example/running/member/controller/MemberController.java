@@ -5,6 +5,8 @@ import com.example.running.member.dto.JwtAuthenticationResponse;
 import com.example.running.member.dto.MemberDTO;
 import com.example.running.member.security.jwt.JwtTokenProvider;
 import com.example.running.member.service.MemberService;
+import com.example.running.member.utils.SecurityUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -105,13 +107,47 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 일치하지 않습니다.");
         }
     }
-    
+
     @ResponseBody
     @PostMapping("/logout")
     public ResponseEntity<Object> logout() {
         // 실제로는 서버 측에서 세션을 무효화하거나, 클라이언트 측에서 토큰을 삭제
         // 여기서는 클라이언트에서 토큰을 삭제하는 것으로 충분함
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    @ResponseBody
+    public ResponseEntity<MemberDTO> getCurrentMember(HttpServletRequest request) {
+        String token = SecurityUtils.extractAuthTokenFromRequest(request);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String username = jwtTokenProvider.getAuthentication(request).getName();
+        Member member = memberService.findByMid(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMid(member.getMid());
+        memberDTO.setEmail(member.getEmail());
+        memberDTO.setName(member.getName());
+        memberDTO.setPhone(member.getPhone());
+        memberDTO.setAddress(member.getAddress());
+        memberDTO.setRole(member.getRole());
+
+        return ResponseEntity.ok(memberDTO);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteMember(Authentication authentication) {
+        String mid = authentication.getName();  // 현재 인증된 사용자의 ID 가져오기
+
+        try {
+            memberService.deleteMember(mid);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 탈퇴에 실패했습니다.");
+        }
     }
 
 }

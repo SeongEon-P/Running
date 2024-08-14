@@ -81,5 +81,13 @@ public class MemberServiceImpl implements MemberService {
         return false;
     }
 
+    @Override
+    public void deleteMember(String mid) {
+        // 회원이 존재하는지 확인
+        Member member = memberRepository.findByMid(mid)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
+        // 회원 정보 삭제
+        memberRepository.delete(member);
+    }
 }
