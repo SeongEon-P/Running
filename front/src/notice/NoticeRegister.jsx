@@ -1,21 +1,21 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Noticelist from "./Noticelist";
 import NoticeDetail from "./NoticeDetail";
+import Noticelist from "./Noticelist";
 
 const NoticeRegister = () => {
     const navigate = useNavigate();
     const [notice, setNotice] = useState({
         n_title: "",
         n_content: "",
-        writer: localStorage.getItem('mid') || "",
+        writer: localStorage.getItem('m_name') || "",
     });
     const [nr_name, setNrName] = useState(null);
 
     const [showNoticeList, setShowNoticeList] = useState(false);
     const [showNoticeDetail, setShowNoticeDetail] = useState(false);
-    const [registeredNno, setRegisteredNno] = useState(null);
+    const [registeredNno, setRegisteredNno] = useState(null); // 등록된 공지사항 번호 저장
 
 
     const onInputChange = (e) => {
@@ -52,8 +52,8 @@ const NoticeRegister = () => {
 
             if (response.status === 201) {
                 alert("공지사항 등록이 성공적으로 완료되었습니다.");
-                setRegisteredNno(response.data.nno);
-                setShowNoticeDetail(true);
+                setRegisteredNno(response.data.nno); 
+                setShowNoticeDetail(true); 
             }
         } catch (error) {
 

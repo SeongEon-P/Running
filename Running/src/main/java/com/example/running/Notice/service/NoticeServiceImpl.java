@@ -12,7 +12,12 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +39,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public NoticeDTO addNotice(NoticeDTO noticeDTO) {
+    public NoticeDTO addNotice(NoticeDTO noticeDTO){
         Notice notice = Notice.builder()
                 .n_title(noticeDTO.getN_title())
                 .n_content(noticeDTO.getN_content())

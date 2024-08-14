@@ -6,6 +6,7 @@ import com.example.running.Notice.dto.NoticeResourceDTO;
 import com.example.running.Notice.service.NoticeResourceService;
 import com.example.running.Notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,10 +38,10 @@ public class NoticeController {
     }
 
     @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Object> registerNotice(NoticeDTO noticeDTO){
-        List<NoticeResourceDTO> resourceDTOList = new ArrayList<NoticeResourceDTO>();
+    public ResponseEntity<Object> addNotice(NoticeDTO noticeDTO){
+        List<NoticeResourceDTO> resourceDtoList = new ArrayList<NoticeResourceDTO>();
         NoticeDTO savedNotice = noticeService.addNotice(noticeDTO);
-        if(noticeDTO.getFiles() != null){
+        if (noticeDTO.getFiles() != null) {
             int ord = 0;
             for (MultipartFile file : noticeDTO.getFiles()) {
                 Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
@@ -54,13 +56,15 @@ public class NoticeController {
                         .nr_type(file.getContentType())
                         .nno(savedNotice.getNno())
                         .build();
-                resourceDTOList.add(dto);
+                resourceDtoList.add(dto);
                 ord++;
             }
-            noticeResourceService.saveAll(resourceDTOList);
+            noticeResourceService.saveAll(resourceDtoList);
         }
+
         return new ResponseEntity<>(savedNotice, HttpStatus.CREATED);
     }
+
     @GetMapping("/read")
     public ResponseEntity<Object> getReadNotice(@RequestParam Long nno){
         NoticeDTO oneNotice  = noticeService.findOneNoticeById(nno);

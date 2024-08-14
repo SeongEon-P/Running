@@ -1,9 +1,7 @@
-import { upload } from "@testing-library/user-event/dist/upload";
-import axios from "axios"
+import axios from "axios";
 import { useEffect, useState } from "react";
-import NoticeRegister from "./NoticeRegister"
-import NoticeDetail from "./NoticeDetail"
-
+import NoticeRegister from "./NoticeRegister";
+import NoticeDetail from "./NoticeDetail";
 
 function Noticelist() {
     const [noticeList, setNoticeList] = useState([]);
@@ -14,18 +12,23 @@ function Noticelist() {
     const [showRegister, setShowRegister] = useState(false);
     const [selectedNotice, setSelectedNotice] = useState(null);
 
-
     const uploadRegister = async () => {
         try {
-            const result = await axios.get("http://localhost:8080/notice/list")
-            setNoticeList(result.data);
+            const result = await axios.get("http://localhost:8080/notice/list");
+            if (Array.isArray(result.data)) {
+                setNoticeList(result.data);
+            } else {
+                console.error("Error: noticeList is not an array");
+            }
         } catch (error) {
             console.error("Error Fetching notice list :", error);
         }
     };
+
     useEffect(() => {
         uploadRegister();
     }, []);
+
     useEffect(() => {
         const filteredList = noticeList.filter(notice =>
             notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -45,7 +48,8 @@ function Noticelist() {
     const handleClick = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
-    const renederPageNumbers = () => {
+
+    const renderPageNumbers = () => {
         const pageNumber = [];
         let startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
         let endPage = startPage + maxPageNumbers - 1;
@@ -128,6 +132,7 @@ function Noticelist() {
     const handleNoticeClick = (nno) => {
         setSelectedNotice(nno);
     };
+
     return (
         <div className="container notice_con">
             {showRegister ? ( // showRegister가 true인 경우 NoticeRegister 표시
@@ -178,7 +183,7 @@ function Noticelist() {
 
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <div className="mx-auto"> {/* 페이지 번호를 가운데로 정렬 */}
-                            {renederPageNumbers()}
+                            {renderPageNumbers()}
                         </div>
                         <div className="text-end">
                             <button
@@ -193,7 +198,7 @@ function Noticelist() {
                 </>
             )}
         </div>
-
     );
 }
+
 export default Noticelist;
