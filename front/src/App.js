@@ -9,6 +9,7 @@ import Update from './member/member/Update';
 import MyPage from './member/page/MyPage';
 import NoticeList from './notice/Noticelist';
 import NoticeRegister from './notice/NoticeRegister';
+import RecruitRegister from './recruit/RecruitRegister';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/update" element={<Update />} />
         <Route path="/notice/list" element={<NoticeList/>}/>
         <Route path="/notice/Register" element={<NoticeRegister/>}/>
+        <Route path='/recruitRegister' element={<RecruitRegister/>}/>
       </Routes>
     </Router>
   );
