@@ -5,6 +5,8 @@ import com.example.running.member.dto.JwtAuthenticationResponse;
 import com.example.running.member.dto.MemberDTO;
 import com.example.running.member.security.jwt.JwtTokenProvider;
 import com.example.running.member.service.MemberService;
+import com.example.running.member.utils.SecurityUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -106,4 +108,33 @@ public class MemberController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout() {
+        // 실제로는 서버 측에서 세션을 무효화하거나, 클라이언트 측에서 토큰을 삭제
+        // 여기서는 클라이언트에서 토큰을 삭제하는 것으로 충분함
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    @ResponseBody
+    public ResponseEntity<MemberDTO> getCurrentMember(HttpServletRequest request) {
+        String token = SecurityUtils.extractAuthTokenFromRequest(request);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String username = jwtTokenProvider.getAuthentication(request).getName();
+        Member member = memberService.findByMid(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMid(member.getMid());
+        memberDTO.setEmail(member.getEmail());
+        memberDTO.setName(member.getName());
+        memberDTO.setPhone(member.getPhone());
+        memberDTO.setAddress(member.getAddress());
+        memberDTO.setRole(member.getRole());
+
+        return ResponseEntity.ok(memberDTO);
+    }
 }

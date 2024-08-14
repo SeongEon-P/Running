@@ -18,19 +18,46 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:8080/members/login', login) // 백엔드의 로그인 URL
+      .post('http://localhost:8080/members/login', login)
       .then((response) => {
         const token = response.data.accessToken;
-        localStorage.setItem('token', token); // 또는 sessionStorage.setItem('token', token);
-        localStorage.setItem('loginMethod', 'normal'); // 일반 로그인 방법 저장
-        alert('로그인에 성공했습니다.');
-        navigate('/');
+  
+        // JWT 토큰을 로컬 스토리지에 저장
+        localStorage.setItem('token', token);
+  
+        // 토큰을 이용해 사용자 정보 가져오기
+        axios
+          .get('http://localhost:8080/members/me', {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((res) => {
+            const userInfo = {
+              mid: res.data.mid,
+              name: res.data.name,
+              email: res.data.email,
+              phone: res.data.phone,
+              address: res.data.address,
+              role: res.data.role,
+            };
+            console.log('저장할 사용자 정보:', userInfo);
+  
+            // 사용자 정보를 로컬 스토리지에 JSON 형식으로 저장
+            localStorage.setItem('login', JSON.stringify(userInfo));
+  
+            alert('로그인에 성공했습니다.');
+            navigate('/');
+          })
+          .catch((error) => {
+            console.error('사용자 정보 가져오기 에러:', error);
+            alert('사용자 정보를 가져오지 못했습니다.');
+          });
       })
       .catch((error) => {
         console.error('로그인 에러:', error);
         alert('로그인에 실패했습니다.');
       });
   };
+  
 
   return (
     <div>
