@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -38,7 +39,7 @@ public class Recruit extends BaseEntity {
 
     // 모이는 시간
     @Column(name = "r_time", nullable = false)
-    private Time r_time;
+    private LocalTime r_time;
 
     // 모집 인원
     @Column(name = "max_number", nullable = false)
@@ -56,7 +57,7 @@ public class Recruit extends BaseEntity {
                               String r_content,
                               String r_place,
                               LocalDate r_date,
-                              Time r_time,
+                              LocalTime r_time,
                               Integer max_number) {
         this.r_title = r_title;
         this.r_content = r_content;

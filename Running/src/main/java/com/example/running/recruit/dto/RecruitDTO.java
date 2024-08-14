@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @Builder
@@ -25,7 +26,7 @@ public class RecruitDTO {
     // 모이는 날짜
     private LocalDate r_date;
     // 모이는 시간
-    private Time r_time;
+    private LocalTime r_time;
     // 모집 인원
     private Integer max_number;
 
