@@ -16,17 +16,38 @@ const Signup = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isIdAvailable, setIsIdAvailable] = useState(null); // 아이디 중복 체크 상태
   const [openPostcode, setOpenPostcode] = useState(false); // 모달 창 상태
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (name === 'mid') {
+      setIsIdAvailable(null); // 아이디 변경 시 중복 체크 결과 초기화
+    }
+  };
+
+  const checkIdAvailability = () => {
+    axios
+      .get(`http://localhost:8080/members/check-id`, { params: { mid: formData.mid } })
+      .then((response) => {
+        setIsIdAvailable(response.data);
+      })
+      .catch((error) => {
+        console.error('아이디 중복 체크 에러:', error);
+        setIsIdAvailable(false);
+      });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isSubmitting) return;
+
+    if (isIdAvailable === false) {
+      alert('아이디 중복 확인을 해주세요.');
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -81,6 +102,11 @@ const Signup = () => {
             onChange={handleChange}
             required
           />
+          <button type="button" onClick={checkIdAvailability}>
+            중복 체크
+          </button>
+          {isIdAvailable === true && <span className="id-available">사용 가능한 아이디입니다.</span>}
+          {isIdAvailable === false && <span className="id-unavailable">이미 사용 중인 아이디입니다.</span>}
         </label>
         <label>
           비밀번호:
@@ -135,7 +161,7 @@ const Signup = () => {
             주소검색
           </button>
         </div>
-        <button type="submit" disabled={isSubmitting}>
+        <button type="submit" disabled={isSubmitting || isIdAvailable === false}>
           회원가입
         </button>
       </form>

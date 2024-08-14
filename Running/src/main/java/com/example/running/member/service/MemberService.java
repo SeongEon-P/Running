@@ -14,4 +14,6 @@ public interface MemberService {
 
     boolean authenticate(String mid, String password); // 사용자 인증
     void deleteMember(String mid);
+
+    boolean isIdCheck(String mid);
 }

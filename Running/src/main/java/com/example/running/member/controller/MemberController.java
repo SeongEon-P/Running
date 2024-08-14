@@ -150,4 +150,11 @@ public class MemberController {
         }
     }
 
+    // id 중복체크
+    @GetMapping("/check-id")
+    public ResponseEntity<Boolean> checkId(@RequestParam String mid) {
+        boolean isAvailable = memberService.isIdCheck(mid);
+        return ResponseEntity.ok(isAvailable);
+    }
+
 }
