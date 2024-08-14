@@ -5,6 +5,8 @@ import com.example.running.member.dto.JwtAuthenticationResponse;
 import com.example.running.member.dto.MemberDTO;
 import com.example.running.member.security.jwt.JwtTokenProvider;
 import com.example.running.member.service.MemberService;
+import com.example.running.member.utils.SecurityUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -105,7 +107,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 일치하지 않습니다.");
         }
     }
-    
+
     @ResponseBody
     @PostMapping("/logout")
     public ResponseEntity<Object> logout() {
@@ -114,4 +116,25 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/me")
+    @ResponseBody
+    public ResponseEntity<MemberDTO> getCurrentMember(HttpServletRequest request) {
+        String token = SecurityUtils.extractAuthTokenFromRequest(request);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String username = jwtTokenProvider.getAuthentication(request).getName();
+        Member member = memberService.findByMid(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMid(member.getMid());
+        memberDTO.setEmail(member.getEmail());
+        memberDTO.setName(member.getName());
+        memberDTO.setPhone(member.getPhone());
+        memberDTO.setAddress(member.getAddress());
+        memberDTO.setRole(member.getRole());
+
+        return ResponseEntity.ok(memberDTO);
+    }
 }
