@@ -21,8 +21,14 @@ public class MemberServiceImpl implements MemberService {
     // 회원가입
     @Override
     public Member saveMember(Member member) {
+
+        // 중복된 아이디가 있는지 확인
+        if (memberRepository.findByMid(member.getMid()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        }
+
         try {
-            member.setMpw(passwordEncoder.encode(member.getMpw()));
+            member.setMpw(passwordEncoder.encode(member.getMpw())); // 비밀번호 암호화
             return memberRepository.save(member);
         } catch (Exception e) {
             e.printStackTrace();  // 예외를 콘솔에 출력
@@ -89,5 +95,10 @@ public class MemberServiceImpl implements MemberService {
 
         // 회원 정보 삭제
         memberRepository.delete(member);
+    }
+
+    @Override
+    public boolean isIdCheck(String mid) {
+        return !memberRepository.findByMid(mid).isPresent();
     }
 }
