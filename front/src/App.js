@@ -10,6 +10,7 @@ import MyPage from './member/page/MyPage';
 import NoticeList from './notice/Noticelist';
 import NoticeRegister from './notice/NoticeRegister';
 import RecruitRegister from './recruit/RecruitRegister';
+import RecruitList from './recruit/RecruitList';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/notice/list" element={<NoticeList/>}/>
         <Route path="/notice/Register" element={<NoticeRegister/>}/>
         <Route path='/recruitRegister' element={<RecruitRegister/>}/>
+        <Route path='/recruitList' element={<RecruitList/>}/>
       </Routes>
     </Router>
   );
