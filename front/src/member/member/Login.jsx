@@ -20,9 +20,21 @@ const Login = () => {
     axios
       .post('http://localhost:8080/members/login', login) // 백엔드의 로그인 URL
       .then((response) => {
-        const token = response.data.accessToken;
-        localStorage.setItem('token', token); // 또는 sessionStorage.setItem('token', token);
-        localStorage.setItem('loginMethod', 'normal'); // 일반 로그인 방법 저장
+        const token = response.data.accessToken; // 서버로부터 받은 JWT 토큰
+        const userInfo = {
+          mid: response.data.mid,
+          name: response.data.name,
+          email: response.data.email,
+          phone: response.data.phone,
+          address: response.data.address,
+          role: response.data.role,
+        };
+        console.log('저장할 사용자 정보:', userInfo);
+
+        // 로컬 스토리지에 JWT 토큰과 회원 정보를 저장
+        localStorage.setItem('token', token); // JWT 토큰 저장
+        localStorage.setItem('login', JSON.stringify(userInfo)); // 회원 정보를 JSON 형식으로 저장
+
         alert('로그인에 성공했습니다.');
         navigate('/');
       })

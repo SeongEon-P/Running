@@ -105,5 +105,13 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 일치하지 않습니다.");
         }
     }
+    
+    @ResponseBody
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout() {
+        // 실제로는 서버 측에서 세션을 무효화하거나, 클라이언트 측에서 토큰을 삭제
+        // 여기서는 클라이언트에서 토큰을 삭제하는 것으로 충분함
+        return ResponseEntity.ok().build();
+    }
 
 }
