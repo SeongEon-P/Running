@@ -53,10 +53,14 @@ const RecruitList = () => {
     return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
   };
 
+  const handleRecruitRegister = () => {
+    navigate('/recruit/register')
+}
 
   return (
     <div>
       <h1>Recruit List</h1>
+      <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
       <table>
         <thead>
           <tr>

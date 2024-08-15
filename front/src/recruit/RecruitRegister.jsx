@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const RecruitRegister = () => {
     const [recruit, setrecruit] = useState({
@@ -11,6 +12,7 @@ const RecruitRegister = () => {
         max_number:'',
         mid: ''
     });
+    const navigate = useNavigate();
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem('login'));
@@ -36,15 +38,19 @@ const RecruitRegister = () => {
             const response = await axios.post('http://localhost:8080/recruit', recruit);
             console.log(response.data);
             alert('모집글이 정상적으로 등록되었습니다.');
+            navigate('/recruit/list')
         } catch (error) {
             console.error('---------------- 모집 게시글 등록 중 오류 발생 : ', error);
             alert('알 수 없는 이유로 모집글이 등록되지 않았습니다.');
         }
     };
 
+
+
     return (
         <div>
             <h1>Register Recruit</h1>
+
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>제목: </label>
