@@ -6,7 +6,7 @@ const RecruitRead = () => {
     const { rno } = useParams();
     const [recruit, setRecruit] = useState(null);
     const [count, setCount] = useState(null);
-    const [appliedList, setAppliedList] = useState(null);
+    const [appliedList, setAppliedList] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,14 +43,29 @@ const RecruitRead = () => {
         navigate('/recruit/list');
     };
 
+    // 날짜 형식 변환 함수 추가
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-CA'); // 'en-CA' 형식을 사용하면 'yyyy-mm-dd'로 표시됩니다.
+    };
+
+    // 시간 형식 변환 함수 추가
+    const formatTime = (time) => {
+        if (typeof time === 'string' || time instanceof String) {
+            const [hour, minute, second] = time.split(':');
+            return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
+        }
+        return time;
+    };
+
     return (
         <>
             <div>
                 <h1>제목 : {recruit.r_title}</h1>
                 <p>내용 : {recruit.r_content}</p>
                 <p>장소 : {recruit.r_place}</p>
-                <p>날짜 : {recruit.r_date}</p>
-                <p>시간 : {recruit.r_time}</p>
+                <p>날짜 : {formatDate(recruit.r_date)}</p>
+                <p>시간 : {formatTime(recruit.r_time)}</p>
                 <p>모집인원 : {count !== null ? `${count}/${recruit.max_number}` : 'Loading...'}</p>
                 <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
                 <button onClick={handleBackClick}>목록으로 가기</button>
@@ -58,13 +73,19 @@ const RecruitRead = () => {
             <div>
                 <h1>신청한 사람</h1>
                 <tbody>
-                    {appliedList.map(applied => (
-                        <tr key={applied.ano}>
-                            <td>{applied.memberApply.mid}</td>
+                    {appliedList.length > 0 ? ( // appliedList가 유효한 배열인지 확인
+                        appliedList.map(applied => (
+                            <tr key={applied.ano}>
+                                <td>{applied.memberApply.mid}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td>신청자가 없습니다.</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
-                
+
             </div>
         </>
     )
