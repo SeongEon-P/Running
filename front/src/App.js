@@ -26,8 +26,8 @@ const App = () => {
         <Route path="/notice/list" element={<NoticeList/>}/>
         <Route path="/notice/Register" element={<NoticeRegister/>}/>
         <Route path='/recruitRegister' element={<RecruitRegister/>}/>
-        <Route path='/recruitList' element={<RecruitList/>}/>
-        <Route path='/recruitRead/:rno' element={<RecruitRead />} />
+        <Route path='/recruit/list' element={<RecruitList/>}/>
+        <Route path='/recruit/read/:rno' element={<RecruitRead />} />
       </Routes>
     </Router>
   );
