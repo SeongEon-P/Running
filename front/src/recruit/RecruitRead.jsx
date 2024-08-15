@@ -39,9 +39,29 @@ const RecruitRead = () => {
         return <div>Loading...</div>
     }
 
+    // 목록으로 가기
     const handleBackClick = () => {
         navigate('/recruit/list');
     };
+
+    // 수정하기
+    const handleModifyClick = () => {
+        navigate(`/recruit/modify/${rno}`);
+    }
+
+    const handleDeleteClick = () => {
+        if(window.confirm('삭제하시겠습니까?')){
+            axios.delete(`http://localhost:8080/recruit/${rno}`)
+            .then(response => {
+                alert('게시글이 삭제되었습니다.');
+                navigate('/recruit/list')
+            })
+            .catch(error => {
+                console.error('There was an error deleting the recruit!', error);
+                alert('삭제 중 오류가 발생했습니다.');
+            })
+        }
+    }
 
     // 날짜 형식 변환 함수
     const formatDate = (dateString) => {
@@ -72,6 +92,8 @@ const RecruitRead = () => {
                 <p>모집인원 : {count !== null ? `${count}/${recruit.max_number}` : 'Loading...'}</p>
                 <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
                 <button onClick={handleBackClick}>목록으로 가기</button>
+                <button onClick={handleModifyClick}>수정</button>
+                <button onClick={handleDeleteClick}>삭제</button>
             </div>
             <div>
                 <h1>신청한 사람</h1>
