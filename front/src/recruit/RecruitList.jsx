@@ -32,7 +32,7 @@ const RecruitList = () => {
   }, []);
 
   const handleRowClick = (rno) => {
-    navigate(`/recruit/read/${rno}`); // useNavigate를 사용하여 페이지 이동
+    navigate(`/recruit/read/${rno}`);
   };
 
   // 날짜 형식 변환 함수

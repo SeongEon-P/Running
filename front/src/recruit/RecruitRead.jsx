@@ -44,7 +44,7 @@ const RecruitRead = () => {
         navigate('/recruit/list');
     };
 
-    // 수정하기
+    // 수정 페이지로 가기
     const handleModifyClick = (rno) => {
         navigate(`/recruit/modify/${rno}`);
     }
@@ -91,8 +91,9 @@ const RecruitRead = () => {
                 <p>시간 : {formatTime(recruit.r_time)}</p>
                 <p>모집인원 : {count !== null ? `${count}/${recruit.max_number}` : 'Loading...'}</p>
                 <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
+                
                 <button onClick={handleBackClick}>목록으로 가기</button>
-                <button onClick={handleModifyClick}>수정</button>
+                <button onClick={() => handleModifyClick(rno)}>수정</button>
                 <button onClick={handleDeleteClick}>삭제</button>
             </div>
             <div>
