@@ -1,5 +1,6 @@
 package com.example.running.Notice.dto;
 
+import com.example.running.Notice.domain.NoticeResource;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,8 +16,16 @@ public class NoticeResourceDTO {
     private String nr_path;
     private String nr_type;
     private Long nno;
-    @Column
     private Long file_size;
-    @NotNull
     private int nr_ord;
+
+    public NoticeResourceDTO(NoticeResource nr){
+        this.nrno = nr.getNrno();
+        this.nr_name = nr.getNr_name();
+        this.nr_path = nr.getNr_path();
+        this.nr_type = nr.getNr_type();
+        this.nno = nr.getNotice().getNno();
+        this.file_size = nr.getFile_size();
+        this.nr_ord = nr.getNr_ord();
+    }
 }

@@ -23,6 +23,6 @@ public class NoticeDTO {
     private LocalDateTime modDate;
     private LocalDateTime regDate;
     private String n_image;
-    private Set<NoticeResource> notice_resource;
+    private List<NoticeResourceDTO> notice_resource;
     private List<MultipartFile> files;
 }

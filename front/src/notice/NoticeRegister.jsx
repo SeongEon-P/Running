@@ -9,7 +9,7 @@ const NoticeRegister = () => {
     const [notice, setNotice] = useState({
         n_title: "",
         n_content: "",
-        writer: localStorage.getItem('m_name') || "",
+        writer: localStorage.getItem('mid') || "",
     });
     const [nr_name, setNrName] = useState(null);
 
