@@ -4,20 +4,24 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const RecruitRead = () => {
     const { rno } = useParams();
-    const [recruit, setRecruit] = useState(null);
+    const [recruit, setRecruit] = useState([]);
     const [count, setCount] = useState(null);
     const [appliedList, setAppliedList] = useState([]);
+    const [currentUser, setCurrentUser] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
+        // 모집 글 데이터 가져오기
         axios.get('http://localhost:8080/recruit/read', { params: { rno } })
             .then(response => {
                 setRecruit(response.data);
+                // console.log('recruit.mid : ' + recruit.memberRecruit.mid)
             })
             .catch(error => {
                 console.error('There was an error fetching the recruit!', error);
             });
 
+        // 신청 인원 데이터 가져오기
         axios.get('http://localhost:8080/apply/count', { params: { rno } })
             .then(response => {
                 setCount(response.data);
@@ -26,6 +30,7 @@ const RecruitRead = () => {
                 console.error('There was an error fetching the recruit count!', error);
             });
 
+        // 신청자 리스트 가져오기
         axios.get('http://localhost:8080/apply', { params: { rno } })
             .then(response => {
                 setAppliedList(response.data);
@@ -33,9 +38,23 @@ const RecruitRead = () => {
             .catch(error => {
                 console.error('There was an error fetching the apply list!', error)
             });
+
+        // 현재 로그인한 사용자 정보 가져오기
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios.get('http://localhost:8080/members/me', {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+                .then(response => {
+                    setCurrentUser(response.data);
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the current user!', error);
+                });
+        }
     }, [rno])
 
-    if (!recruit) {
+    if (!recruit.rno) {
         return <div>Loading...</div>
     }
 
@@ -47,22 +66,43 @@ const RecruitRead = () => {
     // 수정 페이지로 가기
     const handleModifyClick = (rno) => {
         navigate(`/recruit/modify/${rno}`);
-    }
+    };
 
     const handleDeleteClick = () => {
-        if(window.confirm('삭제하시겠습니까?')){
+        if (window.confirm('삭제하시겠습니까?')) {
             axios.delete(`http://localhost:8080/recruit/${rno}`)
+                .then(response => {
+                    alert('게시글이 삭제되었습니다.');
+                    navigate('/recruit/list')
+                })
+                .catch(error => {
+                    console.error('There was an error deleting the recruit!', error);
+                    alert('삭제 중 오류가 발생했습니다.');
+                });
+        }
+    };
+
+    const handleApplyClick = () => {
+        if (!currentUser.mid) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+
+        const appliedDTO = {
+            rno: recruit.rno,
+            mid: currentUser.mid
+        };
+
+        axios.post('http://localhost:8080/apply', appliedDTO)
             .then(response => {
-                alert('게시글이 삭제되었습니다.');
-                navigate('/recruit/list')
+                alert('신청이 완료되었습니다.');
+                window.location.reload(); // 신청 후 페이지 새로고침
             })
             .catch(error => {
-                console.error('There was an error deleting the recruit!', error);
-                alert('삭제 중 오류가 발생했습니다.');
-            })
-        }
-    }
-
+                console.error('There was an error applying!', error);
+                alert('신청 중 오류가 발생했습니다.');
+            });
+    };
     // 날짜 형식 변환 함수
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -91,10 +131,20 @@ const RecruitRead = () => {
                 <p>시간 : {formatTime(recruit.r_time)}</p>
                 <p>모집인원 : {count !== null ? `${count}/${recruit.max_number}` : 'Loading...'}</p>
                 <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
-                
+
                 <button onClick={handleBackClick}>목록으로 가기</button>
-                <button onClick={() => handleModifyClick(rno)}>수정</button>
-                <button onClick={handleDeleteClick}>삭제</button>
+
+                {currentUser && currentUser.mid === recruit.memberRecruit.mid ? null : (
+                    <button onClick={() => handleModifyClick(rno)}>수정</button>
+                )}
+
+                {currentUser && currentUser.mid === recruit.memberRecruit.mid ? null : (
+                    <button onClick={handleDeleteClick}>삭제</button>
+                )}
+
+                {currentUser.mid && currentUser.mid !== recruit.memberRecruit.mid && (
+                    <button onClick={handleApplyClick}>신청하기</button>
+                )}
             </div>
             <div>
                 <h1>신청한 사람</h1>
