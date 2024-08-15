@@ -12,6 +12,7 @@ import NoticeRegister from './notice/NoticeRegister';
 import RecruitRegister from './recruit/RecruitRegister';
 import RecruitList from './recruit/RecruitList';
 import RecruitRead from './recruit/RecruitRead';
+import RecruitModify from './recruit/RecruitModify';
 
 const App = () => {
   return (
@@ -25,9 +26,11 @@ const App = () => {
         <Route path="/update" element={<Update />} />
         <Route path="/notice/list" element={<NoticeList/>}/>
         <Route path="/notice/Register" element={<NoticeRegister/>}/>
+        
         <Route path='/recruitRegister' element={<RecruitRegister/>}/>
         <Route path='/recruit/list' element={<RecruitList/>}/>
         <Route path='/recruit/read/:rno' element={<RecruitRead />} />
+        <Route path='/recruit/modify/:rno' element={<RecruitModify/>}/>
       </Routes>
     </Router>
   );

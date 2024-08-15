@@ -45,7 +45,7 @@ const RecruitRead = () => {
     };
 
     // 수정하기
-    const handleModifyClick = () => {
+    const handleModifyClick = (rno) => {
         navigate(`/recruit/modify/${rno}`);
     }
 
