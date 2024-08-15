@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const RecruitRead = () => {
     const { rno } = useParams();
     const [recruit, setRecruit] = useState(null);
+    const [count, setCount] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,6 +15,14 @@ const RecruitRead = () => {
         })
         .catch(error => {
             console.error('There was an error fetching the recruit!', error);
+        });
+
+        axios.get('http://localhost:8080/apply/count', { params: { rno } })
+        .then(response => {
+            setCount(response.data);
+        })
+        .catch(error => {
+            console.error('There was an error fetching the recruit count!', error);
         })
     }, [rno])
 
@@ -32,7 +41,7 @@ const RecruitRead = () => {
             <p>장소 : {recruit.r_place}</p>
             <p>날짜 : {recruit.r_date}</p>
             <p>시간 : {recruit.r_time}</p>
-            <p>모집인원 : {recruit.max_number}</p>
+            <p>모집인원 : {count !== null ? `${count}/${recruit.max_number}` : 'Loading...'}</p>
             <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
             <button onClick={handleBackClick}>목록으로 가기</button>
         </div>
