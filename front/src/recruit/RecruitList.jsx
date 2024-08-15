@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const RecruitList = () => {
   const [recruits, setRecruits] = useState([]);
   const [counts, setCounts] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:8080/recruit/list')
       .then(response => {
         setRecruits(response.data);
 
-        // 각 모집 게시글에 대해 신청 인원을 가져오는 추가 API 호출 (POST 요청으로 변경)
+        // 각 모집 게시글에 대해 신청 인원을 가져오는 추가 API 호출
         response.data.forEach(recruit => {
           axios.get('http://localhost:8080/apply/count', { params: { rno: recruit.rno } })
             .then(countResponse => {
@@ -29,6 +31,10 @@ const RecruitList = () => {
       });
   }, []);
 
+  const handleRowClick = (rno) => {
+    navigate(`/recruit/read/${rno}`); // useNavigate를 사용하여 페이지 이동
+  };
+
   return (
     <div>
       <h1>Recruit List</h1>
@@ -46,7 +52,7 @@ const RecruitList = () => {
         </thead>
         <tbody>
           {recruits.map(recruit => (
-            <tr key={recruit.rno}>
+            <tr key={recruit.rno} onClick={() => handleRowClick(recruit.rno)}>
               <td>{recruit.rno}</td>
               <td>{recruit.r_title}</td>
               <td>{recruit.r_content}</td>

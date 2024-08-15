@@ -11,6 +11,7 @@ import NoticeList from './notice/Noticelist';
 import NoticeRegister from './notice/NoticeRegister';
 import RecruitRegister from './recruit/RecruitRegister';
 import RecruitList from './recruit/RecruitList';
+import RecruitRead from './recruit/RecruitRead';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/notice/Register" element={<NoticeRegister/>}/>
         <Route path='/recruitRegister' element={<RecruitRegister/>}/>
         <Route path='/recruitList' element={<RecruitList/>}/>
+        <Route path='/recruitRead/:rno' element={<RecruitRead />} />
       </Routes>
     </Router>
   );
