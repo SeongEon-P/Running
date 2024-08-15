@@ -2,63 +2,64 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 
 const RecruitList = () => {
-    const [recruits, setRecruits] = useState([]);
-    const [counts, setCounts] = useState({});
+  const [recruits, setRecruits] = useState([]);
+  const [counts, setCounts] = useState({});
 
-    useEffect(() => {
-        axios.get('http://localhost:8080/recruit/list')
-            .then(response => {
-                setRecruits(response.data);
+  useEffect(() => {
+    axios.get('http://localhost:8080/recruit/list')
+      .then(response => {
+        setRecruits(response.data);
 
-                // 각 모집 게시글에 대해 신청 인원을 가져오는 추가 API 호출 (POST 요청으로 변경)
-                response.data.forEach(recruit => {
-                    axios.post('http://localhost:8080/recruit/count', null, { params: { rno: recruit.rno } })
-                        .then(countResponse => {
-                            setCounts(prevCounts => ({
-                                ...prevCounts,
-                                [recruit.rno]: countResponse.data
-                            }));
-                        })
-                        .catch(error => {
-                            console.error('There was an error fetching the recruit count!', error);
-                        });
-                });
+        // 각 모집 게시글에 대해 신청 인원을 가져오는 추가 API 호출 (POST 요청으로 변경)
+        response.data.forEach(recruit => {
+          axios.get('http://localhost:8080/apply/count', { params: { rno: recruit.rno } })
+            .then(countResponse => {
+              setCounts(prevCounts => ({
+                ...prevCounts,
+                [recruit.rno]: countResponse.data
+              }));
             })
             .catch(error => {
-                console.error('There was an error fetching the recruit list!', error);
+              console.error('There was an error fetching the recruit count!', error);
             });
-    }, []);
+        });
+      })
+      .catch(error => {
+        console.error('There was an error fetching the recruit list!', error);
+      });
+  }, []);
 
-    return (
-        <div>
-            <h1>Recruit List</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Content</th>
-                        <th>Place</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Max Number</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {recruits.map(recruit => (
-                        <tr key={recruit.rno}>
-                            <td>{recruit.r_title}</td>
-                            <td>{recruit.r_content}</td>
-                            <td>{recruit.r_place}</td>
-                            <td>{recruit.r_date}</td>
-                            <td>{recruit.r_time}</td>
-                            <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.max_number}</td>
-
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    )
+  return (
+    <div>
+      <h1>Recruit List</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>rno</th>
+            <th>Title</th>
+            <th>Content</th>
+            <th>Place</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Max Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recruits.map(recruit => (
+            <tr key={recruit.rno}>
+              <td>{recruit.rno}</td>
+              <td>{recruit.r_title}</td>
+              <td>{recruit.r_content}</td>
+              <td>{recruit.r_place}</td>
+              <td>{recruit.r_date}</td>
+              <td>{recruit.r_time}</td>
+              <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.max_number}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 export default RecruitList;
