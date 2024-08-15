@@ -43,19 +43,22 @@ const RecruitRead = () => {
         navigate('/recruit/list');
     };
 
-    // 날짜 형식 변환 함수 추가
+    // 날짜 형식 변환 함수
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-CA'); // 'en-CA' 형식을 사용하면 'yyyy-mm-dd'로 표시됩니다.
     };
 
-    // 시간 형식 변환 함수 추가
-    const formatTime = (time) => {
-        if (typeof time === 'string' || time instanceof String) {
-            const [hour, minute, second] = time.split(':');
-            return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
-        }
-        return time;
+    // 배열로 이루어져 있는 날짜/시간 데이터의 표시 형식을 변환하는 법
+    // const formatDate = (dateArray) => {
+    //     const [year, month, day] = dateArray;
+    //     return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    // };
+
+    // 시간 형식 변환 함수
+    const formatTime = (timeArray) => {
+        const [hour, minute] = timeArray;
+        return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     };
 
     return (
