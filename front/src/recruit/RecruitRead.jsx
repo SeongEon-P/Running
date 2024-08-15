@@ -15,7 +15,7 @@ const RecruitRead = () => {
         axios.get('http://localhost:8080/recruit/read', { params: { rno } })
             .then(response => {
                 setRecruit(response.data);
-                // console.log('recruit.mid : ' + recruit.memberRecruit.mid)
+                console.log('recruit.mid : ' + recruit.memberRecruit.mid)
             })
             .catch(error => {
                 console.error('There was an error fetching the recruit!', error);
@@ -34,6 +34,7 @@ const RecruitRead = () => {
         axios.get('http://localhost:8080/apply', { params: { rno } })
             .then(response => {
                 setAppliedList(response.data);
+                console.log('currentUser : ' + currentUser.mid)
             })
             .catch(error => {
                 console.error('There was an error fetching the apply list!', error)
