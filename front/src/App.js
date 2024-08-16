@@ -12,7 +12,7 @@ import RecruitRegister from './recruit/RecruitRegister';
 import RecruitList from './recruit/RecruitList';
 import RecruitRead from './recruit/RecruitRead';
 import RecruitModify from './recruit/RecruitModify';
-import Noticelist from './notice/Noticelist';
+import Noticelist from './notice/NoticeList';
 
 const App = () => {
   return (
@@ -24,7 +24,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/update" element={<Update />} />
-        <Route path="/notice/list" element={<NoticeList/>}/>
+        <Route path="/notice/list" element={<Noticelist/>}/>
         <Route path="/notice/Register" element={<NoticeRegister/>}/>
         
         <Route path='/recruit/register' element={<RecruitRegister/>}/>

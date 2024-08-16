@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from 'react-router-dom';
 
 const RecruitRead = () => {
-    const { rno } = useParams();
+    const { rno, ano } = useParams();
     const [recruit, setRecruit] = useState([]);
     const [count, setCount] = useState(null);
     const [appliedList, setAppliedList] = useState([]);
@@ -61,7 +61,7 @@ const RecruitRead = () => {
                 mid: userInfo.mid
             }))
         }
-    }, [rno])
+    }, [rno, ano])
 
     if (!recruit.rno) {
         return <div>Loading...</div>
@@ -112,6 +112,22 @@ const RecruitRead = () => {
                 alert('신청 중 오류가 발생했습니다.');
             });
     };
+
+    const handleCancelApplicatoin = () => {
+        if(window.confirm('신청을 취소하시겠습니까?')) {
+            axios.delete(`http://localhost:8080/apply/${ano}`)
+            .then(response => {
+                alert('신청이 취소되었습니다.');
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('There was an error cancelling the application', error);
+                alert('취소 중 오류가 발생했습니다.');
+            });
+        }
+    }
+
+
     // 날짜 형식 변환 함수
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -157,6 +173,8 @@ const RecruitRead = () => {
             </div>
             <div>
                 <h1>신청한 사람</h1>
+
+                <button onClick={handleCancelApplicatoin}>X</button>
                 <tbody>
                     {appliedList.length > 0 ? ( // appliedList가 유효한 배열인지 확인
                         appliedList.map(applied => (

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import NoticeDetail from "./NoticeDetail";
 import NoticeRegister from "./NoticeRegister";
 
-function Noticelist() {
+function NoticeList() {
   const [noticeList, setNoticeList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -201,4 +201,4 @@ function Noticelist() {
   );
 }
 
-export default Noticelist;
+export default NoticeList;

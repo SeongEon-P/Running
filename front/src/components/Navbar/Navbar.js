@@ -11,7 +11,7 @@ const Navbar = () => {
                 <img src={logo} alt="Logo" className="logo" />
             </Link>
             <div className="nav-links">
-                <Link to="/lightning/list">LIGHTNING</Link>
+                <Link to="/recruit/list">LIGHTNING</Link>
                 <Link to="/crew/incruit">CREW</Link>
                 <Link to="/notice/list">NOTICE</Link>
                 <Link to="/info/list">INFO</Link>
