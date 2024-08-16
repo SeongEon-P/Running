@@ -4,6 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import './Update.css';
 
 const Update = () => {
+  const [login, setLogin] = useState({
+    mid: '',
+    mpw: '',
+  });
   const [member, setMember] = useState({
     mid: '',
     name: '',
@@ -16,29 +20,16 @@ const Update = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 로컬 스토리지에서 JWT 토큰 가져오기
-    const token = localStorage.getItem('token');
-
-    // JWT 토큰이 없으면 로그인 페이지로 리다이렉트
-    if (!token) {
-      alert('로그인이 필요합니다.');
-      navigate('/login');
-      return;
-    }
-
     // 로그인한 사용자의 정보 불러오기
     axios
-      .get('http://localhost:8080/members/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(`http://localhost:8080/members/${login.mid}`)
       .then((response) => {
         setMember(response.data);
       })
       .catch((error) => {
         console.error('회원 정보 불러오기 실패:', error);
-        alert('회원 정보를 불러오지 못했습니다.');
       });
-  }, [navigate]);
+  }, [login.mid]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,14 +42,10 @@ const Update = () => {
 
   const checkPassword = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
-
     axios
       .post('http://localhost:8080/members/check-password', {
-        mid: member.mid,
+        mid: login.mid,
         password: currentPassword,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         setIsVerified(true);
@@ -76,12 +63,8 @@ const Update = () => {
       alert('비밀번호 확인 후 수정이 가능합니다.');
       return;
     }
-    const token = localStorage.getItem('token');
-
     axios
-      .post('http://localhost:8080/members/update', member, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .post('http://localhost:8080/members/update', member)
       .then((response) => {
         alert('회원 정보가 성공적으로 수정되었습니다.');
         navigate('/');
@@ -111,8 +94,6 @@ const Update = () => {
           />
         </div>
         <button type="submit" className="check-button">비밀번호 확인</button>
-      </form>
-      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">이름:</label>
           <input type="text" name="name" value={member.name} readOnly />
@@ -144,6 +125,8 @@ const Update = () => {
             onChange={handleChange}
           />
         </div>
+      </form>
+      <form onSubmit={handleSubmit}>
         <button type="submit" className="submit-button">정보 수정</button>
       </form>
     </div>
