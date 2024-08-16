@@ -12,7 +12,12 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +39,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public NoticeDTO addNotice(NoticeDTO noticeDTO) {
+    public NoticeDTO addNotice(NoticeDTO noticeDTO){
         Notice notice = Notice.builder()
                 .n_title(noticeDTO.getN_title())
                 .n_content(noticeDTO.getN_content())
@@ -47,31 +52,31 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public NoticeDTO findOneNoticeById(Long nno) {
-        Optional<Notice> result = noticeRepository.findById(nno);
+        Optional<Notice> result=noticeRepository.findById(nno);
         Notice notice = result.orElseThrow();
         Set<NoticeResource> nrList = notice.getNoticeResourceSet();
-        List<NoticeResourceDTO> nrDTO = new ArrayList<>();
-        for (NoticeResource noticeResource : nrList) {
-            nrDTO.add(NoticeResourceDTO.builder()
+        List<NoticeResourceDTO> nrDtoList = new ArrayList<>();
+        for(NoticeResource noticeResource : nrList) {
+            nrDtoList.add(NoticeResourceDTO.builder()
                     .nrno(noticeResource.getNrno())
-                            .file_size(noticeResource.getFile_size())
-                            .nr_name(noticeResource.getNr_name())
-                            .nr_ord(noticeResource.getNr_ord())
-                            .nr_path(noticeResource.getNr_path())
-                            .nr_type(noticeResource.getNr_type())
-                            .nno(noticeResource.getNotice().getNno())
+                    .file_size(noticeResource.getFile_size())
+                    .nr_name(noticeResource.getNr_name())
+                    .nr_ord(noticeResource.getNr_ord())
+                    .nr_path(noticeResource.getNr_path())
+                    .nr_type(noticeResource.getNr_type())
+                    .nno(noticeResource.getNotice().getNno())
                     .build());
         }
-        NoticeDTO noticeDTO = NoticeDTO.builder()
+        NoticeDTO noticeListDTO = NoticeDTO.builder()
                 .nno(notice.getNno())
                 .n_title(notice.getN_title())
                 .n_content(notice.getN_content())
                 .n_image(notice.getN_image())
                 .writer(notice.getWriter())
                 .regDate(notice.getRegDate())
-                .notice_resource(nrList)
+                .notice_resource(nrDtoList)
                 .build();
-        return noticeDTO;
+        return noticeListDTO;
     }
 
     @Override

@@ -7,12 +7,12 @@ import Signup from './member/member/Signup';
 import Login from './member/member/Login';
 import Update from './member/member/Update';
 import MyPage from './member/page/MyPage';
-import NoticeList from './notice/Noticelist';
 import NoticeRegister from './notice/NoticeRegister';
 import RecruitRegister from './recruit/RecruitRegister';
 import RecruitList from './recruit/RecruitList';
 import RecruitRead from './recruit/RecruitRead';
 import RecruitModify from './recruit/RecruitModify';
+import Noticelist from './notice/Noticelist';
 
 const App = () => {
   return (

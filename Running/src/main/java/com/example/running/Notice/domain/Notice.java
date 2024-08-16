@@ -4,15 +4,16 @@ import com.example.running.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"noticeResourceSet", "member"})
 @Builder
 public class Notice extends BaseEntity {
     @Id

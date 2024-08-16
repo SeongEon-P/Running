@@ -4,6 +4,7 @@ import com.example.running.Notice.domain.Notice;
 import com.example.running.Notice.dto.NoticeDTO;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
