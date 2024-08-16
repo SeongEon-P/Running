@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 @Table(name = "member")
 public class Member {
 
-    @Column(nullable = false, unique = true, length = 20)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true, length = 20)
     private String mid;
 
     @Column(nullable = false)
