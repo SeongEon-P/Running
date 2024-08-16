@@ -44,7 +44,7 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
     }, [nno]);
     const onSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const formData = new FormData();
             formData.append("n_title", notice.n_title);
@@ -57,21 +57,21 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
-                // headers: { Authorization: `Bearer ${token}` },
-            }).then(result => {
-                if (result.status === 200) {
-                    alert("공지사항 등록이 성공적으로 완료되었습니다. " + notice.writer);
-                    setShowModify(false);
-                    setShowDetail(true);
-                }
-            }).catch(error => {
-                console.log(error);
             });
+    
+            if (response.status === 200) {
+                alert("공지사항 수정이 성공적으로 완료되었습니다.");
+                setShowModify(false);
+                setShowDetail(true);
+            } else {
+                alert("공지사항 수정에 실패했습니다.");
+            }
         } catch (error) {
-            console.error("등록 중 오류가 발생했습니다.", error);
-            alert("등록 중 오류가 발생했습니다.");
+            console.error("수정 중 오류가 발생했습니다.", error);
+            alert("수정 중 오류가 발생했습니다.");
         }
     };
+    
 
     return (
         <>
