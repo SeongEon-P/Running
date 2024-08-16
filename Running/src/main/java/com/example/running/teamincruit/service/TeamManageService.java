@@ -9,11 +9,11 @@ public interface TeamManageService {
 
     String registerTeam(TeamManageDTO teamManageDTO);
 
-    TeamManageDTO getTeam(String team_name);
+    TeamManageDTO getTeam(String teamName);
 
     void modifyTeam(TeamManageDTO teamManageDTO);
 
-    void removeTeam(String team_name);
+    void removeTeam(Long tno);
 
     List<TeamManageDTO> getAllTeam();
 }

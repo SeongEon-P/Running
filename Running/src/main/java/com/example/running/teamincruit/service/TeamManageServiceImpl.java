@@ -55,28 +55,36 @@ public class TeamManageServiceImpl implements TeamManageService {
     }
 
     @Override
-    public TeamManageDTO getTeam(String team_name) {
-
-        Optional<TeamManage> teamManage = teamManageRepository.findById(team_name);
+    public TeamManageDTO getTeam(String teamName) {
+        Optional<TeamManage> teamManage = teamManageRepository.findByTeamName(teamName);
 
         if (teamManage.isPresent()) {
             TeamManageDTO teamManageDTO = modelMapper.map(teamManage.get(), TeamManageDTO.class);
             return teamManageDTO;
         } else {
-            log.info("team_name에 해당하는 팀이 없습니다 : " + team_name);
+            log.info("teamName에 해당하는 팀이 없습니다 : " + teamName);
             return null;
         }
     }
 
-    @Override
-    public void modifyTeam(TeamManageDTO teamManageDTO) {
-        TeamManage teamManage = modelMapper.map(teamManageDTO, TeamManage.class);
-        teamManageRepository.save(teamManage);
-    }
 
     @Override
-    public void removeTeam(String team_name) {
-        teamManageRepository.deleteById(team_name);
+    public void modifyTeam(TeamManageDTO teamManageDTO) {
+        Optional<TeamManage> optionalTeamManage = teamManageRepository.findById(teamManageDTO.getTno());
+
+        if (optionalTeamManage.isPresent()) {
+            TeamManage teamManage = optionalTeamManage.get();
+            modelMapper.map(teamManageDTO, teamManage);
+            teamManageRepository.save(teamManage);
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 팀입니다: " + teamManageDTO.getTno());
+        }
+    }
+
+
+    @Override
+    public void removeTeam(Long tno) {
+        teamManageRepository.deleteById(tno);
     }
 
     @Override

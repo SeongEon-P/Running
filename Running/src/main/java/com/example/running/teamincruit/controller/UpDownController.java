@@ -20,6 +20,7 @@ import com.example.running.teamincruit.dto.upload.UploadResultDTO;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,14 +44,14 @@ public class UpDownController {
                 if (!file.isEmpty()) {
                     String originalName = file.getOriginalFilename();
                     String uuid = UUID.randomUUID().toString();
-                    String fileName = uuid + "_" + originalName;
+                    String fileName = originalName;
 
                     // 파일 저장
                     Path savePath = Paths.get(uploadPath, fileName);
                     file.transferTo(savePath);
 
                     // 이미지 저장 로직 호출
-                    teamManageImgService.saveUploadedImages(teamName, fileName, i);
+                    teamManageImgService.saveUploadedImages(uuid, teamName, fileName, i);
                 }
             }
             return ResponseEntity.ok().build();
@@ -65,8 +66,10 @@ public class UpDownController {
     @Tag(name = "view 파일", description = "GET방식으로 첨부파일 조회")
     @GetMapping("/view/{fileName}")
     public ResponseEntity<Resource> viewFileGET(@PathVariable String fileName) {
+        // 파일명 디코딩 처리
+        String decodedFileName = java.net.URLDecoder.decode(fileName, StandardCharsets.UTF_8);
         // 파일 받아오기("C:\\upload\\aaa.jpg")
-        Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
+        Resource resource = new FileSystemResource(uploadPath + File.separator + decodedFileName);
         String resourceName = resource.getFilename();
         //headers를 try안과 밖에서 모두 사용하기 위해 밖에 선언
         HttpHeaders headers = new HttpHeaders();
@@ -84,22 +87,28 @@ public class UpDownController {
     @Tag(name = "remove파일", description = "DELETE 방식으로 파일 삭제")
     @DeleteMapping("/remove/{fileName}")
     public Map<String, Boolean> removeFile(@PathVariable String fileName) {
-        Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
-        String resourceName = resource.getFilename();
         Map<String, Boolean> resultMap = new HashMap<>();
         boolean removed = false;
+
         try {
-            String contentType = Files.probeContentType(resource.getFile().toPath());
+            // 파일 시스템에서 파일 삭제
+            Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
             removed = resource.getFile().delete();
-            if (contentType.startsWith("image")) {
-                File thumbailFile = new File(uploadPath + File.separator + "s_" + fileName);
-                thumbailFile.delete();
+
+            if (removed) {
+                // 데이터베이스에서 해당 이미지 레코드 삭제
+                teamManageImgService.deleteImageByFileName(fileName);
             }
+
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("파일 삭제 중 오류 발생: " + e.getMessage());
         }
+
         resultMap.put("result", removed);
         return resultMap;
     }
+
+
+
 
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const TeamRegister = () => {
   const [teamData, setTeamData] = useState({
@@ -16,6 +17,7 @@ const TeamRegister = () => {
 
   const [errors, setErrors] = useState(null);
   const [success, setSuccess] = useState(null);
+  const navigate = useNavigate(); // navigate 함수 추가
 
   const handleInputChange = (e) => {
     setTeamData({
@@ -36,7 +38,7 @@ const TeamRegister = () => {
   
     try {
       // 1. 팀 등록 요청
-      const teamResponse = await axios.post('/teamManage/register', {
+      const teamResponse = await axios.post('/team/register', {
         teamName: teamData.teamName,
         teamMemberCount: teamData.teamMemberCount,
         teamMembers: teamData.teamMembers,
@@ -67,6 +69,10 @@ const TeamRegister = () => {
       }
 
       setSuccess('팀이 성공적으로 등록되고 로고 이미지가 업로드되었습니다!');
+      
+      // 성공적으로 등록된 후 팀 목록으로 이동
+      navigate('/team/list');
+
     } catch (error) {
       if (error.response && error.response.data) {
         setErrors(`오류: ${error.response.data.message || '알 수 없는 오류가 발생했습니다.'}`);

@@ -3,6 +3,7 @@ package com.example.running.teamincruit.dto;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class TeamManageDTO {
+    private Long tno;
     private String teamName;
     private int teamMemberCount;
     private String teamMembers;
@@ -19,4 +21,5 @@ public class TeamManageDTO {
     private String teamExplain;
     private Long teamFromPro;
     private Integer teamLevel;
+    private List<TeamManageImgDTO> images;
 }
