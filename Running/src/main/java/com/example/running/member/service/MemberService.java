@@ -15,5 +15,8 @@ public interface MemberService {
     boolean authenticate(String mid, String password); // 사용자 인증
     void deleteMember(String mid);
 
-    boolean isIdCheck(String mid);
+//    boolean isIdCheck(String mid);
+    // 중복 검사 기능
+    boolean isCheck(String type, String value);
+
 }

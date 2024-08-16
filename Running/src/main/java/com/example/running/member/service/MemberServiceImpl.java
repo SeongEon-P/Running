@@ -98,9 +98,24 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.delete(member);
     }
 
-    // id 중복체크
     @Override
-    public boolean isIdCheck(String mid) {
-        return !memberRepository.findByMid(mid).isPresent();
+    public boolean isCheck(String type, String value) {
+        switch (type.toLowerCase()) {
+            case "id":
+                return !memberRepository.existsByMid(value);
+            case "email":
+                return !memberRepository.existsByEmail(value);
+            case "phone":
+                return !memberRepository.existsByPhone(value);
+            default:
+                throw new IllegalArgumentException("Invalid type: " + type);
+        }
     }
+
+
+    // id 중복체크
+//    @Override
+//    public boolean isIdCheck(String mid) {
+//        return !memberRepository.findByMid(mid).isPresent();
+//    }
 }

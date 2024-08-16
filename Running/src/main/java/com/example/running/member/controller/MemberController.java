@@ -154,9 +154,18 @@ public class MemberController {
     }
 
     // id 중복체크
-    @GetMapping("/check-id")
-    public ResponseEntity<Boolean> checkId(@RequestParam String mid) {
-        boolean isAvailable = memberService.isIdCheck(mid);
+//    @GetMapping("/check-id")
+//    public ResponseEntity<Boolean> checkId(@RequestParam String mid) {
+//        boolean isAvailable = memberService.isIdCheck(mid);
+//        return ResponseEntity.ok(isAvailable);
+//    }
+
+    @GetMapping("/checked")
+    public ResponseEntity<Boolean> checkDuplicate(
+            @RequestParam String type,
+            @RequestParam String value) {
+
+        boolean isAvailable = memberService.isCheck(type, value);
         return ResponseEntity.ok(isAvailable);
     }
 

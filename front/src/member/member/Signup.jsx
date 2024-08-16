@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import DaumPostcode from 'react-daum-postcode';
-import './Signup.css'; // CSS 파일 임포트
+import './Signup.css';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
     mid: '',
     mpw: '',
+    mpwConfirm: '', // 비밀번호 확인
     name: '',
     email: '',
     phone: '',
@@ -16,36 +17,89 @@ const Signup = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isIdChecked, setIsIdChecked] = useState(false); // 아이디 중복 체크 여부
   const [isIdAvailable, setIsIdAvailable] = useState(null); // 아이디 중복 체크 상태
+  const [isEmailCheck, setIsEmailCheck] = useState(null); // 이메일 중복 체크 상태
+  const [isPhoneCheck, setIsPhoneCheck] = useState(null); // 전화번호 중복 체크 상태
+  const [isPasswordMatch, setIsPasswordMatch] = useState(null); // 비밀번호 일치 여부 (null: 확인 전, true: 일치, false: 불일치)
   const [openPostcode, setOpenPostcode] = useState(false); // 모달 창 상태
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    // 각 필드별 중복 체크 초기화
     if (name === 'mid') {
-      setIsIdAvailable(null); // 아이디 변경 시 중복 체크 결과 초기화
+      setIsIdChecked(false); // 아이디 변경 시 중복 체크 여부 초기화
+      setIsIdAvailable(null);
     }
+    if (name === 'email') setIsEmailCheck(null);
+    if (name === 'phone') setIsPhoneCheck(null);
+  };
+
+  const checkAvailability = (type, value, setState) => {
+    axios
+      .get('http://localhost:8080/members/checked', {
+        params: { type, value },
+      })
+      .then((response) => {
+        setState(response.data);
+      })
+      .catch((error) => {
+        console.error(`${type} 중복 체크 에러:`, error);
+        setState(false);
+      });
   };
 
   const checkIdAvailability = () => {
-    axios
-      .get(`http://localhost:8080/members/check-id`, { params: { mid: formData.mid } })
-      .then((response) => {
-        setIsIdAvailable(response.data);
-      })
-      .catch((error) => {
-        console.error('아이디 중복 체크 에러:', error);
-        setIsIdAvailable(false);
-      });
+    if (!formData.mid) {
+      alert('아이디를 입력해주세요.');
+      return;
+    }
+    checkAvailability('id', formData.mid, setIsIdAvailable);
+    setIsIdChecked(true); // 중복 체크를 한 상태로 변경
+  };
+
+  const checkEmailAvailability = () => {
+    if (!formData.email) return;
+    checkAvailability('email', formData.email, setIsEmailCheck);
+  };
+
+  const checkPhoneAvailability = () => {
+    if (!formData.phone) return;
+    checkAvailability('phone', formData.phone, setIsPhoneCheck);
+  };
+
+  const handlePasswordBlur = () => {
+    if (formData.mpw && formData.mpwConfirm) {
+      setIsPasswordMatch(formData.mpw === formData.mpwConfirm);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isSubmitting) return;
 
-    if (isIdAvailable === false) {
+    if (!isIdChecked) {
       alert('아이디 중복 확인을 해주세요.');
+      return;
+    }
+
+    if (isIdAvailable === false) {
+      alert('이미 사용 중인 아이디입니다. 다른 아이디를 입력해주세요.');
+      return;
+    }
+    if (isEmailCheck === false) {
+      alert('이미 사용 중인 이메일입니다. 다른 이메일을 입력해주세요.');
+      return;
+    }
+    if (isPhoneCheck === false) {
+      alert('이미 사용 중인 전화번호입니다. 다른 전화번호를 입력해주세요.');
+      return;
+    }
+    if (isPasswordMatch === false) {
+      alert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
@@ -85,10 +139,6 @@ const Signup = () => {
     setOpenPostcode(false); // 주소 선택 후 모달 닫기
   };
 
-  const handleCloseModal = () => {
-    setOpenPostcode(false);
-  };
-
   return (
     <div className="signup-container">
       <h1 className="signup-title">회원가입</h1>
@@ -105,8 +155,12 @@ const Signup = () => {
           <button type="button" onClick={checkIdAvailability}>
             중복 체크
           </button>
-          {isIdAvailable === true && <span className="id-available">사용 가능한 아이디입니다.</span>}
-          {isIdAvailable === false && <span className="id-unavailable">이미 사용 중인 아이디입니다.</span>}
+          {isIdAvailable === true && (
+            <span className="id-Check">사용 가능한 아이디입니다.</span>
+          )}
+          {isIdAvailable === false && (
+            <span className="id-unCheck">이미 사용 중인 아이디입니다.</span>
+          )}
         </label>
         <label>
           비밀번호:
@@ -115,8 +169,26 @@ const Signup = () => {
             name="mpw"
             value={formData.mpw}
             onChange={handleChange}
+            onBlur={handlePasswordBlur} // 포커스를 벗어날 때 비밀번호 확인
             required
           />
+        </label>
+        <label>
+          비밀번호 확인:
+          <input
+            type="password"
+            name="mpwConfirm"
+            value={formData.mpwConfirm}
+            onChange={handleChange}
+            onBlur={handlePasswordBlur} // 포커스를 벗어날 때 비밀번호 확인
+            required
+          />
+          {isPasswordMatch === true && (
+            <span className="password-match">비밀번호가 일치합니다.</span>
+          )}
+          {isPasswordMatch === false && (
+            <span className="password-unMatch">비밀번호가 일치하지 않습니다.</span>
+          )}
         </label>
         <label>
           이름:
@@ -135,8 +207,15 @@ const Signup = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            onBlur={checkEmailAvailability}
             required
           />
+          {isEmailCheck === true && (
+            <span className="email-Check">사용 가능한 이메일입니다.</span>
+          )}
+          {isEmailCheck === false && (
+            <span className="email-unCheck">이미 사용 중인 이메일입니다.</span>
+          )}
         </label>
         <label>
           전화번호:
@@ -145,9 +224,20 @@ const Signup = () => {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
+            onBlur={checkPhoneAvailability}
             required
           />
+          {isPhoneCheck === true && (
+            <span className="phone-Check">사용 가능한 전화번호입니다.</span>
+          )}
+          {isPhoneCheck === false && (
+            <span className="phone-unCheck">
+              이미 사용 중인 전화번호입니다.
+            </span>
+          )}
         </label>
+
+
         <label>주소:</label>
         <div className="postcode-container">
           <input
@@ -161,7 +251,7 @@ const Signup = () => {
             주소검색
           </button>
         </div>
-        <button type="submit" disabled={isSubmitting || isIdAvailable === false}>
+        <button type="submit" disabled={isSubmitting || isPasswordMatch === false}>
           회원가입
         </button>
       </form>
