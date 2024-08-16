@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import DaumPostcode from 'react-daum-postcode';
+import './Signup.css'; // CSS 파일 임포트
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -10,28 +12,48 @@ const Signup = () => {
     email: '',
     phone: '',
     address: '',
-    role: 'USER'
+    role: 'USER',
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false); // 중복 클릭 방지 상태
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isIdAvailable, setIsIdAvailable] = useState(null); // 아이디 중복 체크 상태
+  const [openPostcode, setOpenPostcode] = useState(false); // 모달 창 상태
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (name === 'mid') {
+      setIsIdAvailable(null); // 아이디 변경 시 중복 체크 결과 초기화
+    }
+  };
+
+  const checkIdAvailability = () => {
+    axios
+      .get(`http://localhost:8080/members/check-id`, { params: { mid: formData.mid } })
+      .then((response) => {
+        setIsIdAvailable(response.data);
+      })
+      .catch((error) => {
+        console.error('아이디 중복 체크 에러:', error);
+        setIsIdAvailable(false);
+      });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (isSubmitting) return; // 중복 클릭 방지
-    
-    setIsSubmitting(true); // 제출 중 상태로 변경
-    
+    if (isSubmitting) return;
+
+    if (isIdAvailable === false) {
+      alert('아이디 중복 확인을 해주세요.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
     axios
       .post('http://localhost:8080/members/signup', formData)
-      .then((response) => {
+      .then(() => {
         alert('회원가입이 완료되었습니다.');
         navigate('/login');
       })
@@ -40,14 +62,37 @@ const Signup = () => {
         alert('회원가입에 실패했습니다.');
       })
       .finally(() => {
-        setIsSubmitting(false); // 요청 완료 후 제출 상태 초기화
+        setIsSubmitting(false);
       });
   };
 
+  const handleComplete = (data) => {
+    let fullAddress = data.address;
+    let extraAddress = '';
+
+    if (data.addressType === 'R') {
+      if (data.bname !== '') {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== '') {
+        extraAddress +=
+          extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
+      }
+      fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+    }
+
+    setFormData({ ...formData, address: fullAddress });
+    setOpenPostcode(false); // 주소 선택 후 모달 닫기
+  };
+
+  const handleCloseModal = () => {
+    setOpenPostcode(false);
+  };
+
   return (
-    <div>
-      <h1>회원가입</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="signup-container">
+      <h1 className="signup-title">회원가입</h1>
+      <form onSubmit={handleSubmit} className="signup-form">
         <label>
           아이디:
           <input
@@ -57,8 +102,12 @@ const Signup = () => {
             onChange={handleChange}
             required
           />
+          <button type="button" onClick={checkIdAvailability}>
+            중복 체크
+          </button>
+          {isIdAvailable === true && <span className="id-available">사용 가능한 아이디입니다.</span>}
+          {isIdAvailable === false && <span className="id-unavailable">이미 사용 중인 아이디입니다.</span>}
         </label>
-        <br />
         <label>
           비밀번호:
           <input
@@ -69,7 +118,6 @@ const Signup = () => {
             required
           />
         </label>
-        <br />
         <label>
           이름:
           <input
@@ -80,7 +128,6 @@ const Signup = () => {
             required
           />
         </label>
-        <br />
         <label>
           이메일:
           <input
@@ -91,7 +138,6 @@ const Signup = () => {
             required
           />
         </label>
-        <br />
         <label>
           전화번호:
           <input
@@ -102,20 +148,38 @@ const Signup = () => {
             required
           />
         </label>
-        <br />
-        <label>
-          주소:
+        <label>주소:</label>
+        <div className="postcode-container">
           <input
             type="text"
             name="address"
             value={formData.address}
-            onChange={handleChange}
-            required
+            placeholder="주소를 검색하세요"
+            readOnly
           />
-        </label>
-        <br />
-        <button type="submit" disabled={isSubmitting}>회원가입</button>
+          <button type="button" onClick={() => setOpenPostcode(true)}>
+            주소검색
+          </button>
+        </div>
+        <button type="submit" disabled={isSubmitting || isIdAvailable === false}>
+          회원가입
+        </button>
       </form>
+
+      {/* 모달 창 */}
+      {openPostcode && (
+        <div className="modal">
+          <div className="modal-content">
+            <span
+              className="modal-close"
+              onClick={() => setOpenPostcode(false)}
+            >
+              &times;
+            </span>
+            <DaumPostcode onComplete={handleComplete} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
