@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 const RecruitRegister = () => {
-    const [recruit, setrecruit] = useState({
+    const [recruit, setRecruit] = useState({
         r_title: '',
         r_content:'',
         r_place: '',
@@ -17,7 +17,7 @@ const RecruitRegister = () => {
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem('login'));
         if(userInfo && userInfo.mid) {
-            setrecruit((prevState) => ({
+            setRecruit((prevState) => ({
                 ...prevState,
                 mid: userInfo.mid
             }))
@@ -26,7 +26,7 @@ const RecruitRegister = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setrecruit({
+        setRecruit({
             ...recruit,
             [name]: value
         });

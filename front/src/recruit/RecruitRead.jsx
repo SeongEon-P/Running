@@ -41,17 +41,25 @@ const RecruitRead = () => {
             });
 
         // 현재 로그인한 사용자 정보 가져오기
-        const token = localStorage.getItem('token');
-        if (token) {
-            axios.get('http://localhost:8080/members/me', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-                .then(response => {
-                    setCurrentUser(response.data);
-                })
-                .catch(error => {
-                    console.error('There was an error fetching the current user!', error);
-                });
+        // const token = localStorage.getItem('token');
+        // if (token) {
+        //     axios.get('http://localhost:8080/members/me', {
+        //         headers: { Authorization: `Bearer ${token}` }
+        //     })
+        //         .then(response => {
+        //             setCurrentUser(response.data);
+        //         })
+        //         .catch(error => {
+        //             console.error('There was an error fetching the current user!', error);
+        //         });
+        // }
+
+        const userInfo = JSON.parse(localStorage.getItem('login'));
+        if(userInfo && userInfo.mid) {
+            setCurrentUser((prevState) => ({
+                ...prevState,
+                mid: userInfo.mid
+            }))
         }
     }, [rno])
 
