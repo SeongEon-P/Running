@@ -143,13 +143,13 @@ const RecruitRead = () => {
 
                 <button onClick={handleBackClick}>목록으로 가기</button>
 
-                {currentUser && currentUser.mid === recruit.memberRecruit.mid ? null : (
+                {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
                     <button onClick={() => handleModifyClick(rno)}>수정</button>
-                )}
+                ) : null}
 
-                {currentUser && currentUser.mid === recruit.memberRecruit.mid ? null : (
+                {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
                     <button onClick={handleDeleteClick}>삭제</button>
-                )}
+                ) : null}
 
                 {currentUser.mid && currentUser.mid !== recruit.memberRecruit.mid && (
                     <button onClick={handleApplyClick}>신청하기</button>
