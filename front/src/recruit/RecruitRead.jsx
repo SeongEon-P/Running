@@ -15,7 +15,6 @@ const RecruitRead = () => {
         axios.get('http://localhost:8080/recruit/read', { params: { rno } })
             .then(response => {
                 setRecruit(response.data);
-                console.log('recruit.mid : ' + recruit.memberRecruit.mid)
             })
             .catch(error => {
                 console.error('There was an error fetching the recruit!', error);
@@ -34,13 +33,12 @@ const RecruitRead = () => {
         axios.get('http://localhost:8080/apply', { params: { rno } })
             .then(response => {
                 setAppliedList(response.data);
-                console.log('currentUser : ' + currentUser.mid)
             })
             .catch(error => {
                 console.error('There was an error fetching the apply list!', error)
             });
 
-        // 현재 로그인한 사용자 정보 가져오기
+        // 현재 로그인한 사용자 정보 가져오기(이거 말고 밑에 userInfo 씀)
         // const token = localStorage.getItem('token');
         // if (token) {
         //     axios.get('http://localhost:8080/members/me', {
@@ -55,7 +53,7 @@ const RecruitRead = () => {
         // }
 
         const userInfo = JSON.parse(localStorage.getItem('login'));
-        if(userInfo && userInfo.mid) {
+        if (userInfo && userInfo.mid) {
             setCurrentUser((prevState) => ({
                 ...prevState,
                 mid: userInfo.mid
@@ -113,17 +111,17 @@ const RecruitRead = () => {
             });
     };
 
-    const handleCancelApplicatoin = () => {
-        if(window.confirm('신청을 취소하시겠습니까?')) {
+    const handleCancelApplication = (ano) => {
+        if (window.confirm('신청을 취소하시겠습니까?')) {
             axios.delete(`http://localhost:8080/apply/${ano}`)
-            .then(response => {
-                alert('신청이 취소되었습니다.');
-                window.location.reload();
-            })
-            .catch(error => {
-                console.error('There was an error cancelling the application', error);
-                alert('취소 중 오류가 발생했습니다.');
-            });
+                .then(response => {
+                    alert('신청이 취소되었습니다.');
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('There was an error cancelling the application', error);
+                    alert('취소 중 오류가 발생했습니다.');
+                });
         }
     }
 
@@ -167,19 +165,27 @@ const RecruitRead = () => {
                     <button onClick={handleDeleteClick}>삭제</button>
                 ) : null}
 
-                {currentUser.mid && currentUser.mid !== recruit.memberRecruit.mid && (
-                    <button onClick={handleApplyClick}>신청하기</button>
-                )}
+                {currentUser.mid &&
+                    currentUser.mid !== recruit.memberRecruit.mid &&
+                    !appliedList.some(applied => applied.memberApply.mid === currentUser.mid) && (
+                        <button onClick={handleApplyClick}>신청하기</button>
+                    )}
             </div>
             <div>
                 <h1>신청한 사람</h1>
 
-                <button onClick={handleCancelApplicatoin}>X</button>
                 <tbody>
                     {appliedList.length > 0 ? ( // appliedList가 유효한 배열인지 확인
                         appliedList.map(applied => (
                             <tr key={applied.ano}>
                                 <td>{applied.memberApply.mid}</td>
+
+                                {currentUser.mid === applied.memberApply.mid &&
+                                    recruit.memberRecruit.mid !== applied.memberApply.mid && (
+                                        <td>
+                                            <button onClick={() => handleCancelApplication(applied.ano)}>신청 취소</button>
+                                        </td>
+                                    )}
                             </tr>
                         ))
                     ) : (
