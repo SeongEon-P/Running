@@ -42,36 +42,36 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
     useEffect(() => {
         getNoice();
     }, [nno]);
-
     const onSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-        const formData = new FormData();
-        formData.append("nno", nno); // nno 추가
-        formData.append("n_title", notice.n_title);
-        formData.append("n_content", notice.n_content);
-        formData.append("writer", notice.writer);
-        if (nr_name) {
-            formData.append("files", nr_name);
+        e.preventDefault();
+    
+        try {
+            const formData = new FormData();
+            formData.append("n_title", notice.n_title);
+            formData.append("n_content", notice.n_content);
+            formData.append("writer", notice.writer);
+            if (nr_name) {
+                formData.append("files", nr_name);
+            }
+            const response = await axios.put(`http://localhost:8080/notice/${nno}`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+    
+            if (response.status === 200) {
+                alert("공지사항 수정이 성공적으로 완료되었습니다.");
+                setShowModify(false);
+                setShowDetail(true);
+            } else {
+                alert("공지사항 수정에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("수정 중 오류가 발생했습니다.", error);
+            alert("수정 중 오류가 발생했습니다.");
         }
-        const response = await axios.put(`http://localhost:8080/notice/${nno}`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-
-        if (response.status === 200) {
-            alert("공지사항 수정이 성공적으로 완료되었습니다. " + notice.writer);
-            setShowModify(false);
-            setShowDetail(true);
-        }
-    } catch (error) {
-        console.error("수정 중 오류가 발생했습니다.", error);
-        alert("수정 중 오류가 발생했습니다.");
-    }
-};
-
+    };
+    
 
     return (
         <>
