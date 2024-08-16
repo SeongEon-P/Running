@@ -142,22 +142,27 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean resetPassword(String token, String newPassword) {
-        // 토큰을 사용하여 해당 사용자를 찾음
-        Optional<Member> memberOpt = memberRepository.findByResetToken(token);
-        if (memberOpt.isPresent()) {
-            Member member = memberOpt.get();
+        try {
+            // 토큰을 사용하여 해당 사용자를 찾음
+            Optional<Member> memberOpt = memberRepository.findByResetToken(token);
+            if (memberOpt.isPresent()) {
+                Member member = memberOpt.get();
 
-            // 비밀번호 암호화 후 설정
-            member.setMpw(passwordEncoder.encode(newPassword)); // 비밀번호 암호화
+                // 비밀번호 암호화 후 설정
+                member.setMpw(passwordEncoder.encode(newPassword)); // 비밀번호 암호화
 
-            // 토큰을 무효화하여 재사용 방지
-            member.setResetToken(null);
+                // 토큰을 무효화하여 재사용 방지
+                member.setResetToken(null);
 
-            // 변경된 정보를 데이터베이스에 저장
-            memberRepository.save(member);
-            return true;
-        } else {
-            return false; // 사용자가 존재하지 않거나 토큰이 유효하지 않은 경우
+                // 변경된 정보를 데이터베이스에 저장
+                memberRepository.save(member);
+                return true;
+            } else {
+                return false; // 사용자가 존재하지 않거나 토큰이 유효하지 않은 경우
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // 로그에 예외 출력
+            throw new RuntimeException("비밀번호 재설정 중 오류가 발생했습니다.", e);
         }
     }
 

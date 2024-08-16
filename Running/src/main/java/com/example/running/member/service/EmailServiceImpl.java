@@ -17,7 +17,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendPasswordResetEmail(String email, String token) {
-        String resetLink = "http://localhost:3000/resetpassword?token=" + token;
+        String resetLink = "http://localhost:3000/resetpassword/" + token;
         String messageContent = "<p>비밀번호를 재설정하려면 아래 링크를 클릭하세요:</p>"
                 + "<a href=\"" + resetLink + "\">비밀번호 재설정</a>";
 

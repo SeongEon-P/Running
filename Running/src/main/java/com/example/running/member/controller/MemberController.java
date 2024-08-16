@@ -198,6 +198,10 @@ public class MemberController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+
+        System.out.println("Received token: " + request.getToken());
+        System.out.println("Received newPassword: " + request.getNewPassword());
+
         boolean success = memberService.resetPassword(request.getToken(), request.getNewPassword());
         if (success) {
             return ResponseEntity.ok("비밀번호가 성공적으로 재설정되었습니다.");

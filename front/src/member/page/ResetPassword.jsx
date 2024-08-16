@@ -17,6 +17,9 @@ const ResetPassword = () => {
       return;
     }
 
+    console.log("Sending token: ", token); // 디버깅을 위해 토큰 출력
+    console.log("Sending newPassword: ", newPassword); // 디버깅을 위해 비밀번호 출력
+
     axios
       .post('http://localhost:8080/members/reset-password', {
         token,
