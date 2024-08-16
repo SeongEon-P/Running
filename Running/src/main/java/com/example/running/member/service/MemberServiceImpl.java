@@ -87,6 +87,7 @@ public class MemberServiceImpl implements MemberService {
         return false;
     }
 
+    // 회원탈퇴
     @Override
     public void deleteMember(String mid) {
         // 회원이 존재하는지 확인
@@ -97,6 +98,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.delete(member);
     }
 
+    // id 중복체크
     @Override
     public boolean isIdCheck(String mid) {
         return !memberRepository.findByMid(mid).isPresent();

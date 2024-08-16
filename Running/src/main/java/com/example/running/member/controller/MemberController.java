@@ -108,6 +108,7 @@ public class MemberController {
         }
     }
 
+    // 로그아웃
     @ResponseBody
     @PostMapping("/logout")
     public ResponseEntity<Object> logout() {
@@ -116,6 +117,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    // 회원정보
     @GetMapping("/me")
     @ResponseBody
     public ResponseEntity<MemberDTO> getCurrentMember(HttpServletRequest request) {
@@ -138,6 +140,7 @@ public class MemberController {
         return ResponseEntity.ok(memberDTO);
     }
 
+    // 회원탈퇴
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteMember(Authentication authentication) {
         String mid = authentication.getName();  // 현재 인증된 사용자의 ID 가져오기
