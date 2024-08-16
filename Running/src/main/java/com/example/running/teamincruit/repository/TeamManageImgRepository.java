@@ -16,5 +16,7 @@ public interface TeamManageImgRepository extends JpaRepository<TeamManageImg, St
 
     void deleteByTeamManageFileName(String fileName);
 
+    void deleteAllByTeamManageTeamName(String teamName);
+
 
 }

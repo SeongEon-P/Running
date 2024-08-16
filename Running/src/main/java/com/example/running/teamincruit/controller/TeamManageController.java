@@ -25,10 +25,6 @@ public class TeamManageController {
     private final TeamManageService teamManageService;
     private final TeamManageImgService teamManageImgService;
 
-    @Value("${org.zerock.upload.path}")
-    private String uploadPath;
-
-
     @PostMapping("/register")
     public ResponseEntity<String> registerTeam(@RequestBody TeamManageDTO teamManageDTO) {
         String teamName = teamManageService.registerTeam(teamManageDTO);

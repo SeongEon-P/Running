@@ -1,14 +1,22 @@
 package com.example.running.teamincruit.service;
 
 import com.example.running.teamincruit.domain.TeamManage;
+import com.example.running.teamincruit.domain.TeamManageImg;
 import com.example.running.teamincruit.dto.TeamManageDTO;
+import com.example.running.teamincruit.repository.TeamManageImgRepository;
 import com.example.running.teamincruit.repository.TeamManageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +27,11 @@ import java.util.stream.Collectors;
 //@EnableJpaAuditing
 public class TeamManageServiceImpl implements TeamManageService {
     private final TeamManageRepository teamManageRepository;
+    private final TeamManageImgRepository teamManageImgRepository;
     private final ModelMapper modelMapper;
+
+    @Value("${org.zerock.upload.path}")
+    private String uploadPath;
 
     @Override
     public String registerTeam(TeamManageDTO teamManageDTO) {
@@ -82,10 +94,35 @@ public class TeamManageServiceImpl implements TeamManageService {
     }
 
 
+    @Transactional
     @Override
     public void removeTeam(Long tno) {
-        teamManageRepository.deleteById(tno);
+        // tno로 팀 정보 가져오기
+        TeamManage teamManage = teamManageRepository.findById(tno)
+                .orElseThrow(() -> new IllegalArgumentException("팀을 찾을 수 없습니다."));
+
+        String teamName = teamManage.getTeamName();
+
+        // 팀에 연관된 이미지 파일 가져오기
+        List<TeamManageImg> images = teamManageImgRepository.findAllByTeamManageTeamName(teamName);
+
+        // 이미지 파일 삭제
+        for (TeamManageImg img : images) {
+            String filePath = uploadPath + File.separator + img.getTeamManageFileName();
+            try {
+                Files.deleteIfExists(Paths.get(filePath)); // 파일 삭제
+            } catch (IOException e) {
+                e.printStackTrace(); // 로그 남기기
+            }
+        }
+
+        // 팀과 연관된 모든 이미지 정보 삭제
+        teamManageImgRepository.deleteAllByTeamManageTeamName(teamName);
+
+        // 팀 데이터 삭제
+        teamManageRepository.delete(teamManage);   // DB에서 팀 삭제
     }
+
 
     @Override
     public List<TeamManageDTO> getAllTeam() {
