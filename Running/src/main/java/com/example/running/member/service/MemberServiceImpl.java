@@ -8,15 +8,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    @Autowired
     private final MemberRepository memberRepository;
-    @Autowired
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     // 회원가입
     @Override
@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
 
             // 비밀번호가 존재하고 수정되었으면 암호화 처리 후 저장
             if (!member.getMpw().isEmpty()) {
-                updateMember.setMpw(member.getMpw());
+                updateMember.setMpw(passwordEncoder.encode(member.getMpw())); // 비밀번호 암호화
             }
 
             // 나머지 정보 업데이트
@@ -112,10 +112,58 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Override
+    public String findIdByEmail(String email) {
+        Optional<Member> member = memberRepository.findByEmail(email);
+        return (member.isPresent()) ? member.get().getMid() : null;
+    }
 
-    // id 중복체크
-//    @Override
-//    public boolean isIdCheck(String mid) {
-//        return !memberRepository.findByMid(mid).isPresent();
-//    }
+    @Override
+    public boolean sendPasswordResetEmail(String email) {
+        try {
+            Optional<Member> memberOpt = memberRepository.findByEmail(email);
+            if (memberOpt.isPresent()) {
+                String resetToken = generateResetToken();
+                Member member = memberOpt.get();
+                member.setResetToken(resetToken);
+                memberRepository.save(member); // 저장을 시도합니다.
+                emailService.sendPasswordResetEmail(email, resetToken); // 이메일 전송
+                return true;
+            } else {
+                System.out.println("사용자를 찾을 수 없습니다.");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    @Override
+    public boolean resetPassword(String token, String newPassword) {
+        // 토큰을 사용하여 해당 사용자를 찾음
+        Optional<Member> memberOpt = memberRepository.findByResetToken(token);
+        if (memberOpt.isPresent()) {
+            Member member = memberOpt.get();
+
+            // 비밀번호 암호화 후 설정
+            member.setMpw(passwordEncoder.encode(newPassword)); // 비밀번호 암호화
+
+            // 토큰을 무효화하여 재사용 방지
+            member.setResetToken(null);
+
+            // 변경된 정보를 데이터베이스에 저장
+            memberRepository.save(member);
+            return true;
+        } else {
+            return false; // 사용자가 존재하지 않거나 토큰이 유효하지 않은 경우
+        }
+    }
+
+
+    private String generateResetToken() {
+        return UUID.randomUUID().toString();
+    }
+
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [login, setLogin] = useState({
@@ -58,7 +58,6 @@ const Login = () => {
       });
   };
   
-
   return (
     <div>
       <h1>로그인</h1>
@@ -87,6 +86,9 @@ const Login = () => {
         <br />
         <button type="submit">로그인</button>
       </form>
+      <div>
+        <Link to="/findId">아이디 찾기</Link> | <Link to="/findPassword">비밀번호 찾기</Link>
+      </div>
     </div>
   );
 };

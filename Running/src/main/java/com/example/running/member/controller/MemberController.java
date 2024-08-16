@@ -1,8 +1,7 @@
 package com.example.running.member.controller;
 
 import com.example.running.member.domain.Member;
-import com.example.running.member.dto.JwtAuthenticationResponse;
-import com.example.running.member.dto.MemberDTO;
+import com.example.running.member.dto.*;
 import com.example.running.member.security.jwt.JwtTokenProvider;
 import com.example.running.member.service.MemberService;
 import com.example.running.member.utils.SecurityUtils;
@@ -167,6 +166,44 @@ public class MemberController {
 
         boolean isAvailable = memberService.isCheck(type, value);
         return ResponseEntity.ok(isAvailable);
+    }
+
+    // 아이디, 비밀번호 찾기
+    @PostMapping("/find")
+    public ResponseEntity<?> findMemberInfo(@RequestParam("type") String type, @RequestBody FindMemberRequest request) {
+        try {
+            if ("id".equalsIgnoreCase(type)) {
+                String mid = memberService.findIdByEmail(request.getEmail());
+                if (mid != null) {
+                    return ResponseEntity.ok(new FindMemberResponse(mid));
+                } else {
+                    return ResponseEntity.status(404).body("아이디를 찾을 수 없습니다.");
+                }
+            } else if ("password".equalsIgnoreCase(type)) {
+                boolean success = memberService.sendPasswordResetEmail(request.getEmail());
+                if (success) {
+                    return ResponseEntity.ok("비밀번호 재설정 링크가 전송되었습니다.");
+                } else {
+                    return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
+                }
+            } else {
+                return ResponseEntity.badRequest().body("Invalid type parameter");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 스택 추적을 로그에 출력
+            return ResponseEntity.status(500).body("서버 내부 오류가 발생했습니다.");
+        }
+    }
+
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        boolean success = memberService.resetPassword(request.getToken(), request.getNewPassword());
+        if (success) {
+            return ResponseEntity.ok("비밀번호가 성공적으로 재설정되었습니다.");
+        } else {
+            return ResponseEntity.status(400).body("비밀번호 재설정에 실패했습니다.");
+        }
     }
 
 }

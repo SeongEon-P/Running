@@ -19,4 +19,9 @@ public interface MemberService {
     // 중복 검사 기능
     boolean isCheck(String type, String value);
 
+    // 아이디, 비밀번호 찾기
+    String findIdByEmail(String email);
+    boolean sendPasswordResetEmail(String email);
+    boolean resetPassword(String token, String newPassword);
+
 }

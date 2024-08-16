@@ -14,4 +14,5 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     boolean existsByMid(String mid);   // 아이디 중복 체크
     boolean existsByEmail(String email);  // 이메일 중복 체크
     boolean existsByPhone(String phone);  // 전화번호 중복 체크
-}
+
+    Optional<Member> findByResetToken(String resetToken);}

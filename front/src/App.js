@@ -10,6 +10,9 @@ import MyPage from './member/page/MyPage';
 import NoticeRegister from './notice/NoticeRegister';
 import Noticelist from './notice/Noticelist';
 import NoticeDetail from './notice/NoticeDetail';
+import FindId from './member/page/FindId';
+import FindPassword from './member/page/FindPassword';
+import ResetPassword from './member/page/ResetPassword';
 
 const App = () => {
   return (
@@ -20,6 +23,9 @@ const App = () => {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path='/findId' element={<FindId />} />
+        <Route path='/resetpassword' element={<ResetPassword />} />
+        <Route path='/findPassword' element={<FindPassword />} />
         <Route path="/update" element={<Update />} />
         <Route path="/notice/list" element={<Noticelist/>}/>
         <Route path="/notice/register" element={<NoticeRegister/>}/>

@@ -65,6 +65,9 @@ dependencies {
     implementation 'net.coobird:thumbnailator:0.4.16'
     implementation 'org.jsoup:jsoup:1.14.3'
 
+    // 이메일 전송
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 }
 
 tasks.named('test') {
