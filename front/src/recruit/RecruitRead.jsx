@@ -165,8 +165,10 @@ const RecruitRead = () => {
                     <button onClick={handleDeleteClick}>삭제</button>
                 ) : null}
 
+
                 {currentUser.mid &&
                     currentUser.mid !== recruit.memberRecruit.mid &&
+                    count !== recruit.max_number &&
                     !appliedList.some(applied => applied.memberApply.mid === currentUser.mid) && (
                         <button onClick={handleApplyClick}>신청하기</button>
                     )}
