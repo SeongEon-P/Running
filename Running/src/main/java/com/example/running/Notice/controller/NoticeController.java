@@ -81,37 +81,45 @@ public class NoticeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PutMapping("/{nno}")
-    public ResponseEntity<Object> modifyNotice(NoticeDTO noticeDTO){
-        try{
+    public ResponseEntity<Object> modifyNotice(@ModelAttribute NoticeDTO noticeDTO){
+        try {
             int ord = 0;
-            List<NoticeResourceDTO> resourceDTOList = new ArrayList<NoticeResourceDTO>();
-            for (MultipartFile file : noticeDTO.getFiles()) {
-                Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
-                try{
-                    file.transferTo(savePath);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                NoticeResourceDTO dto = NoticeResourceDTO.builder()
-                        .nr_name(file.getOriginalFilename())
-                        .nr_ord(ord)
-                        .nr_type(file.getContentType())
-                        .nno(noticeDTO.getNno())
-                        .build();
-                resourceDTOList.add(dto);
-                ord++;
-            }
-            noticeResourceService.deleteNoticeResource(noticeDTO.getNno());
-            noticeResourceService.saveAll(resourceDTOList);
+            List<NoticeResourceDTO> resourceDTOList = new ArrayList<>();
 
-            Notice modifedNotice = noticeService.modifyNotice(noticeDTO);
-            return new ResponseEntity<>(modifedNotice, HttpStatus.OK);
-        }catch (NoSuchElementException e){
+            if (noticeDTO.getFiles() != null) {
+                for (MultipartFile file : noticeDTO.getFiles()) {
+                    Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
+                    try {
+                        file.transferTo(savePath);
+                    } catch (IOException e) {
+                        log.error("File upload error for file: " + file.getOriginalFilename(), e);
+                        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+
+                    NoticeResourceDTO dto = NoticeResourceDTO.builder()
+                            .nr_name(file.getOriginalFilename())
+                            .nr_ord(ord)
+                            .nr_type(file.getContentType())
+                            .nno(noticeDTO.getNno())
+                            .build();
+                    resourceDTOList.add(dto);
+                    ord++;
+                }
+
+                noticeResourceService.deleteNoticeResource(noticeDTO.getNno());
+                noticeResourceService.saveAll(resourceDTOList);
+            }
+
+            Notice modifiedNotice = noticeService.modifyNotice(noticeDTO);
+            return new ResponseEntity<>(modifiedNotice, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
             log.error("Notice not found with ID: " + noticeDTO.getNno(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e){
-            return new  ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            log.error("Unexpected error during notice modification", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 }

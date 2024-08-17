@@ -137,24 +137,4 @@ public class MemberController {
 
         return ResponseEntity.ok(memberDTO);
     }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteMember(Authentication authentication) {
-        String mid = authentication.getName();  // 현재 인증된 사용자의 ID 가져오기
-
-        try {
-            memberService.deleteMember(mid);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 탈퇴에 실패했습니다.");
-        }
-    }
-
-    // id 중복체크
-    @GetMapping("/check-id")
-    public ResponseEntity<Boolean> checkId(@RequestParam String mid) {
-        boolean isAvailable = memberService.isIdCheck(mid);
-        return ResponseEntity.ok(isAvailable);
-    }
-
 }
