@@ -57,16 +57,15 @@ public class MemberController {
         // 디버깅: 로그 추가
         System.out.println("입력된 비밀번호: " + member.getMpw());
         System.out.println("저장된 비밀번호(암호화): " + existingMember.getMpw());
-        System.out.println("비밀번호 일치 여부: " + passwordEncoder.matches(member.getMpw(), existingMember.getMpw()));
 
-        // 디버깅용 로그 추가
-        String encodedInputPassword = passwordEncoder.encode(member.getMpw());
-        System.out.println("입력된 비밀번호의 암호화 버전: " + encodedInputPassword);
-        System.out.println("저장된 비밀번호와 직접 비교: " + encodedInputPassword.equals(existingMember.getMpw()));
+        // 올바른 비교 방법: matches() 메서드 사용
+        boolean isPasswordMatch = passwordEncoder.matches(member.getMpw(), existingMember.getMpw());
+        System.out.println("비밀번호 일치 여부: " + isPasswordMatch);
 
 
+        // 비밀번호가 일치하지 않는 경우 로그 추가
         if (!passwordEncoder.matches(member.getMpw(), existingMember.getMpw())) {
-            // 비밀번호가 틀린 경우 401 상태 코드 반환
+            System.out.println("비밀번호가 일치하지 않음!");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 틀렸습니다.");
         }
 
