@@ -13,10 +13,13 @@ import NoticeDetail from './notice/NoticeDetail';
 import FindId from './member/page/FindId';
 import FindPassword from './member/page/FindPassword';
 import ResetPassword from './member/page/ResetPassword';
+import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   return (
+    
     <Router>
+      <AuthProvider>
       <Navbar />
       <Routes>
         <Route path="/" element={<MainPage />} />
@@ -30,8 +33,10 @@ const App = () => {
         <Route path="/notice/list" element={<Noticelist/>}/>
         <Route path="/notice/register" element={<NoticeRegister/>}/>
         <Route path="/notice/:nno" element={<NoticeDetail/>}/>
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </Router>
+    
   );
 };
 

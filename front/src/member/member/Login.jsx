@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext'; // AuthContext 가져오기
 
 const Login = () => {
   const [login, setLogin] = useState({
     mid: '',
     mpw: '',
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
+  const { login: loginUser } = useAuth(); // AuthContext의 login 함수 사용
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,49 +17,25 @@ const Login = () => {
     setLogin({ ...login, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post('http://localhost:8080/members/login', login)
-      .then((response) => {
-        const token = response.data.accessToken;
-  
-        // JWT 토큰을 로컬 스토리지에 저장
-        localStorage.setItem('token', token);
-  
-        // 토큰을 이용해 사용자 정보 가져오기
-        axios
-          .get('http://localhost:8080/members/me', {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((res) => {
-            const userInfo = {
-              mid: res.data.mid,
-              name: res.data.name,
-              email: res.data.email,
-              phone: res.data.phone,
-              address: res.data.address,
-              role: res.data.role,
-            };
-            console.log('저장할 사용자 정보:', userInfo);
-  
-            // 사용자 정보를 로컬 스토리지에 JSON 형식으로 저장
-            localStorage.setItem('login', JSON.stringify(userInfo));
-  
-            alert('로그인에 성공했습니다.');
-            navigate('/');
-          })
-          .catch((error) => {
-            console.error('사용자 정보 가져오기 에러:', error);
-            alert('사용자 정보를 가져오지 못했습니다.');
-          });
-      })
-      .catch((error) => {
-        console.error('로그인 에러:', error);
-        alert('로그인에 실패했습니다.');
-      });
+    setErrorMessage('');
+
+    try {
+      await loginUser(login); // AuthContext의 login 함수 호출
+      navigate('/'); // 로그인 성공 시 홈으로 이동
+    } catch (error) {
+      // 에러 처리
+      if (error.response && error.response.status === 404) {
+        setErrorMessage('등록된 아이디가 없습니다.');
+      } else if (error.response && error.response.status === 401) {
+        setErrorMessage('비밀번호가 틀렸습니다.');
+      } else {
+        setErrorMessage('로그인에 실패했습니다.');
+      }
+    }
   };
-  
+
   return (
     <div>
       <h1>로그인</h1>
@@ -86,6 +64,7 @@ const Login = () => {
         <br />
         <button type="submit">로그인</button>
       </form>
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <div>
         <Link to="/findId">아이디 찾기</Link> | <Link to="/findPassword">비밀번호 찾기</Link>
       </div>

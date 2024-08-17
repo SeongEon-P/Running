@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/members")
@@ -44,30 +45,36 @@ public class MemberController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Member member) {
-        // 사용자가 입력한 아이디로 회원 정보 조회
-        Member existingMember = memberService.findByMid(member.getMid()).orElse(null);
+        Optional<Member> existingMemberOpt = memberService.findByMid(member.getMid());
 
-        if (existingMember != null && passwordEncoder.matches(member.getMpw(), existingMember.getMpw())) {
-            // 사용자가 존재하고 비밀번호가 일치하면, 인증 객체 생성
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            member.getMid(),
-                            member.getMpw()
-                    )
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            // JWT 토큰 생성
-            String jwt = jwtTokenProvider.createToken(existingMember.getMid(), existingMember.getRole().name());
-
-            // JWT 토큰을 포함하여 응답 반환
-            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
-        } else {
-            // 인증 실패 시 401 Unauthorized 응답 반환
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패: 잘못된 아이디 또는 비밀번호");
+        if (!existingMemberOpt.isPresent()) {
+            // 아이디가 존재하지 않는 경우 404 상태 코드 반환
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("등록된 아이디가 없습니다.");
         }
+
+        Member existingMember = existingMemberOpt.get();
+        if (!passwordEncoder.matches(member.getMpw(), existingMember.getMpw())) {
+            // 비밀번호가 틀린 경우 401 상태 코드 반환
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 틀렸습니다.");
+        }
+
+        // 사용자가 존재하고 비밀번호가 일치하면, 인증 객체 생성
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        member.getMid(),
+                        member.getMpw()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // JWT 토큰 생성
+        String jwt = jwtTokenProvider.createToken(existingMember.getMid(), existingMember.getRole().name());
+
+        // JWT 토큰을 포함하여 응답 반환
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
+
 
     // 회원정보 수정
     // 회원 정보 수정 시 민감한 데이터(예: 비밀번호)를 포함하지 않는 MemberDTO를 사용해 안전하게 데이터를 처리
@@ -110,7 +117,11 @@ public class MemberController {
     // 로그아웃
     @ResponseBody
     @PostMapping("/logout")
-    public ResponseEntity<Object> logout() {
+    public ResponseEntity<Object> logout(HttpServletRequest request) {
+
+        // 세선 삭제, 로컬에 저장중이기 때문에 필요없음
+        // request.getSession().invalidate();
+
         // 실제로는 서버 측에서 세션을 무효화하거나, 클라이언트 측에서 토큰을 삭제
         // 여기서는 클라이언트에서 토큰을 삭제하는 것으로 충분함
         return ResponseEntity.ok().build();
@@ -152,13 +163,7 @@ public class MemberController {
         }
     }
 
-    // id 중복체크
-//    @GetMapping("/check-id")
-//    public ResponseEntity<Boolean> checkId(@RequestParam String mid) {
-//        boolean isAvailable = memberService.isIdCheck(mid);
-//        return ResponseEntity.ok(isAvailable);
-//    }
-
+    // 중복체크
     @GetMapping("/checked")
     public ResponseEntity<Boolean> checkDuplicate(
             @RequestParam String type,
@@ -195,7 +200,7 @@ public class MemberController {
         }
     }
 
-
+    // 비밀번호 재설정
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
 
