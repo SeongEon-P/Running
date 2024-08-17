@@ -9,6 +9,8 @@ import Update from './member/member/Update';
 import MyPage from './member/page/MyPage';
 import NoticeRegister from './notice/NoticeRegister';
 import Noticelist from './notice/Noticelist';
+import ReviewList from './review/ReviewList';
+import ReviewRegister from './review/ReviewRegister';
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
         <Route path="/update" element={<Update />} />
         <Route path="/notice/list" element={<Noticelist/>}/>
         <Route path="/notice/register" element={<NoticeRegister/>}/>
+        <Route path="/review/list" element={<ReviewList/>}/>
+        <Route path="/review/register" element={<ReviewRegister/>}/>
       </Routes>
     </Router>
   );
