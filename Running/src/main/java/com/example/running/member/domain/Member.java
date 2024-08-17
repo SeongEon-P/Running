@@ -53,4 +53,9 @@ public class Member {
         date = LocalDateTime.now(); // 엔티티가 처음 저장될 때 현재 시간 설정
     }
 
+    // 비밀번호 재설정 토큰
+    @Column(unique = true)
+    private String resetToken;
+
+
 }

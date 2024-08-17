@@ -42,6 +42,7 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
     useEffect(() => {
         getNoice();
     }, [nno]);
+    
     const onSubmit = async (e) => {
         e.preventDefault();
     
