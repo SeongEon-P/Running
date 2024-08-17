@@ -149,7 +149,7 @@ function Noticelist() {
                 type="text"
                 placeholder="검색..."
               />
-              <button
+              <button 
                 className="btn btn-outline-dark"
                 type="button"
                 onClick={handleSearch} // 검색 버튼 클릭 시 handleSearch 호출
