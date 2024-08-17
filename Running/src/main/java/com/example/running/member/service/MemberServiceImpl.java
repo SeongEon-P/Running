@@ -53,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
             // 비밀번호가 존재하고 수정되었으면 암호화 처리 후 저장
             if (member.getMpw() != null && !member.getMpw().isEmpty()) {
                 String encodedPassword = passwordEncoder.encode(member.getMpw()); // 비밀번호 암호화
+                System.out.println("암호화된 비밀번호: " + encodedPassword); // 암호화된 비밀번호 로그 출력
                 updateMember.setMpw(encodedPassword);
             }
 
@@ -68,6 +69,7 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("해당 ID를 가진 회원을 찾을 수 없습니다.");
         }
     }
+
 
 
     // 이메일로 회원찾기
@@ -100,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.delete(member);
     }
 
-    // 회원 정보 확인
+    // 회원 중복 확인
     @Override
     public boolean isCheck(String type, String value) {
         switch (type.toLowerCase()) {
