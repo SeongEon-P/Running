@@ -20,9 +20,11 @@ const Navbar = () => {
                 <Link to="/info/list">INFO</Link>
                 <Link to="/free/list">FREE</Link>
                 <Link to="/review/list">REVIEW</Link>
+                <Link to="/mypage">MyPage</Link>
                 
                 {/* 로그인 로그아웃 전환 */}
                 {isLoggedIn ? (
+                    
                     <Link to="#" onClick={logout}>LOGOUT</Link>
                 ) : (
                     <>

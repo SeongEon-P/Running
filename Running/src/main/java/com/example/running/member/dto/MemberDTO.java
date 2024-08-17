@@ -17,4 +17,7 @@ public class MemberDTO {
         protected void onCreate() {
             date = LocalDateTime.now(); // 엔티티가 처음 저장될 때 현재 시간 설정
         }
+
+        // 회원정보 비밀번호 수정
+        private String newPassword;
 }

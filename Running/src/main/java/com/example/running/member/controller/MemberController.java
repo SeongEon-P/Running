@@ -53,6 +53,18 @@ public class MemberController {
         }
 
         Member existingMember = existingMemberOpt.get();
+
+        // 디버깅: 로그 추가
+        System.out.println("입력된 비밀번호: " + member.getMpw());
+        System.out.println("저장된 비밀번호(암호화): " + existingMember.getMpw());
+        System.out.println("비밀번호 일치 여부: " + passwordEncoder.matches(member.getMpw(), existingMember.getMpw()));
+
+        // 디버깅용 로그 추가
+        String encodedInputPassword = passwordEncoder.encode(member.getMpw());
+        System.out.println("입력된 비밀번호의 암호화 버전: " + encodedInputPassword);
+        System.out.println("저장된 비밀번호와 직접 비교: " + encodedInputPassword.equals(existingMember.getMpw()));
+
+
         if (!passwordEncoder.matches(member.getMpw(), existingMember.getMpw())) {
             // 비밀번호가 틀린 경우 401 상태 코드 반환
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 틀렸습니다.");
@@ -93,6 +105,12 @@ public class MemberController {
         update.setPhone(memberDTO.getPhone());
         update.setAddress(memberDTO.getAddress());
         update.setRole(memberDTO.getRole());
+
+        // 비밀번호 업데이트
+        if (memberDTO.getNewPassword() != null && !memberDTO.getNewPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(memberDTO.getNewPassword());
+            update.setMpw(encodedPassword); // 새 비밀번호 암호화 후 업데이트
+        }
 
         memberService.updateMember(update);
 

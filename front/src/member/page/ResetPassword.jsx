@@ -27,6 +27,7 @@ const ResetPassword = () => {
       })
       .then((response) => {
         setMessage('비밀번호가 성공적으로 재설정되었습니다.');
+        alert('비밀번호가 성공적으로 재설정되었습니다.');
         navigate('/login'); // 비밀번호 재설정 후 로그인 페이지로 이동
       })
       .catch((error) => {
