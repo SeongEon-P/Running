@@ -72,6 +72,7 @@ const ReviewDetail = ({ rno }) => {
                         </div>
                         <div className="form-control">
                             <span> 등록일 : {formatDate(review.regDate)} </span>
+                            
                         </div>
                         <div className="form-control">
                             <pre className="review_content">{review.r_content}</pre>

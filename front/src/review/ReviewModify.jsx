@@ -9,12 +9,12 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
         writer: localStorage.getItem('mid') || "",
     })
     const [reviewResource, setReviewResource] = useState([]);
-    const [nr_name, setNrName] = useState(null);
+    const [rr_name, setRrName] = useState(null);
 
     const onInputChange = (e) => {
         const { name, value, files } = e.target;
-        if (name === "nr_name") {
-            setNrName(files[0]);
+        if (name === "rr_name") {
+            setRrName(files[0]);
         } else {
             setReview({
                 ...review,
@@ -57,11 +57,9 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
             formData.append("r_content", review.r_content);
             formData.append("writer", review.writer);
             console.log(formData)
-
-            if (nr_name) {
-                formData.append("files", nr_name);
+            if (rr_name) {
+                formData.append("files", rr_name);
             }
-
             const response = await axios.put(`http://localhost:8080/review/${rno}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",

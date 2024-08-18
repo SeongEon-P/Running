@@ -105,7 +105,7 @@ function ReviewList() {
   };
 
   const formatDate = (dateStr) => {
-    console.log(`Date String: ${dateStr}`); // 날짜 문자열 확인
+    console.log(`Date String: ${dateStr}`);
   
     if (!dateStr) {
       return 'Date not available';
@@ -154,7 +154,7 @@ function ReviewList() {
               <button 
                 className="btn btn-outline-dark"
                 type="button"
-                onClick={handleSearch} // 검색 버튼 클릭 시 handleSearch 호출
+                onClick={handleSearch}
               >
                 Search
               </button>
@@ -183,14 +183,14 @@ function ReviewList() {
           </table>
 
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <div className="mx-auto"> {/* 페이지 번호를 가운데로 정렬 */}
+            <div className="mx-auto">
               {renderPageNumbers()}
             </div>
             <div className="text-end">
               <button
                 type="button"
                 className="btn btn-outline-dark reviewRegisterBtn"
-                onClick={handleRegisterClick} // 등록 버튼 클릭 시 handleRegisterClick 호출
+                onClick={handleRegisterClick}
               >
                 등록
               </button>
