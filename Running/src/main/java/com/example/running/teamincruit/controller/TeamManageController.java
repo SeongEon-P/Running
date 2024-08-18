@@ -2,6 +2,7 @@ package com.example.running.teamincruit.controller;
 
 import com.example.running.teamincruit.dto.TeamManageDTO;
 import com.example.running.teamincruit.dto.TeamManageImgDTO;
+import com.example.running.teamincruit.repository.TeamManageRepository;
 import com.example.running.teamincruit.service.TeamManageImgService;
 import com.example.running.teamincruit.service.TeamManageService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class TeamManageController {
     private final TeamManageService teamManageService;
     private final TeamManageImgService teamManageImgService;
+    private final TeamManageRepository teamManageRepository;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerTeam(@RequestBody TeamManageDTO teamManageDTO) {
@@ -90,7 +92,6 @@ public class TeamManageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 실패 시 500 Internal Server Error 응답
         }
     }
-
 
 
 }

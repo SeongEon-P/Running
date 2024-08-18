@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,4 +27,8 @@ public class IncruitDTO {
     private String teamLogo;
     private Integer teamLevel;
     private Long teamFromPro;
+
+    // 팀 이미지 리스트
+    private List<TeamManageImgDTO> images;
+
 }

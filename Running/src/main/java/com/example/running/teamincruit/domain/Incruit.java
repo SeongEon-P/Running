@@ -32,9 +32,6 @@ public class Incruit extends BaseEntity{
     @Column(name = "iwriter", nullable = false, length = 50)
     private String iwriter;
 
-    @Column(name = "reg_date", columnDefinition = "DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6)")
-    private LocalDateTime regDate;
-
     @Column(name = "iviews", nullable = false, columnDefinition = "INT(11) DEFAULT 0")
     private int iviews;
 
