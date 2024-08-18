@@ -1,31 +1,62 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import TeamRegister from './components/teammanage/TeamRegister';
 import TeamList from './components/teammanage/TeamList';
 import TeamView from './components/teammanage/TeamView';
 import TeamEdit from './components/teammanage/TeamEdit';
+
 import IncruitRegister from './components/incruit/IncruitRegister';
 import IncruitList from './components/incruit/IncruitList';
 import IncruitView from './components/incruit/IncruitView';
 import IncruitEdit from './components/incruit/IncruitEdit';
 
-function App() {
-  return (
-   <Router>
-    <Routes>
-      <Route path = "/team/register" element = {<TeamRegister />} />
-      <Route path = "/team/list" element = {<TeamList />} />
-      <Route path = "/team/:teamName" element = {<TeamView />} />
-      <Route path = "/team/edit/:teamName" element = {<TeamEdit />} />
+import MainPage from './main/MainPage';
+import Navbar from './components/Navbar/Navbar';
+import Signup from './member/member/Signup';
+import Login from './member/member/Login';
+import Update from './member/member/Update';
+import MyPage from './member/page/MyPage';
+import NoticeRegister from './notice/NoticeRegister';
+import Noticelist from './notice/Noticelist';
+import NoticeDetail from './notice/NoticeDetail';
+import FindId from './member/page/FindId';
+import FindPassword from './member/page/FindPassword';
+import ResetPassword from './member/page/ResetPassword';
+import { AuthProvider } from './context/AuthContext';
 
-      <Route path = "/incruit/register" element = {<IncruitRegister />} />
-      <Route path = "/incruit/list" element = {<IncruitList />} />
-      <Route path = "/incruit/:ino" element = {<IncruitView />} />
-      <Route path = "/incruit/edit/:ino" element = {<IncruitEdit />} />
-    </Routes>
-   </Router>
+const App = () => {
+  return (
+    <Router>
+      <AuthProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/team/register" element={<TeamRegister />} />
+          <Route path="/team/list" element={<TeamList />} />
+          <Route path="/team/:teamName" element={<TeamView />} />
+          <Route path="/team/edit/:teamName" element={<TeamEdit />} />
+
+          <Route path="/incruit/register" element={<IncruitRegister />} />
+          <Route path="/incruit/list" element={<IncruitList />} />
+          <Route path="/incruit/:ino" element={<IncruitView />} />
+          <Route path="/incruit/edit/:ino" element={<IncruitEdit />} />
+
+          <Route path="/" element={<MainPage />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path='/findId' element={<FindId />} />
+          <Route path="/resetpassword/:token" element={<ResetPassword />} />
+          <Route path='/findPassword' element={<FindPassword />} />
+          <Route path="/update" element={<Update />} />
+          <Route path="/notice/list" element={<Noticelist />} />
+          <Route path="/notice/register" element={<NoticeRegister />} />
+          <Route path="/notice/:nno" element={<NoticeDetail />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
+
   );
-}
+};
 
 export default App;
