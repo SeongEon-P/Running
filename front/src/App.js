@@ -9,25 +9,34 @@ import Update from './member/member/Update';
 import MyPage from './member/page/MyPage';
 import NoticeRegister from './notice/NoticeRegister';
 import Noticelist from './notice/Noticelist';
-import ReviewList from './review/ReviewList';
-import ReviewRegister from './review/ReviewRegister';
+import NoticeDetail from './notice/NoticeDetail';
+import FindId from './member/page/FindId';
+import FindPassword from './member/page/FindPassword';
+import ResetPassword from './member/page/ResetPassword';
+import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   return (
+    
     <Router>
+      <AuthProvider>
       <Navbar />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path='/findId' element={<FindId />} />
+        <Route path="/resetpassword/:token" element={<ResetPassword />} />
+        <Route path='/findPassword' element={<FindPassword />} />
         <Route path="/update" element={<Update />} />
         <Route path="/notice/list" element={<Noticelist/>}/>
         <Route path="/notice/register" element={<NoticeRegister/>}/>
-        <Route path="/review/list" element={<ReviewList/>}/>
-        <Route path="/review/register" element={<ReviewRegister/>}/>
-      </Routes>
+        <Route path="/notice/:nno" element={<NoticeDetail/>}/>
+        </Routes>
+      </AuthProvider>
     </Router>
+    
   );
 };
 
