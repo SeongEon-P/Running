@@ -1,6 +1,7 @@
 package com.example.running.member.service;
 
 import com.example.running.member.domain.Member;
+import com.example.running.member.domain.Role;
 
 import java.util.Optional;
 
@@ -23,5 +24,8 @@ public interface MemberService {
     String findIdByEmail(String email);
     boolean sendPasswordResetEmail(String email);
     boolean resetPassword(String token, String newPassword);
+
+    //롤 업데이트
+    void updateRole(String mid, Role newRole);
 
 }

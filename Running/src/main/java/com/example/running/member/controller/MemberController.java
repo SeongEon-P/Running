@@ -1,6 +1,7 @@
 package com.example.running.member.controller;
 
 import com.example.running.member.domain.Member;
+import com.example.running.member.domain.Role;
 import com.example.running.member.dto.*;
 import com.example.running.member.security.jwt.JwtTokenProvider;
 import com.example.running.member.service.MemberService;
@@ -231,5 +232,17 @@ public class MemberController {
             return ResponseEntity.status(400).body("비밀번호 재설정에 실패했습니다.");
         }
     }
+
+    //롤 업데이트
+    @PostMapping("/updateRole")
+    public ResponseEntity<String> updateRole(@RequestBody Map<String, String> request) {
+        String mid = request.get("mid");
+        Role newRole = Role.valueOf(request.get("role"));
+
+        memberService.updateRole(mid, newRole);
+
+        return ResponseEntity.ok("Role 업데이트를 성공했습니다.");
+    }
+
 
 }

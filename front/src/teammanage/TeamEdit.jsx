@@ -30,14 +30,19 @@ const TeamEdit = () => {
   }, [decodedTeamName]);
 
   const handleDeleteTeam = async () => {
-    try {
-      await axios.delete(`/team/${teamData.tno}`);
-      navigate('/team/list'); // 삭제 후 팀 목록 페이지로 이동
-    } catch (err) {
-      setError('팀 삭제 중 오류가 발생했습니다.');
-      console.error(err);
+    const confirmed = window.confirm('정말로 이 팀을 삭제하시겠습니까?');
+  
+    if (confirmed) {
+      try {
+        await axios.delete(`/team/${teamData.tno}`);
+        navigate('/team/list'); // 삭제 후 팀 목록 페이지로 이동
+      } catch (err) {
+        setError('팀 삭제 중 오류가 발생했습니다.');
+        console.error(err);
+      }
     }
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

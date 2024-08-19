@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import TeamRegister from './components/teammanage/TeamRegister';
-import TeamList from './components/teammanage/TeamList';
-import TeamView from './components/teammanage/TeamView';
-import TeamEdit from './components/teammanage/TeamEdit';
+import TeamRegister from './teammanage/TeamRegister';
+import TeamList from './teammanage/TeamList';
+import TeamView from './teammanage/TeamView';
+import TeamEdit from './teammanage/TeamEdit';
 
-import IncruitRegister from './components/incruit/IncruitRegister';
-import IncruitList from './components/incruit/IncruitList';
-import IncruitView from './components/incruit/IncruitView';
-import IncruitEdit from './components/incruit/IncruitEdit';
+import IncruitRegister from './incruit/IncruitRegister';
+import IncruitList from './incruit/IncruitList';
+import IncruitView from './incruit/IncruitView';
+import IncruitEdit from './incruit/IncruitEdit';
 
 import MainPage from './main/MainPage';
 import Navbar from './components/Navbar/Navbar';

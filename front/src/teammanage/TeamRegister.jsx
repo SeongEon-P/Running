@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,7 +17,19 @@ const TeamRegister = () => {
 
   const [errors, setErrors] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [newImages, setNewImages] = useState([]); // 새로 추가된 이미지
   const navigate = useNavigate(); // navigate 함수 추가
+
+  useEffect(() => {
+    // 로컬스토리지에서 로그인한 사용자의 이름을 가져와 팀 리더로 설정
+    const loginData = JSON.parse(localStorage.getItem('login'));
+    if (loginData && loginData.name) {
+      setTeamData(prevData => ({
+        ...prevData,
+        teamLeader: loginData.name
+      }));
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     setTeamData({
@@ -27,10 +39,25 @@ const TeamRegister = () => {
   };
 
   const handleFileChange = (e) => {
-    setTeamData({
-      ...teamData,
-      teamLogoFiles: [...e.target.files], // 다중 파일 선택
-    });
+    const files = Array.from(e.target.files);
+    setNewImages([...newImages, ...files]); // 새 이미지 추가
+  };
+
+  const handleImageDelete = (index) => {
+    const updatedImages = newImages.filter((_, i) => i !== index);
+    setNewImages(updatedImages);
+  };
+
+  // 사용자의 역할을 LEADER로 업데이트하는 메서드
+  const updateRole = async (username) => {
+    try {
+      await axios.post('/members/updateRole', {
+        mid: username,
+        role: 'LEADER'
+      });
+    } catch (error) {
+      console.error('사용자 역할 업데이트 중 오류가 발생했습니다:', error);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -52,9 +79,9 @@ const TeamRegister = () => {
       const registeredTeamName = teamResponse.data;
 
       // 2. 이미지 업로드 요청
-      if (teamData.teamLogoFiles.length > 0) {
+      if (newImages.length > 0) {
         const formData = new FormData();
-        teamData.teamLogoFiles.forEach((file) => {
+        newImages.forEach((file) => {
           formData.append('files', file); // 'files'로 이름을 맞추기
         });
         formData.append('teamName', registeredTeamName);
@@ -70,6 +97,12 @@ const TeamRegister = () => {
 
       setSuccess('팀이 성공적으로 등록되고 로고 이미지가 업로드되었습니다!');
       
+      // 3. 팀 등록 후 역할 업데이트
+      const loginData = JSON.parse(localStorage.getItem('login'));
+      if (loginData && loginData.name) {
+        await updateRole(loginData.mid);  // 사용자 역할을 LEADER로 업데이트
+      }
+
       // 성공적으로 등록된 후 팀 목록으로 이동
       navigate('/team/list');
 
@@ -136,6 +169,7 @@ const TeamRegister = () => {
             value={teamData.teamLeader}
             onChange={handleInputChange}
             required
+            readOnly // 팀 리더 필드를 읽기 전용으로 설정
           />
         </div>
         <div>
@@ -147,6 +181,37 @@ const TeamRegister = () => {
             onChange={handleFileChange}
           />
         </div>
+
+        {newImages.length > 0 && (
+          <div style={{ display: 'flex', gap: '10px', overflowX: 'auto' }}>
+            {newImages.map((image, index) => (
+              <div key={index} style={{ position: 'relative' }}>
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`new-${index}`}
+                  style={{ width: '150px', height: 'auto' }}
+                />
+                <button
+                  type="button"
+                  style={{
+                    position: 'absolute',
+                    top: '5px',
+                    right: '5px',
+                    background: 'red',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '50%',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => handleImageDelete(index)}
+                >
+                  X
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div>
           <label>팀 설명:</label>
           <textarea

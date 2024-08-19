@@ -1,6 +1,7 @@
 package com.example.running.member.service;
 
 import com.example.running.member.domain.Member;
+import com.example.running.member.domain.Role;
 import com.example.running.member.repositroy.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +52,11 @@ public class MemberServiceImpl implements MemberService {
             Member updateMember = members.get();
 
             // 비밀번호가 존재하고 수정되었으면 암호화 처리 후 저장
-            if (member.getMpw() != null && !member.getMpw().isEmpty()) {
-                String encodedPassword = passwordEncoder.encode(member.getMpw()); // 비밀번호 암호화
-                System.out.println("암호화된 비밀번호: " + encodedPassword); // 암호화된 비밀번호 로그 출력
-                updateMember.setMpw(encodedPassword);
-            }
+//            if (member.getMpw() != null && !member.getMpw().isEmpty()) {
+//                String encodedPassword = passwordEncoder.encode(member.getMpw()); // 비밀번호 암호화
+//                System.out.println("암호화된 비밀번호: " + encodedPassword); // 암호화된 비밀번호 로그 출력
+//                updateMember.setMpw(encodedPassword);
+//            }
 
             // 나머지 정보 업데이트
             updateMember.setName(member.getName());
@@ -173,6 +174,20 @@ public class MemberServiceImpl implements MemberService {
             throw new RuntimeException("비밀번호 재설정 중 오류가 발생했습니다.", e);
         }
     }
+
+    //롤 업데이트
+    public void updateRole(String mid, Role newRole) {
+        Optional<Member> optionalMember = memberRepository.findByMid(mid);
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            member.setRole(newRole);
+            memberRepository.save(member);
+        } else {
+            throw new IllegalArgumentException("해당 ID를 가진 회원을 찾을 수 없습니다.");
+        }
+    }
+
 
 
     private String generateResetToken() {
