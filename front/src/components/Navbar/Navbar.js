@@ -11,12 +11,20 @@ const Navbar = () => {
                 <img src={logo} alt="Logo" className="logo" />
             </Link>
             <div className="nav-links">
-                <Link to="/lightning/list">LIGHTNING</Link>
-                <Link to="/crew/incruit">CREW</Link>
+                <Link to="/recruit/list">LIGHTNING</Link>
+                <div className="crew-link">
+                    <Link to="/crew/incruit">CREW</Link>
+                    <div className="dropdown">
+                        <Link to="/crew/incruit">CREW 모집</Link>
+                        <Link to="/crew/manage">CREW 관리</Link>
+                    </div>
+                </div>
                 <Link to="/notice/list">NOTICE</Link>
                 <Link to="/info/list">INFO</Link>
                 <Link to="/free/list">FREE</Link>
-                <Link to="/review/list">REVIEWw</Link>
+                <Link to="/review/list">REVIEW</Link>
+            </div>
+            <div className="right-links">
                 <Link to="/signup">SIGN UP</Link>
                 <Link to="/login">LOGIN</Link>
             </div>
