@@ -18,6 +18,7 @@ import FindId from './member/page/FindId';
 import FindPassword from './member/page/FindPassword';
 import ResetPassword from './member/page/ResetPassword';
 import { AuthProvider } from './context/AuthContext';
+import KakaoMap from './recruit/sample/KakaoMap';
 
 const App = () => {
   return (
@@ -41,6 +42,8 @@ const App = () => {
         <Route path='/recruit/list' element={<RecruitList/>}/>
         <Route path='/recruit/read/:rno' element={<RecruitRead />} />
         <Route path='/recruit/modify/:rno' element={<RecruitModify />} />
+        <Route path='/map' element={<KakaoMap />} />
+
         <Route path="/notice/:nno" element={<NoticeDetail/>}/>
         </Routes>
       </AuthProvider>
