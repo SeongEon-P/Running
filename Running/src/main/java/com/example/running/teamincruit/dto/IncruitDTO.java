@@ -17,7 +17,6 @@ public class IncruitDTO {
     private String icontent;
     private String ititle;
     private String iwriter;
-    private LocalDateTime regDate;
     private int iviews;
     private String teamName;
     private int teamMemberCount;
@@ -27,6 +26,7 @@ public class IncruitDTO {
     private String teamLogo;
     private Integer teamLevel;
     private Long teamFromPro;
+    private LocalDateTime regDate;
 
     // 팀 이미지 리스트
     private List<TeamManageImgDTO> images;

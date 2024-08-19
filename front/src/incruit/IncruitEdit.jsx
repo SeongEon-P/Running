@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import './IncruitEdit.css';  // 스타일 파일 import
 
 const IncruitEdit = () => {
     const { ino } = useParams(); // URL에서 ino를 가져옴
@@ -112,14 +113,24 @@ const IncruitEdit = () => {
         }
     };
 
+    // 돌아가기 버튼 함수
+    const handleBack = () => {
+        navigate(`/incruit/${ino}`); // 상세보기 페이지로 이동
+    };
+
     return (
-        <div>
-            <h2>모집 수정</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
+        <div className="IncruitEdit_container">
+            <h2 className="IncruitEdit_h2">모집 수정</h2>
+            {error && <p className="IncruitEdit_error">{error}</p>}
+            <form onSubmit={handleSubmit} className="IncruitEdit_form">
                 <div>
-                    <label>팀 선택:</label>
-                    <select onChange={handleTeamChange} value={incruitData.teamName} required>
+                    <label className="IncruitEdit_label">팀 선택:</label>
+                    <select 
+                        onChange={handleTeamChange} 
+                        value={incruitData.teamName} 
+                        required 
+                        className="IncruitEdit_select"
+                    >
                         <option value="">팀을 선택하세요</option>
                         {teamNames.map((name) => (
                             <option key={name} value={name}>
@@ -130,7 +141,7 @@ const IncruitEdit = () => {
                 </div>
 
                 {selectedTeam && (
-                    <div>
+                    <div className="IncruitEdit_teamInfo">
                         <h3>선택된 팀 정보</h3>
                         <p>팀 설명: {selectedTeam.teamExplain}</p>
                         <p>팀 리더: {selectedTeam.teamLeader}</p>
@@ -139,13 +150,13 @@ const IncruitEdit = () => {
 
                         <h3>팀 이미지:</h3>
                         {selectedTeam.images && selectedTeam.images.length > 0 ? (
-                            <div style={{ display: 'flex', gap: '10px' }}>
+                            <div className="IncruitEdit_imageGallery">
                                 {selectedTeam.images.map((image, index) => (
                                     <img
                                         key={index}
                                         src={`/view/${encodeURIComponent(image.teamManageFileName)}`}
                                         alt={`team-${index}`}
-                                        style={{ width: '300px', height: 'auto' }}
+                                        className="IncruitEdit_img"
                                     />
                                 ))}
                             </div>
@@ -156,42 +167,60 @@ const IncruitEdit = () => {
                 )}
 
                 <div>
-                    <label>모집 제목:</label>
+                    <label className="IncruitEdit_label">모집 제목:</label>
                     <input
                         type="text"
                         name="ititle"
                         value={incruitData.ititle}
                         onChange={handleInputChange}
                         required
+                        className="IncruitEdit_input"
                     />
                 </div>
 
                 <div>
-                    <label>모집 내용:</label>
+                    <label className="IncruitEdit_label">모집 내용:</label>
                     <textarea
                         name="icontent"
                         value={incruitData.icontent}
                         onChange={handleInputChange}
                         required
+                        className="IncruitEdit_textarea"
                     />
                 </div>
 
                 <div>
-                    <label>작성자:</label>
+                    <label className="IncruitEdit_label">작성자:</label>
                     <input
                         type="text"
                         name="iwriter"
                         value={incruitData.iwriter}
                         onChange={handleInputChange}
                         required
-                        readOnly // 작성자 필드를 읽기 전용으로 설정
+                        readOnly
+                        className="IncruitEdit_input"
                     />
                 </div>
 
-                <button type="submit">수정</button>
-                <button type="button" onClick={handleDelete} style={{ marginLeft: '10px' }}>
-                    삭제
-                </button>
+                <div className="IncruitEdit_buttonContainer">
+                    <button type="submit" className="IncruitEdit_button">수정</button>
+                    <button 
+                        type="button" 
+                        onClick={handleDelete} 
+                        className="IncruitEdit_button" 
+                        style={{ marginLeft: '10px', backgroundColor: 'red' }}
+                    >
+                        삭제
+                    </button>
+                    <button 
+                        type="button" 
+                        onClick={handleBack} 
+                        className="IncruitEdit_button" 
+                        style={{ marginLeft: '10px', backgroundColor: '#555' }}
+                    >
+                        돌아가기
+                    </button>
+                </div>
             </form>
         </div>
     );

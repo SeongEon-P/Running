@@ -16,5 +16,7 @@ public interface IncruitService {
 
     List<IncruitDTO> getAllIncruit();
 
+    void increaseViews(Long ino);
+
 
 }

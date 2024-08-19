@@ -72,7 +72,6 @@ public class IncruitServiceImpl implements IncruitService {
                     .ititle(incruit.getItitle())
                     .icontent(incruit.getIcontent())
                     .iwriter(incruit.getIwriter())
-                    .regDate(incruit.getRegDate())
                     .iviews(incruit.getIviews())
                     .teamName(incruit.getTeam().getTeamName())
                     .teamExplain(incruit.getTeam().getTeamExplain())
@@ -81,6 +80,7 @@ public class IncruitServiceImpl implements IncruitService {
                     .teamStartdate(incruit.getTeam().getTeamStartdate())
                     .teamLevel(incruit.getTeam().getTeamLevel())
                     .teamFromPro(incruit.getTeam().getTeamFromPro())
+                    .regDate(incruit.getRegDate())  // regDate 추가
                     .build();
 
             // 이미지 데이터 추가
@@ -140,13 +140,25 @@ public class IncruitServiceImpl implements IncruitService {
         return incruits.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public void increaseViews(Long ino) {
+        // 해당 모집 정보를 데이터베이스에서 조회
+        Incruit incruit = incruitRepository.findById(ino)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모집 정보를 찾을 수 없습니다."));
+
+        // 조회수 증가
+        incruit.setIviews(incruit.getIviews() + 1);
+
+        // 변경사항 저장
+        incruitRepository.save(incruit);
+    }
+
     private IncruitDTO convertToDto(Incruit incruit) {
         IncruitDTO incruitDTO = IncruitDTO.builder()
                 .ino(incruit.getIno())
                 .icontent(incruit.getIcontent())
                 .ititle(incruit.getItitle())
                 .iwriter(incruit.getIwriter())
-                .regDate(incruit.getRegDate())
                 .iviews(incruit.getIviews())
                 .teamName(incruit.getTeam().getTeamName())
                 .teamMemberCount(incruit.getTeamMemberCount())
@@ -156,6 +168,7 @@ public class IncruitServiceImpl implements IncruitService {
                 .teamLogo(incruit.getTeamLogo())
                 .teamLevel(incruit.getTeamLevel())
                 .teamFromPro(incruit.getTeamFromPro())
+                .regDate(incruit.getRegDate())  // regDate 추가
                 .images(incruit.getTeam().getImageSet().stream()
                         .map(img -> TeamManageImgDTO.builder()
                                 .teamManageUuid(img.getTeamManageUuid())

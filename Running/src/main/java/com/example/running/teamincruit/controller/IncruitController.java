@@ -105,5 +105,11 @@ public class IncruitController {
         }
     }
 
+    @PostMapping("/increase-views/{ino}")
+    public ResponseEntity<Void> increaseViews(@PathVariable Long ino) {
+        incruitService.increaseViews(ino);
+        return ResponseEntity.ok().build();
+    }
+
 
 }
