@@ -8,11 +8,11 @@ import Login from './member/member/Login';
 import Update from './member/member/Update';
 import MyPage from './member/page/MyPage';
 import NoticeRegister from './notice/NoticeRegister';
+import Noticelist from './notice/Noticelist';
 import RecruitRegister from './recruit/RecruitRegister';
 import RecruitList from './recruit/RecruitList';
 import RecruitRead from './recruit/RecruitRead';
 import RecruitModify from './recruit/RecruitModify';
-import Noticelist from './notice/NoticeList';
 import NoticeDetail from './notice/NoticeDetail';
 import FindId from './member/page/FindId';
 import FindPassword from './member/page/FindPassword';
@@ -35,7 +35,7 @@ const App = () => {
         <Route path='/findPassword' element={<FindPassword />} />
         <Route path="/update" element={<Update />} />
         <Route path="/notice/list" element={<Noticelist/>}/>
-        <Route path="/notice/Register" element={<NoticeRegister/>}/>
+        <Route path="/notice/register" element={<NoticeRegister/>}/>
         
         <Route path='/recruit/register' element={<RecruitRegister/>}/>
         <Route path='/recruit/list' element={<RecruitList/>}/>

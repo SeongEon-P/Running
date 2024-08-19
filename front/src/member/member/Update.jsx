@@ -4,10 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import './Update.css';
 
 const Update = () => {
-  const [login, setLogin] = useState({
-    mid: '',
-    mpw: '',
-  });
   const [member, setMember] = useState({
     mid: '',
     name: '',
@@ -31,14 +27,17 @@ const Update = () => {
     }
 
     axios
-      .get(`http://localhost:8080/members/${login.mid}`)
+      .get('http://localhost:8080/members/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setMember(response.data);
       })
       .catch((error) => {
         console.error('회원 정보 불러오기 실패:', error);
+        alert('회원 정보를 불러오지 못했습니다.');
       });
-  }, [login.mid]);
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,10 +58,14 @@ const Update = () => {
 
   const checkPassword = (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
+
     axios
       .post('http://localhost:8080/members/check-password', {
-        mid: login.mid,
+        mid: member.mid,
         password: currentPassword,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         setIsVerified(true);

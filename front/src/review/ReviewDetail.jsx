@@ -1,32 +1,32 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
-import Noticelist from "./Noticelist";
-import NoticeModify from "./NoticeModify";
+import Reviewlist from "./ReviewList";
+import Reviewmodify from "./ReviewModify";
 
-const NoticeDetail = ({ nno }) => {
+const ReviewDetail = ({ rno }) => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const [notice, setNotice] = useState({});
-    const [noticeResource, setNoticeResource] = useState([]);
+    const [review, setReview] = useState({});
+    const [reviewResource, setReviewResource] = useState([]);
     const [showModify, setShowModify] = useState(false);
     const [showList, setShowList] = useState(false);
 
-    const getNoice = async () => {
-        const response = await (await axios.get(`http://localhost:8080/notice/read?nno=${nno}`)).data;
-        setNotice(response);
-        setNoticeResource(response.notice_resource);
+    const getReview = async () => {
+        const response = await (await axios.get(`http://localhost:8080/review/read?rno=${rno}`)).data;
+        setReview(response);
+        setReviewResource(response.review_resource);
         setLoading(false);
     };
     const handleModify = () => {
         setShowModify(true);
     }
     const handleDelete = async () => {
-        if (window.confirm(`${notice.nno}번의 공지사항을 삭제 하시겠습니까?`))
+        if (window.confirm(`${review.rno}번의 공지사항을 삭제 하시겠습니까?`))
             try {
-                await axios.delete(`http://localhost:8080/notice/${nno}`)
-                console.log(`${notice.nno} 공지사항 삭제 완료`);
-                alert(`${notice.nno}가 삭제되었습니다.`);
+                await axios.delete(`http://localhost:8080/review/${rno}`)
+                console.log(`${review.rno} 공지사항 삭제 완료`);
+                alert(`${review.rno}가 삭제되었습니다.`);
                 setShowList(true);
             } catch (error) {
                 console.log('삭제중 오류발생', error);
@@ -34,8 +34,8 @@ const NoticeDetail = ({ nno }) => {
             };
     };
     useEffect(() => {
-        getNoice();
-    }, [nno, showModify]);
+        getReview();
+    }, [rno, showModify]);
 
     const formatDate = (dateStr) => {
         if (!dateStr) {
@@ -57,29 +57,30 @@ const NoticeDetail = ({ nno }) => {
             {loading ? (
                 <p>Loading...</p>
             ) : showList ? (
-                <Noticelist />
+                <Reviewlist />
             ) : showModify ? (
-                <NoticeModify nno={nno} setShowModify={setShowModify} setShowDetail={() => setShowList(false)} />
+                <Reviewmodify rno={rno} setShowModify={setShowModify} setShowDetail={() => setShowList(false)} />
             ) : (
                 <>
-                    <h2 className="notice">공지사항</h2>
+                    <h2 className="review">리뷰</h2>
                     <div className="container">
                         <div className="form-control">
                             <div className="d-flex flex-wrap justify-content-between">
-                                <span className="notice_title">{notice.n_title}</span>
-                                <span>작성자 : {notice.writer}</span>
+                                <span className="review_title">{review.r_title}</span>
+                                <span>작성자 : {review.writer}</span>
                             </div>
                         </div>
                         <div className="form-control">
-                            <span> 등록일 : {formatDate(notice.regDate)} </span>
+                            <span> 등록일 : {formatDate(review.regDate)} </span>
+                            
                         </div>
                         <div className="form-control">
-                            <pre className="notice_content">{notice.n_content}</pre>
+                            <pre className="review_content">{review.r_content}</pre>
                         </div>
                         <div className="form-control">
-                            {noticeResource.map((nr, index) => (
+                            {reviewResource.map((rr, index) => (
                                 <p key={index}>
-                                    <a href={'http://localhost:8080/file/' + nr.nr_name}>{nr.nr_name}</a>
+                                    <a href={'http://localhost:8080/file/' + rr.rr_name}>{rr.rr_name}</a>
                                 </p>
                             ))}
                         </div>
@@ -87,13 +88,13 @@ const NoticeDetail = ({ nno }) => {
 
                     <div className="d-flex flex-wrap justify-content-between btns">
                         <button
-                          className="btn btn-outline-dark noticeListBtn"
+                          className="btn btn-outline-dark reviewListBtn"
                           onClick={() =>setShowList(true)}>
                             목록으로 가기
                           </button>
                           <div className="">
-                            <button className="btn btn-outline-primary noticeModifyBtn" onClick={handleModify}>수정</button>
-                            <button className="btn btn-outline-danger noticeRemoveBtn" onClick={handleDelete}>삭제</button>
+                            <button className="btn btn-outline-primary reviewModifyBtn" onClick={handleModify}>수정</button>
+                            <button className="btn btn-outline-danger reviewRemoveBtn" onClick={handleDelete}>삭제</button>
                           </div>
                     </div>
                 </>
@@ -103,4 +104,4 @@ const NoticeDetail = ({ nno }) => {
 
 };
 
-export default NoticeDetail;
+export default ReviewDetail;

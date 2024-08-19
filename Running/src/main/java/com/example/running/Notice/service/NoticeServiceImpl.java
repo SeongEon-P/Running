@@ -82,7 +82,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public void deleteNotice(Long nno) {
         noticeRepository.deleteById(nno);
-        noticeResourceRepository.deleteByNno(nno);
+        noticeResourceRepository.deleteById(nno);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class NoticeServiceImpl implements NoticeService {
                 noticeDTO.getN_title(),
                 noticeDTO.getN_content(),
                 noticeDTO.getN_image(),
-                Member.builder().mpw(noticeDTO.getWriter()).build()
+                Member.builder().mid(noticeDTO.getWriter()).build()
         );
         Notice savedNotice = noticeRepository.save(notice);
         return savedNotice;

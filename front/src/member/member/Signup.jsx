@@ -13,7 +13,7 @@ const Signup = () => {
     email: '',
     phone: '',
     address: '',
-    role: 'USER'
+    role: 'USER',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -107,7 +107,7 @@ const Signup = () => {
 
     axios
       .post('http://localhost:8080/members/signup', formData)
-      .then((response) => {
+      .then(() => {
         alert('회원가입이 완료되었습니다.');
         navigate('/login');
       })
@@ -116,7 +116,7 @@ const Signup = () => {
         alert('회원가입에 실패했습니다.');
       })
       .finally(() => {
-        setIsSubmitting(false); // 요청 완료 후 제출 상태 초기화
+        setIsSubmitting(false);
       });
   };
 
@@ -140,9 +140,9 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <h1>회원가입</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="signup-container">
+      <h1 className="signup-title">회원가입</h1>
+      <form onSubmit={handleSubmit} className="signup-form">
         <label>
           아이디:
           <input
@@ -162,7 +162,6 @@ const Signup = () => {
             <span className="id-unCheck">이미 사용 중인 아이디입니다.</span>
           )}
         </label>
-        <br />
         <label>
           비밀번호:
           <input
@@ -201,7 +200,6 @@ const Signup = () => {
             required
           />
         </label>
-        <br />
         <label>
           이메일:
           <input
@@ -219,7 +217,6 @@ const Signup = () => {
             <span className="email-unCheck">이미 사용 중인 이메일입니다.</span>
           )}
         </label>
-        <br />
         <label>
           전화번호:
           <input
@@ -247,8 +244,8 @@ const Signup = () => {
             type="text"
             name="address"
             value={formData.address}
-            onChange={handleChange}
-            required
+            placeholder="주소를 검색하세요"
+            readOnly
           />
           <button type="button" onClick={() => setOpenPostcode(true)}>
             주소검색
@@ -258,6 +255,21 @@ const Signup = () => {
           회원가입
         </button>
       </form>
+
+      {/* 모달 창 */}
+      {openPostcode && (
+        <div className="modal">
+          <div className="modal-content">
+            <span
+              className="modal-close"
+              onClick={() => setOpenPostcode(false)}
+            >
+              &times;
+            </span>
+            <DaumPostcode onComplete={handleComplete} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

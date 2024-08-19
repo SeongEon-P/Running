@@ -1,4 +1,4 @@
-package com.example.running.Notice.domain;
+package com.example.running.Review.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
