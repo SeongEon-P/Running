@@ -57,9 +57,13 @@ public class KakaoOAuthController {
                 String accessToken = (String) body.get("access_token");
                 return ResponseEntity.ok().body(Map.of("accessToken", accessToken));
             } else {
+                // 서버 응답이 200이 아닌 경우 상세 로그 출력
+                System.err.println("카카오 응답 에러: " + response.getBody());
                 return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
             }
         } catch (Exception e) {
+            // 예외 발생 시 상세 로그 출력
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error: " + e.getMessage());
         }
     }
