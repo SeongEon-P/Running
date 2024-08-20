@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     //스프링 부트 시큐리티_필요시 주석해제
-//    implementation 'org.springframework.boot:spring-boot-starter-security:3.2.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.2.5'
 
     // JJWT 라이브러
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -45,7 +45,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:3.1.0'
 
     //스프링 시큐리티_필요시 주석해제
-//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
 
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor("com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta")
@@ -64,6 +64,15 @@ dependencies {
 
     implementation 'net.coobird:thumbnailator:0.4.16'
     implementation 'org.jsoup:jsoup:1.14.3'
+
+    // 이메일 전송
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // 소셜 로그인 추가(참조 사이트 https://velog.io/@heeo/SpringBoot%EC%97%90%EC%84%9C-%EC%B9%B4%EC%B9%B4%EC%98%A4-API%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0)
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 
 }
 
