@@ -14,29 +14,32 @@ import FindId from './member/page/FindId';
 import FindPassword from './member/page/FindPassword';
 import ResetPassword from './member/page/ResetPassword';
 import { AuthProvider } from './context/AuthContext';
+import KakaoCallback from './member/member/KakaoCallback ';
 
 const App = () => {
   return (
-    
     <Router>
       <AuthProvider>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path='/findId' element={<FindId />} />
-        <Route path="/resetpassword/:token" element={<ResetPassword />} />
-        <Route path='/findPassword' element={<FindPassword />} />
-        <Route path="/update" element={<Update />} />
-        <Route path="/notice/list" element={<Noticelist/>}/>
-        <Route path="/notice/register" element={<NoticeRegister/>}/>
-        <Route path="/notice/:nno" element={<NoticeDetail/>}/>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/findId" element={<FindId />} />
+          <Route path="/resetpassword/:token" element={<ResetPassword />} />
+          <Route path="/findPassword" element={<FindPassword />} />
+          <Route path="/update" element={<Update />} />
+          <Route path="/notice/list" element={<Noticelist />} />
+          <Route path="/notice/register" element={<NoticeRegister />} />
+          <Route path="/notice/:nno" element={<NoticeDetail />} />
+          <Route
+            path="/login/oauth2/code/kakao" //redirect_url
+            element={<KakaoCallback />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
+          />
         </Routes>
       </AuthProvider>
     </Router>
-    
   );
 };
 

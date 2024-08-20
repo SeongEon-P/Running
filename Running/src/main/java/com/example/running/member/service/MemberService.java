@@ -1,6 +1,7 @@
 package com.example.running.member.service;
 
 import com.example.running.member.domain.Member;
+import com.example.running.member.dto.KakaoTokenResponse;
 
 import java.util.Optional;
 
@@ -23,5 +24,9 @@ public interface MemberService {
     String findIdByEmail(String email);
     boolean sendPasswordResetEmail(String email);
     boolean resetPassword(String token, String newPassword);
+
+    // 카카오 로그인
+    String processKakaoLogin(KakaoTokenResponse kakaoToken);
+    Member findOrCreateKakaoMember(String kakaoId, String email);
 
 }

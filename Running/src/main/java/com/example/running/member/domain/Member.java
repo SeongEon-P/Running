@@ -40,10 +40,6 @@ public class Member {
     @Column(nullable = false)
     private Role role;
 
-//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-//    @Column(nullable = false, updatable = false)
-//    private LocalDateTime date = LocalDateTime.now(); // 기본값으로 현재 시간 설정
-
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable = false, updatable = false)
     private LocalDateTime date;
@@ -57,5 +53,6 @@ public class Member {
     @Column(unique = true)
     private String resetToken;
 
-
+    @Column(unique = true, length = 50)
+    private String kakaoId;  // 카카오 ID 필드 추가
 }
