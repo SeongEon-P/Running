@@ -7,6 +7,7 @@ import com.example.running.Notice.dto.NoticeResourceDTO;
 import com.example.running.Notice.repository.NoticeRepository;
 import com.example.running.Notice.repository.NoticeResourceRepository;
 import com.example.running.member.domain.Member;
+import com.example.running.member.dto.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;

@@ -14,6 +14,9 @@ import FindId from './member/page/FindId';
 import FindPassword from './member/page/FindPassword';
 import ResetPassword from './member/page/ResetPassword';
 import { AuthProvider } from './context/AuthContext';
+import ReviewList from './review/ReviewList';
+import ReviewDetail from './review/ReviewDetail';
+import ReviewRegister from './review/ReviewRegister';
 
 const App = () => {
   return (
@@ -33,6 +36,9 @@ const App = () => {
         <Route path="/notice/list" element={<Noticelist/>}/>
         <Route path="/notice/register" element={<NoticeRegister/>}/>
         <Route path="/notice/:nno" element={<NoticeDetail/>}/>
+        <Route path="/review/list" element={<ReviewList/>}/>
+        <Route path="/review/register" element={<ReviewDetail/>}/>
+        <Route path="/review/:rno" element={<ReviewRegister/>}/>
         </Routes>
       </AuthProvider>
     </Router>

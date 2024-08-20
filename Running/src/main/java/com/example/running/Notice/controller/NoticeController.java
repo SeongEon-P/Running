@@ -30,7 +30,6 @@ public class NoticeController {
     private final NoticeService noticeService;
     private final NoticeResourceService noticeResourceService;
     private final Path fileStorageLocation = Paths.get("file-storage").toAbsolutePath().normalize();
-    private NoticeDTO noticeDTO;
 
     @GetMapping("/list")
     public List<NoticeDTO> getNoticeList() {
@@ -88,14 +87,12 @@ public class NoticeController {
                     }
                 }
             }
-
             log.info("자원 관리 시작.");
             // 기존 자원 삭제
             noticeResourceService.deleteNoticeResource(nno);
             // 새로운 자원 저장
             noticeResourceService.saveAll(resourceDtoList);
             log.info("자원 관리 완료.");
-
             Notice modifiedNotice = noticeService.modifyNotice(noticeDTO);
             return new ResponseEntity<>(modifiedNotice, HttpStatus.OK);
         } catch (NoSuchElementException e) {

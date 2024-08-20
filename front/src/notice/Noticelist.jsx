@@ -12,12 +12,10 @@ function Noticelist() {
   const [showRegister, setShowRegister] = useState(false);
   const [selectedNotice, setSelectedNotice] = useState(null);
 
-
   const uploadRegister = async () => {
     try {
-        const result = await axios.get("http://localhost:8080/notice/list");
-        console.log(result.data);
-        setNoticeList(result.data);
+      const result = await axios.get("http://localhost:8080/notice/list");
+      setNoticeList(result.data);
     } catch (error) {
       console.error("Error fetching notice list:", error);
     }
@@ -31,9 +29,11 @@ function Noticelist() {
     const filteredList = noticeList.filter(notice =>
       notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    // 역순 정렬
+    const reversedList = filteredList.slice().reverse();
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    setCurrentItems(filteredList.slice(indexOfFirstItem, indexOfLastItem).reverse());
+    setCurrentItems(reversedList.slice(indexOfFirstItem, indexOfLastItem));
   }, [currentPage, itemsPerPage, noticeList, searchTerm]);
 
   const totalPages = Math.ceil(
@@ -105,23 +105,17 @@ function Noticelist() {
   };
 
   const formatDate = (dateStr) => {
-    console.log(`Date String: ${dateStr}`); // 날짜 문자열 확인
-  
-    if (!dateStr) {
-      return 'Date not available';
-    }
-  
+    if (!dateStr) return 'Date not available';
+
     const date = new Date(dateStr);
-    if (isNaN(date.getTime())) {
-      console.warn(`Invalid date: ${dateStr}`);
-      return 'Invalid Date';
-    }
-  
+    if (isNaN(date.getTime())) return 'Invalid Date';
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);
   };
@@ -136,9 +130,9 @@ function Noticelist() {
 
   return (
     <div className="container notice_con">
-      {showRegister ? ( 
+      {showRegister ? (
         <NoticeRegister />
-      ) : selectedNotice ? ( 
+      ) : selectedNotice ? (
         <NoticeDetail nno={selectedNotice} />
       ) : (
         <>
@@ -154,7 +148,7 @@ function Noticelist() {
               <button 
                 className="btn btn-outline-dark"
                 type="button"
-                onClick={handleSearch} // 검색 버튼 클릭 시 handleSearch 호출
+                onClick={handleSearch}
               >
                 Search
               </button>
@@ -176,21 +170,23 @@ function Noticelist() {
                   <td onClick={() => handleNoticeClick(notice.nno)} style={{ cursor: 'pointer' }}>
                     {notice.n_title}
                   </td>
-                  <td>{formatDate(notice.regdate)}</td>
+                  <td className="NoticeView_p">
+                  {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <div className="mx-auto"> {/* 페이지 번호를 가운데로 정렬 */}
+            <div className="mx-auto">
               {renderPageNumbers()}
             </div>
             <div className="text-end">
               <button
                 type="button"
                 className="btn btn-outline-dark noticeRegisterBtn"
-                onClick={handleRegisterClick} // 등록 버튼 클릭 시 handleRegisterClick 호출
+                onClick={handleRegisterClick}
               >
                 등록
               </button>
@@ -199,7 +195,6 @@ function Noticelist() {
         </>
       )}
     </div>
-
   );
 }
 

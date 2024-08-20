@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReviewDetail from "./ReviewDetail";
 import Reviewlist from "./ReviewList";
@@ -65,6 +65,16 @@ const ReviewRegister = () => {
     const handleListClick = () => {
         setShowReviewList(true);
     }
+    useEffect(() => {
+        const loginData = JSON.parse(localStorage.getItem('login'));
+        if (loginData && loginData.name) {
+          setReview(prevData => ({
+            ...prevData,
+            writer: loginData.name
+          }));
+        }
+      }, []);
+      
 
     return (
         <>

@@ -36,5 +36,6 @@ public class Notice extends BaseEntity {
         this.n_title = n_title;
         this.n_content = n_content;
         this.n_image = n_image;
+        this.writer = member.getName();
     }
 }
