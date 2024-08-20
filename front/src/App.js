@@ -4,16 +4,21 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import './App.css';
 import MainPage from "./main/MainPage";
 import Navbar from "./components/Navbar/Navbar";
+import FreeBoard from './pages/FreeBoard/FreeBoard';
 
-function App() {
+
+
+
+const App = () => {
   return (
     <Router>
-      <Navbar/>
+      <Navbar />
       <Routes>
-       <Route path="/" element={<MainPage />} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/free/*" element={<FreeBoard />} />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
