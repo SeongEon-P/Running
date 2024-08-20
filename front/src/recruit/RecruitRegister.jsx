@@ -7,7 +7,7 @@ const RecruitRegister = () => {
     const [recruit, setRecruit] = useState({
         r_title: '',
         r_content:'',
-        r_place: '',
+        address: '',
         r_place2: '',
         r_date: '',
         r_time: '',
@@ -63,7 +63,7 @@ const RecruitRegister = () => {
           fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
         }
     
-        setRecruit({ ...recruit, r_place: fullAddress });
+        setRecruit({ ...recruit, address: fullAddress });
         setOpenPostcode(false); // 주소 선택 후 모달 닫기
       };
     
@@ -108,8 +108,8 @@ const RecruitRegister = () => {
                     <label>모이는 장소: </label>
                     <input
                         type="text"
-                        name="r_place"
-                        value={recruit.r_place}
+                        name="address"
+                        value={recruit.address}
                         onChange={handleChange}
                         readOnly
                     />

@@ -63,7 +63,7 @@ public class RecruitServiceImpl implements RecruitService {
         recruit.changeRecruit(
                 recruitDTO.getR_title(),
                 recruitDTO.getR_content(),
-                recruitDTO.getR_place(),
+                recruitDTO.getAddress(),
                 recruitDTO.getR_place2(),
                 recruitDTO.getR_date(),
                 recruitDTO.getR_time(),
