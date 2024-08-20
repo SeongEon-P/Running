@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import DaumPostcode from 'react-daum-postcode';
 
 const RecruitRegister = () => {
     const [recruit, setRecruit] = useState({
@@ -13,6 +14,7 @@ const RecruitRegister = () => {
         max_number:'',
         mid: ''
     });
+    const [openPostcode, setOpenPostcode] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,6 +48,25 @@ const RecruitRegister = () => {
         }
     };
 
+    const handleComplete = (data) => {
+        let fullAddress = data.address;
+        let extraAddress = '';
+    
+        if (data.addressType === 'R') {
+          if (data.bname !== '') {
+            extraAddress += data.bname;
+          }
+          if (data.buildingName !== '') {
+            extraAddress +=
+              extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
+          }
+          fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+        }
+    
+        setRecruit({ ...recruit, r_place: fullAddress });
+        setOpenPostcode(false); // 주소 선택 후 모달 닫기
+      };
+    
 
 
     return (
@@ -90,8 +111,9 @@ const RecruitRegister = () => {
                         name="r_place"
                         value={recruit.r_place}
                         onChange={handleChange}
-                        required
+                        readOnly
                     />
+                    <button type="button" onClick={() => setOpenPostcode(true)}>주소 검색</button>
                 </div>
                 <div>
                     <label>상세 장소: </label>
@@ -102,7 +124,7 @@ const RecruitRegister = () => {
                         onChange={handleChange}
                         required
                     />
-                    <span>찾기 쉽도록 특정 건물이나 건축물을 명시해주시면 더 좋아요!</span>
+                    <span>러너들이 찾기 쉽도록 특정 건물이나 건축물을 명시해주시면 더 좋아요!</span>
                 </div>
                 
                 <div>
@@ -137,6 +159,21 @@ const RecruitRegister = () => {
                 </div>
                 <button type="button" onClick={handleSubmit}>Register</button>
             </form>
+
+            {openPostcode && (
+                <div className="modal">
+                    <div className="modla-content">
+                        <span
+                            className="modal-cloas"
+                            onClick={() => setOpenPostcode(false)}
+                        >
+                            &times;
+                        </span>
+                        <DaumPostcode onComplete={handleComplete} />
+                    </div>
+                </div>
+            )}
+
         </div>
     )
 }
