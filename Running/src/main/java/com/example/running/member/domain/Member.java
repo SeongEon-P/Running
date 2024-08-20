@@ -53,6 +53,6 @@ public class Member {
     @Column(unique = true)
     private String resetToken;
 
-//    @Column(unique = true, length = 50)
-//    private String kakaoId;  // 카카오 ID 필드 추가
+    @Column(unique = true, length = 50)
+    private String kakaoId;  // 카카오 ID 필드 추가
 }

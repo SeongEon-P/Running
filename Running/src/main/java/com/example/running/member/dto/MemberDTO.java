@@ -20,4 +20,8 @@ public class MemberDTO {
 
         // 회원정보 비밀번호 수정
         private String newPassword;
+
+        String token;
+        Long userId;
+//        UserResponseDto userResponseDto;
 }

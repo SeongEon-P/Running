@@ -48,6 +48,31 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const loginWithToken = async (token) => {
+        try {
+            localStorage.setItem('token', token);
+            const userInfoResponse = await axios.get('http://localhost:8080/members/me', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const userInfo = {
+                mid: userInfoResponse.data.mid,
+                name: userInfoResponse.data.name,
+                email: userInfoResponse.data.email,
+                phone: userInfoResponse.data.phone,
+                address: userInfoResponse.data.address,
+                role: userInfoResponse.data.role,
+            };
+            localStorage.setItem('login', JSON.stringify(userInfo));
+            setIsLoggedIn(true);
+            setUser(userInfo);
+            navigate('/');
+        } catch (error) {
+            console.error('토큰으로 로그인 실패:', error);
+            setIsLoggedIn(false);
+            setUser(null);
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('login');
@@ -57,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, user, login, loginWithToken, logout }}>
             {children}
         </AuthContext.Provider>
     );
