@@ -43,7 +43,6 @@ public class SecurityConfig {
                 .cors(httpSecurityCorsConfigurer -> corsConfigurationSource())
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/members/kakao/callback").permitAll()  // 최신 버전에서는 requestMatchers 사용
                                 .anyRequest().permitAll() // 모든 요청 허용_나중에는 권한 다시 설정 필요
                 )
                 .formLogin(formLogin ->

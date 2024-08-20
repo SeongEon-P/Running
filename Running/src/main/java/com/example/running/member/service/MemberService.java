@@ -26,7 +26,7 @@ public interface MemberService {
     boolean resetPassword(String token, String newPassword);
 
     // 카카오 로그인
-    String processKakaoLogin(KakaoTokenResponse kakaoToken);
-    Member findOrCreateKakaoMember(String kakaoId, String email);
+//    String processKakaoLogin(KakaoTokenResponse kakaoToken);
+//    Member findOrCreateKakaoMember(String kakaoId, String email);
 
 }

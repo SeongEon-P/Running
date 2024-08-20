@@ -236,45 +236,45 @@ public class MemberController {
     }
 
     // 카카오 로그인
-    @PostMapping("/kakao/callback")
-    public ResponseEntity<?> kakaoLoginCallback(@RequestBody Map<String, String> requestBody) {
-        String code = requestBody.get("code");
-
-        try {
-            // 카카오 토큰 요청 로직
-            String tokenRequestUrl = "https://kauth.kakao.com/oauth/token";
-
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("grant_type", "authorization_code");
-            params.add("client_id", "4ef446a79d53d180b43311c6b5a4ff46");
-            params.add("redirect_uri", "http://localhost:3000/login/oauth2/code/kakao");
-            params.add("code", code);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-
-            ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
-                    tokenRequestUrl, request, KakaoTokenResponse.class
-            );
-
-            KakaoTokenResponse kakaoToken = response.getBody();
-            if (kakaoToken == null) {
-                throw new RuntimeException("카카오 서버로부터 토큰을 받아오지 못했습니다.");
-            }
-
-            System.out.println("Access Token: " + kakaoToken.getAccess_token());
-
-            // JWT 토큰 생성 로직
-            String jwt = memberService.processKakaoLogin(kakaoToken);
-            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
-
-        } catch (Exception e) {
-            e.printStackTrace();  // 에러 로그 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그인 실패: " + e.getMessage());
-        }
-    }
+//    @PostMapping("/kakao/callback")
+//    public ResponseEntity<?> kakaoLoginCallback(@RequestBody Map<String, String> requestBody) {
+//        String code = requestBody.get("code");
+//
+//        try {
+//            // 카카오 토큰 요청 로직
+//            String tokenRequestUrl = "https://kauth.kakao.com/oauth/token";
+//
+//            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//            params.add("grant_type", "authorization_code");
+//            params.add("client_id", "4ef446a79d53d180b43311c6b5a4ff46");
+//            params.add("redirect_uri", "http://localhost:3000/login/oauth2/code/kakao");
+//            params.add("code", code);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+//
+//            ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
+//                    tokenRequestUrl, request, KakaoTokenResponse.class
+//            );
+//
+//            KakaoTokenResponse kakaoToken = response.getBody();
+//            if (kakaoToken == null) {
+//                throw new RuntimeException("카카오 서버로부터 토큰을 받아오지 못했습니다.");
+//            }
+//
+//            System.out.println("Access Token: " + kakaoToken.getAccess_token());
+//
+//            // JWT 토큰 생성 로직
+//            String jwt = memberService.processKakaoLogin(kakaoToken);
+//            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();  // 에러 로그 출력
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그인 실패: " + e.getMessage());
+//        }
+//    }
 
 
 
