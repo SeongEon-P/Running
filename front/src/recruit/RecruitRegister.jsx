@@ -105,7 +105,7 @@ const RecruitRegister = () => {
                 </div>
                 <div>
                     {/* 다음 주소 api 넣을거임 */}
-                    <label>모이는 장소: </label>
+                    <label>상세 주소: </label>
                     <input
                         type="text"
                         name="address"
@@ -116,7 +116,7 @@ const RecruitRegister = () => {
                     <button type="button" onClick={() => setOpenPostcode(true)}>주소 검색</button>
                 </div>
                 <div>
-                    <label>상세 장소: </label>
+                    <label>모이는 장소: </label>
                     <input
                         type="text"
                         name="r_place2"
@@ -124,7 +124,7 @@ const RecruitRegister = () => {
                         onChange={handleChange}
                         required
                     />
-                    <span>러너들이 찾기 쉽도록 특정 건물이나 건축물을 명시해주시면 더 좋아요!</span>
+                    <p>러너들이 찾기 쉽도록 특정 건물이나 건축물을 명시해주시면 더 좋아요!</p>
                 </div>
                 
                 <div>

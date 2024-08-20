@@ -8,7 +8,9 @@ const RecruitRead = () => {
     const [count, setCount] = useState(null);
     const [appliedList, setAppliedList] = useState([]);
     const [currentUser, setCurrentUser] = useState([]);
+    const [location, setLocation] = useState({ x: null, y: null });
     const navigate = useNavigate();
+    const { kakao } = window;
 
     useEffect(() => {
         // 모집 글 데이터 가져오기
@@ -38,20 +40,6 @@ const RecruitRead = () => {
                 console.error('There was an error fetching the apply list!', error)
             });
 
-        // 현재 로그인한 사용자 정보 가져오기(이거 말고 밑에 userInfo 씀)
-        // const token = localStorage.getItem('token');
-        // if (token) {
-        //     axios.get('http://localhost:8080/members/me', {
-        //         headers: { Authorization: `Bearer ${token}` }
-        //     })
-        //         .then(response => {
-        //             setCurrentUser(response.data);
-        //         })
-        //         .catch(error => {
-        //             console.error('There was an error fetching the current user!', error);
-        //         });
-        // }
-
         const userInfo = JSON.parse(localStorage.getItem('login'));
         if (userInfo && userInfo.mid) {
             setCurrentUser((prevState) => ({
@@ -60,6 +48,27 @@ const RecruitRead = () => {
             }))
         }
     }, [rno, ano])
+
+    useEffect(() => {
+        if (recruit.address) {
+            axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
+                params: { query: recruit.address },
+                headers: {
+                    Authorization: process.env.REACT_APP_API_KEY // 환경 변수에서 API 키를 가져옵니다.
+                }
+            })
+                .then(response => {
+                    const locationData = response.data.documents[0];
+                    setLocation({
+                        x: locationData.x,
+                        y: locationData.y
+                    });
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the location data!', error)
+                })
+        }
+    }, [recruit.address])
 
     if (!recruit.rno) {
         return <div>Loading...</div>
@@ -144,6 +153,23 @@ const RecruitRead = () => {
         return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     };
 
+    const KakaoMap = ({ x, y }) => {
+        useEffect(() => {
+            if (x && y) {
+                const container = document.getElementById('map'); // 지도를 담을 영역의 DOM 레퍼런스
+                const options = {
+                    center: new kakao.maps.LatLng(y, x), // 지도의 중심 좌표
+                    level: 3
+                };
+                const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
+            }
+        }, [x, y]);
+
+        return (
+            <div id="map" style={{ width: '500px', height: '400px' }}></div>
+        );
+    };
+
     return (
         <>
             <div>
@@ -197,7 +223,7 @@ const RecruitRead = () => {
                         </tr>
                     )}
                 </tbody>
-
+                {location.x && location.y && <KakaoMap x={location.x} y={location.y} />}
             </div>
         </>
     )
