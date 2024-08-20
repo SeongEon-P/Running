@@ -11,17 +11,23 @@ const NoticeRegister = () => {
         n_title: "",
         n_content: "",
         writer: "",
+        is_important: false,
     });
-    const [nr_name, setNrName] = useState(null);
+    const [nr_files, setNrFiles] = useState([]);
     const [showNoticeList, setShowNoticeList] = useState(false);
     const [showNoticeDetail, setShowNoticeDetail] = useState(false);
     const [registeredNno, setRegisteredNno] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
 
     const onInputChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === "nr_name") {
-            setNrName(files[0]);
+        const { name, value, files, type, checked } = e.target;
+        if (name === "nr_files") {
+            setNrFiles([...files]); // 여러 파일을 배열로 저장
+        } else if (type === "checkbox") {
+            setNotice({
+                ...notice,
+                [name]: checked,
+            });
         } else {
             setNotice({
                 ...notice,
@@ -29,7 +35,7 @@ const NoticeRegister = () => {
             });
         }
     };
-
+    
     useEffect(() => {
         const loginData = JSON.parse(localStorage.getItem('login'));
         if (loginData && loginData.name) {
@@ -38,27 +44,22 @@ const NoticeRegister = () => {
                 writer: loginData.name
             }));
         }
-        // // Check if the user is an admin
-        // if (loginData && loginData.role === 'admin') {
-        //     setIsAdmin(true);
-        // }
     }, []);
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        // if (!isAdmin) {
-        //     alert("관리자만 공지사항을 작성할 수 있습니다.");
-        //     return;
-        // }
 
         try {
             const formData = new FormData();
             formData.append("n_title", notice.n_title);
             formData.append("n_content", notice.n_content);
             formData.append("writer", notice.writer);
+            formData.append("is_important", notice.is_important);
 
-            if (nr_name) {
-                formData.append("files", nr_name);
+            if (nr_files.length > 0) {
+                nr_files.forEach((file) => {
+                    formData.append("files", file);
+                });
             }
 
             const response = await axios.post("http://localhost:8080/notice/register", formData, {
@@ -88,12 +89,7 @@ const NoticeRegister = () => {
                 <Noticelist />
             ) : showNoticeDetail ? (
                 <NoticeDetail nno={registeredNno} />
-            ) : 
-            // !isAdmin ? (
-            //     <div className="alert alert-danger" role="alert">
-            //         관리자만 공지사항을 작성할 수 있습니다.
-            //     </div>) : 
-                (
+            ) : (
                 <>
                     <h2 className="notice">공지사항</h2>
                     <form onSubmit={onSubmit}>
@@ -127,12 +123,13 @@ const NoticeRegister = () => {
                             <input
                                 onChange={onInputChange}
                                 type="file"
-                                id="nr_name"
+                                id="nr_files"
                                 className="form-control"
-                                name="nr_name"
-                                multiple
+                                name="nr_files"
+                                multiple // 다중 파일 업로드를 허용
                             />
                         </div>
+                        
                         <div className="d-flex flex-wrap justify-content-between btns">
                             <button className="btn btn-outline-dark noticeListBtn" onClick={handleListClick}>목록으로 돌아가기</button>
                             <div className="">

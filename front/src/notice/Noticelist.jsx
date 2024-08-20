@@ -9,6 +9,7 @@ function Noticelist() {
   const [itemsPerPage] = useState(10);
   const [currentItems, setCurrentItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("all");
   const [showRegister, setShowRegister] = useState(false);
   const [selectedNotice, setSelectedNotice] = useState(null);
 
@@ -26,20 +27,60 @@ function Noticelist() {
   }, []);
 
   useEffect(() => {
-    const filteredList = noticeList.filter(notice =>
-      notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    // 역순 정렬
-    const reversedList = filteredList.slice().reverse();
+    const lowerSearchTerm = searchTerm ? searchTerm.toLowerCase() : "";
+    const filteredList = noticeList
+      .filter(notice => {
+        const title = notice.n_title ? notice.n_title.toLowerCase() : "";
+        const content = notice.n_content ? notice.n_content.toLowerCase() : "";
+        const writer = notice.writer ? notice.writer.toLowerCase() : "";
+
+        switch (searchType) {
+          case "title":
+            return title.includes(lowerSearchTerm);
+          case "content":
+            return content.includes(lowerSearchTerm);
+          case "writer":
+            return writer.includes(lowerSearchTerm);
+          case "all":
+          default:
+            return (
+              title.includes(lowerSearchTerm) ||
+              content.includes(lowerSearchTerm) ||
+              writer.includes(lowerSearchTerm)
+            );
+        }
+      })
+      .sort((a, b) => b.is_important - a.is_important || b.nno - a.nno); // 중요 공지 먼저 정렬 후 최신 순 정렬
+
+    // 페이지네이션 설정
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    setCurrentItems(reversedList.slice(indexOfFirstItem, indexOfLastItem));
-  }, [currentPage, itemsPerPage, noticeList, searchTerm]);
+    setCurrentItems(filteredList.slice(indexOfFirstItem, indexOfLastItem));
+  }, [currentPage, itemsPerPage, noticeList, searchTerm, searchType]);
 
   const totalPages = Math.ceil(
-    noticeList.filter(notice =>
-      notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
-    ).length / itemsPerPage
+    noticeList.filter(notice => {
+      const title = notice.n_title ? notice.n_title.toLowerCase() : "";
+      const content = notice.n_content ? notice.n_content.toLowerCase() : "";
+      const writer = notice.writer ? notice.writer.toLowerCase() : "";
+      const lowerSearchTerm = searchTerm ? searchTerm.toLowerCase() : "";
+
+      switch (searchType) {
+        case "title":
+          return title.includes(lowerSearchTerm);
+        case "content":
+          return content.includes(lowerSearchTerm);
+        case "writer":
+          return writer.includes(lowerSearchTerm);
+        case "all":
+        default:
+          return (
+            title.includes(lowerSearchTerm) ||
+            content.includes(lowerSearchTerm) ||
+            writer.includes(lowerSearchTerm)
+          );
+      }
+    }).length / itemsPerPage
   );
 
   const maxPageNumbers = 5;
@@ -104,20 +145,12 @@ function Noticelist() {
     );
   };
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return 'Date not available';
-
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return 'Invalid Date';
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);
+  };
+
+  const handleSearchTypeChange = (e) => {
+    setSearchType(e.target.value);
   };
 
   const handleRegisterClick = () => {
@@ -139,6 +172,12 @@ function Noticelist() {
           <div className="d-flex justify-content-between mb-4">
             <h2 className="notice_title" style={{ fontSize: "30px" }}>공지사항</h2>
             <div className="d-flex">
+              <select className="form-select me-2" onChange={handleSearchTypeChange} value={searchType}>
+                <option value="all">전체</option>
+                <option value="title">제목</option>
+                <option value="content">내용</option>
+                <option value="writer">작성자</option>
+              </select>
               <input
                 id="searchInput"
                 className="form-control me-2"
@@ -167,11 +206,14 @@ function Noticelist() {
               {currentItems.map((notice, index) => (
                 <tr key={index}>
                   <th scope="row">{notice.nno}</th>
-                  <td onClick={() => handleNoticeClick(notice.nno)} style={{ cursor: 'pointer' }}>
+                  <td 
+                    onClick={() => handleNoticeClick(notice.nno)} 
+                    style={{ cursor: 'pointer' }}
+                  >
                     {notice.n_title}
                   </td>
                   <td className="NoticeView_p">
-                  {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
+                    {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
                   </td>
                 </tr>
               ))}
