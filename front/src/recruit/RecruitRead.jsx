@@ -153,6 +153,7 @@ const RecruitRead = () => {
         return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     };
 
+    // 지도 나타내기
     const KakaoMap = ({ x, y }) => {
         useEffect(() => {
             if (x && y) {
@@ -162,13 +163,23 @@ const RecruitRead = () => {
                     level: 3
                 };
                 const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
+
+                const markerPosition = options.center;
+                const marker = new kakao.maps.Marker({
+                    position: markerPosition
+                });
+                marker.setMap(map);
             }
+
+
         }, [x, y]);
 
         return (
             <div id="map" style={{ width: '500px', height: '400px' }}></div>
         );
     };
+
+
 
     return (
         <>
@@ -223,7 +234,8 @@ const RecruitRead = () => {
                         </tr>
                     )}
                 </tbody>
-                {location.x && location.y && <KakaoMap x={location.x} y={location.y} />}
+                {location.x && location.y && 
+                <KakaoMap x={location.x} y={location.y} />}
             </div>
         </>
     )
