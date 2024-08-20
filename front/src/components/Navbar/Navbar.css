@@ -1,21 +1,3 @@
-/* Navbar.css */
-.navbar {
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    padding: 10px 0;
-    background-color: #ffffff;
-    border-bottom: 1px solid #e6e6e6;
-}
-
-.nav-links {
-    display: flex;
-    gap: 20px;
-}
-
-.logo {
-    height: 50px; /* 로고 크기 조정 */
-}
 .navbar {
     display: flex;
     justify-content: space-between; /* 로고와 링크 그룹을 양 끝으로 정렬 */
@@ -27,17 +9,23 @@
 
 .logo {
     height: 50px; /* 로고 크기 조정 */
-    margin-right: auto; /* 로고를 왼쪽 끝으로 붙이기 위해 auto 사용 */
+    margin-right: 20px; /* 로고와 링크 사이에 여백 추가 */
 }
 
 .nav-links {
     display: flex;
     justify-content: center; /* 네비게이션 링크를 가운데 정렬 */
-    flex-grow: 1; /* 가운데 정렬을 위해 남은 공간 차지 */
     gap: 20px;
+    flex-grow: 1; /* 네비게이션 링크들이 가운데에 위치하도록 설정 */
 }
 
-.nav-links a, .right-links a {
+.auth-links { /* 새로 추가된 CSS */
+    display: flex;
+    gap: 20px;
+    margin-left: auto; /* 오른쪽 끝으로 밀어내기 */
+}
+
+.nav-links a, .auth-links a {
     text-decoration: none; /* 밑줄 제거 */
     font-weight: bold; /* 글자 굵게 */
     color: #000000; /* 글자 색 검정 */
@@ -45,18 +33,12 @@
     transition: border-bottom 0.2s; /* 부드러운 밑줄 애니메이션 */
 }
 
-.nav-links a:hover {
+.nav-links a:hover, .auth-links a:hover {
     border-bottom: 2px solid #000000; /* 마우스 오버 시 밑줄 추가 */
 }
 
 .nav-links .crew-link > a:hover {
     border-bottom: none; /* CREW 링크에 마우스 오버 시 밑줄 제거 */
-}
-
-.right-links {
-    display: flex;
-    gap: 20px;
-    margin-left: auto; /* 오른쪽 끝으로 밀어내기 */
 }
 
 .crew-link {
