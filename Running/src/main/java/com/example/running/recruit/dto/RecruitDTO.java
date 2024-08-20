@@ -23,6 +23,7 @@ public class RecruitDTO {
     private String r_content;
     // 모이는 장소
     private String r_place;
+    private String r_place2;
     // 모이는 날짜
     private LocalDate r_date;
     // 모이는 시간

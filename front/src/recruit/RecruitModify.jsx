@@ -9,6 +9,7 @@ const RecruitModify = () => {
         r_title: '',
         r_content: '',
         r_place: '',
+        r_place2: '',
         r_date: '',
         r_time: '',
         max_number: '',
@@ -25,6 +26,7 @@ const RecruitModify = () => {
                     r_title: data.r_title,
                     r_content: data.r_content,
                     r_place: data.r_place,
+                    r_place2: data.r_place2,
                     r_date: `${data.r_date[0]}-${String(data.r_date[1]).padStart(2, '0')}-${String(data.r_date[2]).padStart(2, '0')}`, // 배열을 'yyyy-MM-dd' 형식의 문자열로 변환
                     r_time: data.r_time.slice(0, 2).map(num => String(num).padStart(2, '0')).join(':'), // 배열을 'hh:mm' 형식의 문자열로 변환
                     max_number: data.max_number,
@@ -80,6 +82,10 @@ const RecruitModify = () => {
                 <div>
                     <label>장소:</label>
                     <input type="text" name="r_place" value={recruit.r_place} onChange={handleChange} />
+                </div>
+                <div>
+                    <label>장소2:</label>
+                    <input type="text" name="r_place2" value={recruit.r_place2} onChange={handleChange} />
                 </div>
                 <div>
                     <label>날짜:</label>

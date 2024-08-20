@@ -29,9 +29,13 @@ public class Recruit extends BaseEntity {
     @Column(name = "r_content", nullable = false)
     private String r_content;
 
-    // 모이는 장소
+    // 모이는 장소(주소 api 추가용)
     @Column(name = "r_place", nullable = false)
     private String r_place;
+
+    // 상세 장소명
+    @Column(name = "r_place2", nullable = false)
+    private String r_place2;
 
     // 모이는 날짜
     @Column(name = "r_date", nullable = false)
@@ -56,12 +60,14 @@ public class Recruit extends BaseEntity {
     public void changeRecruit(String r_title,
                               String r_content,
                               String r_place,
+                              String r_place2,
                               LocalDate r_date,
                               LocalTime r_time,
                               Integer max_number) {
         this.r_title = r_title;
         this.r_content = r_content;
         this.r_place = r_place;
+        this.r_place2 = r_place2;
         this.r_date = r_date;
         this.r_time = r_time;
         this.max_number = max_number;

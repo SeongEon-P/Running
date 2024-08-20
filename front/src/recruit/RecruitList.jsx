@@ -79,7 +79,7 @@ const RecruitList = () => {
               <td>{recruit.rno}</td>
               <td>{recruit.r_title}</td>
               <td>{recruit.r_content}</td>
-              <td>{recruit.r_place}</td>
+              <td>{recruit.r_place2}</td>
               <td>{formatDate(recruit.r_date)}</td>
               <td>{formatTime(recruit.r_time)}</td>
               <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.max_number}</td>

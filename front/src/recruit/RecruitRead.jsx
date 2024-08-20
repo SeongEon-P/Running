@@ -150,6 +150,7 @@ const RecruitRead = () => {
                 <h1>제목 : {recruit.r_title}</h1>
                 <p>내용 : {recruit.r_content}</p>
                 <p>장소 : {recruit.r_place}</p>
+                <p>장소 : {recruit.r_place2}</p>
                 <p>날짜 : {formatDate(recruit.r_date)}</p>
                 <p>시간 : {formatTime(recruit.r_time)}</p>
                 <p>모집인원 : {count !== null ? `${count}/${recruit.max_number}` : 'Loading...'}</p>
