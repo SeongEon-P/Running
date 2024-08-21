@@ -13,8 +13,9 @@ const RecruitList = () => {
   useEffect(() => {
     axios.get('http://localhost:8080/recruit/list')
       .then(response => {
-        console.log('Recruit List:', response.data); // 데이터가 배열인지 확인
-        setRecruits(response.data);
+        // rno 기준으로 내림차순 정렬
+        const sortedRecruits = response.data.sort((a, b) => b.rno - a.rno);
+        setRecruits(sortedRecruits);
 
         response.data.forEach(recruit => {
           axios.get('http://localhost:8080/apply/count', { params: { rno: recruit.rno } })
