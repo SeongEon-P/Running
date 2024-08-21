@@ -61,12 +61,13 @@ public class RecruitServiceImpl implements RecruitService {
         log.info("Recruit Found : {}" , recruit);
 
         recruit.changeRecruit(
-                recruitDTO.getR_title(),
-                recruitDTO.getR_content(),
-                recruitDTO.getR_place(),
-                recruitDTO.getR_date(),
-                recruitDTO.getR_time(),
-                recruitDTO.getMax_number()
+                recruitDTO.getTitle(),
+                recruitDTO.getContent(),
+                recruitDTO.getAddress(),
+                recruitDTO.getPlace(),
+                recruitDTO.getDate(),
+                recruitDTO.getTime(),
+                recruitDTO.getMaxnumber()
         );
 
         Optional<Member> memberResult = memberRepository.findById(recruitDTO.getMid());

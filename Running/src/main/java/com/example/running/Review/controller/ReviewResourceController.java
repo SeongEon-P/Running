@@ -1,7 +1,7 @@
-package com.example.running.Notice.controller;
+package com.example.running.Review.controller;
 
-import com.example.running.Notice.dto.NoticeResourceDTO;
-import com.example.running.Notice.service.NoticeResourceService;
+import com.example.running.Review.dto.ReviewResourceDTO;
+import com.example.running.Review.service.ReviewResourceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -16,23 +16,23 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notice/files")
+@RequestMapping("/review/files")
 @Log4j2
-public class NoticeResourceController {
-    private final NoticeResourceService noticeResourceService;
+public class ReviewResourceController {
+    private final ReviewResourceService reviewResourceService;
     private final Path fileStorageLocation = Paths.get("file-storage").toAbsolutePath().normalize();
 
-    @DeleteMapping("{nrno}")
-    public ResponseEntity<Object> deleteFile(@PathVariable long nrno) {
-        noticeResourceService.deleteNoticeResource(nrno);
+    @DeleteMapping("{rrno}")
+    public ResponseEntity<Object> deleteFile(@PathVariable long rrno) {
+        reviewResourceService.deleteReview(rrno);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
-    @PostMapping("{nno}")
-    public ResponseEntity<Object> createNotice(@PathVariable("nno") Long nno,List<MultipartFile> files) {
-        List<NoticeResourceDTO> resourceDtoList = new ArrayList<NoticeResourceDTO>();
+    @PostMapping("{rno}")
+    public ResponseEntity<Object> createReview(@PathVariable("rno") Long rno, List<MultipartFile> files) {
+        List<ReviewResourceDTO> resourceDtoList = new ArrayList<ReviewResourceDTO>();
         if (files != null) {
-            int ord = noticeResourceService.getMaxOrd(nno);
+            int ord = reviewResourceService.getMaxOrd(rno);
             for (MultipartFile file : files) {
                 Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
                 try {
@@ -40,16 +40,16 @@ public class NoticeResourceController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                NoticeResourceDTO dto = NoticeResourceDTO.builder()
-                        .nr_name(file.getOriginalFilename())
-                        .nr_ord(ord)
-                        .nr_type(file.getContentType())
-                        .nno(nno)
+                ReviewResourceDTO dto = ReviewResourceDTO.builder()
+                        .rr_name(file.getOriginalFilename())
+                        .rr_ord(ord)
+                        .rr_type(file.getContentType())
+                        .rno(rno)
                         .build();
                 resourceDtoList.add(dto);
                 ord++;
             }
-            noticeResourceService.saveAll(resourceDtoList);
+            reviewResourceService.saveReview(resourceDtoList);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

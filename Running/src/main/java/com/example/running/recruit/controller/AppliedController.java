@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/apply")
 @Log4j2
+@CrossOrigin(origins = "http://localhost:3000")
 public class AppliedController {
 
     private final AppliedService appliedService;
@@ -44,6 +45,13 @@ public class AppliedController {
         // 게시자 = 신청자일 경우 삭제 못 하도록 로직 추가 하기
         appliedService.cancelApplication(ano);
         return new ResponseEntity<>("application cancelled", HttpStatus.OK);
+    }
+
+    // 현재 신청한 인원
+    @GetMapping("/count")
+    public ResponseEntity<Object> getCount(@RequestParam Long rno) {
+        Long currentCount = appliedService.getAppliedCountByRno(rno);
+        return new ResponseEntity<>(currentCount, HttpStatus.OK);
     }
 
 }

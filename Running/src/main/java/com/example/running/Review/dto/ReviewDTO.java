@@ -1,29 +1,27 @@
-package com.example.running.Notice.dto;
+package com.example.running.Review.dto;
 
-import com.example.running.Notice.domain.NoticeResource;
+import com.example.running.Notice.dto.NoticeResourceDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @ToString
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoticeDTO {
+public class ReviewDTO {
     @NotNull
-    private Long nno;
-    private String n_title;
-    private String n_content;
+    private Long rno;
+    private String r_title;
+    private String r_content;
     private String writer;
+    private String r_image;
     private LocalDateTime modDate;
     private LocalDateTime regDate;
-    private String n_image;
-    private List<NoticeResourceDTO> notice_resource;
+    private List<ReviewResourceDTO> review_resource;
     private List<MultipartFile> files;
-
 }

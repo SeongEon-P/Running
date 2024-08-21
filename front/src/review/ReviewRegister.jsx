@@ -1,31 +1,30 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import NoticeDetail from "./NoticeDetail";
-import Noticelist from "./Noticelist";
+import ReviewDetail from "./ReviewDetail";
+import Reviewlist from "./ReviewList";
 
-
-const NoticeRegister = () => {
+const ReviewRegister = () => {
     const navigate = useNavigate();
-    const [notice, setNotice] = useState({
-        n_title: "",
-        n_content: "",
+    const [review, setReview] = useState({
+        r_title: "",
+        r_content: "",
         writer: localStorage.getItem('mid') || "",
     });
-    const [nr_name, setNrName] = useState(null);
+    const [rr_name, setRrName] = useState(null);
 
-    const [showNoticeList, setShowNoticeList] = useState(false);
-    const [showNoticeDetail, setShowNoticeDetail] = useState(false);
-    const [registeredNno, setRegisteredNno] = useState(null); 
+    const [showReviewList, setShowReviewList] = useState(false);
+    const [showReviewDetail, setShowReviewDetail] = useState(false);
+    const [registeredRno, setRegisteredRno] = useState(null); 
 
 
     const onInputChange = (e) => {
         const { name, value, files } = e.target;
-        if (name === "nr_name") {
-            setNrName(files[0]);
+        if (name === "rr_name") {
+            setRrName(files[0]);
         } else {
-            setNotice({
-                ...notice,
+            setReview({
+                ...review,
                 [name]: value,
             });
         }
@@ -36,16 +35,16 @@ const NoticeRegister = () => {
 
         try {
             const formData = new FormData();
-            formData.append("n_title", notice.n_title);
-            formData.append("n_content", notice.n_content);
-            formData.append("writer", notice.writer);
+            formData.append("r_title", review.r_title);
+            formData.append("r_content", review.r_content);
+            formData.append("writer", review.writer);
             console.log(formData)
 
-            if (nr_name) {
-                formData.append("files", nr_name);
+            if (rr_name) {
+                formData.append("files", rr_name);
             }
 
-            const response = await axios.post("http://localhost:8080/notice/register", formData, {
+            const response = await axios.post("http://localhost:8080/review/register", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -53,8 +52,8 @@ const NoticeRegister = () => {
 
             if (response.status === 201) {
                 alert("공지사항 등록이 성공적으로 완료되었습니다.");
-                setRegisteredNno(response.data.nno); 
-                setShowNoticeDetail(true); 
+                setRegisteredRno(response.data.rno); 
+                setShowReviewDetail(true); 
             }
         } catch (error) {
 
@@ -64,42 +63,42 @@ const NoticeRegister = () => {
     };
 
     const handleListClick = () => {
-        setShowNoticeList(true);
+        setShowReviewList(true);
     }
 
     return (
         <>
-            {showNoticeList ? (
-                <Noticelist />
-            ) : showNoticeDetail ? (
-                <NoticeDetail nno={registeredNno} />
+            {showReviewList ? (
+                <Reviewlist />
+            ) : showReviewDetail ? (
+                <ReviewDetail rno={registeredRno} />
             ) : (
                 <>
-                    <h2 class="notice">공지사항</h2>
+                    <h2 class="review">공지사항</h2>
                     <form onSubmit={onSubmit}>
                         <div class="container">
                             <div class="d-flex flex-wrap justify-content-between">
-                                <p className="d-flex notice_title">제목:
+                                <p className="d-flex review_title">제목:
                                     <input
                                         onChange={onInputChange}
                                         type="text"
-                                        name="n_title"
+                                        name="r_title"
                                         className="form-control"
-                                        value={notice.n_title}
+                                        value={review.r_title}
                                         required
                                         placeholder="제목"
                                     />
                                 </p>
-                                <span>작성자 : {notice.writer}</span>
+                                <span>작성자 : {review.writer}</span>
                             </div>
-                            <p class="notice_content">내용
+                            <p class="review_content">내용
                                 <textarea
                                     onChange={onInputChange}
-                                    id="n_content"
+                                    id="r_content"
                                     className="form-control"
                                     placeholder="내용"
-                                    name="n_content"
-                                    value={notice.n_content}
+                                    name="r_content"
+                                    value={review.r_content}
                                     rows="20"
                                 />
                             </p>
@@ -107,13 +106,13 @@ const NoticeRegister = () => {
                             <input
                                 onChange={onInputChange}
                                 type="file"
-                                id="nr_name"
+                                id="rr_name"
                                 className="form-control"
-                                name="nr_name"
+                                name="rr_name"
                             />
                         </div>
                         <div class="d-flex flex-wrap justify-content-between btns">
-                            <button class="btn btn-outline-dark noticeListBtn" onClick={handleListClick}>목록으로 돌아가기</button>
+                            <button class="btn btn-outline-dark reviewListBtn" onClick={handleListClick}>목록으로 돌아가기</button>
                             <div class="">
                                 <button type="button" className="btn btn-outline-primary px-3 mx-2" onClick={onSubmit}>
                                     등록
@@ -127,4 +126,4 @@ const NoticeRegister = () => {
     );
 };
 
-export default NoticeRegister;
+export default ReviewRegister;

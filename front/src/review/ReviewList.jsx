@@ -1,25 +1,25 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import NoticeDetail from "./NoticeDetail";
-import NoticeRegister from "./NoticeRegister";
+import ReviewDetail from "./ReviewDetail";
+import ReviewRegister from "./ReviewRegister";
 
-function Noticelist() {
-  const [noticeList, setNoticeList] = useState([]);
+function ReviewList() {
+  const [reviewList, setReviewList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [currentItems, setCurrentItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showRegister, setShowRegister] = useState(false);
-  const [selectedNotice, setSelectedNotice] = useState(null);
+  const [selectedReview, setSelectedReview] = useState(null);
 
 
   const uploadRegister = async () => {
     try {
-        const result = await axios.get("http://localhost:8080/notice/list");
+        const result = await axios.get("http://localhost:8080/review/list");
         console.log(result.data);
-        setNoticeList(result.data);
+        setReviewList(result.data);
     } catch (error) {
-      console.error("Error fetching notice list:", error);
+      console.error("Error fetching review list:", error);
     }
   };
 
@@ -28,17 +28,17 @@ function Noticelist() {
   }, []);
 
   useEffect(() => {
-    const filteredList = noticeList.filter(notice =>
-      notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredList = reviewList.filter(review =>
+      review.r_title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     setCurrentItems(filteredList.slice(indexOfFirstItem, indexOfLastItem).reverse());
-  }, [currentPage, itemsPerPage, noticeList, searchTerm]);
+  }, [currentPage, itemsPerPage, reviewList, searchTerm]);
 
   const totalPages = Math.ceil(
-    noticeList.filter(notice =>
-      notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
+    reviewList.filter(review =>
+      review.r_title.toLowerCase().includes(searchTerm.toLowerCase())
     ).length / itemsPerPage
   );
 
@@ -105,7 +105,7 @@ function Noticelist() {
   };
 
   const formatDate = (dateStr) => {
-    console.log(`Date String: ${dateStr}`); // 날짜 문자열 확인
+    console.log(`Date String: ${dateStr}`);
   
     if (!dateStr) {
       return 'Date not available';
@@ -130,20 +130,20 @@ function Noticelist() {
     setShowRegister(true);
   };
 
-  const handleNoticeClick = (nno) => {
-    setSelectedNotice(nno);
+  const handleReviewClick = (rno) => {
+    setSelectedReview(rno);
   };
 
   return (
-    <div className="container notice_con">
+    <div className="container review_con">
       {showRegister ? ( 
-        <NoticeRegister />
-      ) : selectedNotice ? ( 
-        <NoticeDetail nno={selectedNotice} />
+        <ReviewRegister />
+      ) : selectedReview ? ( 
+        <ReviewDetail rno={selectedReview} />
       ) : (
         <>
           <div className="d-flex justify-content-between mb-4">
-            <h2 className="notice_title" style={{ fontSize: "30px" }}>공지사항</h2>
+            <h2 className="review_title" style={{ fontSize: "30px" }}>공지사항</h2>
             <div className="d-flex">
               <input
                 id="searchInput"
@@ -154,7 +154,7 @@ function Noticelist() {
               <button 
                 className="btn btn-outline-dark"
                 type="button"
-                onClick={handleSearch} // 검색 버튼 클릭 시 handleSearch 호출
+                onClick={handleSearch}
               >
                 Search
               </button>
@@ -170,27 +170,27 @@ function Noticelist() {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((notice, index) => (
+              {currentItems.map((review, index) => (
                 <tr key={index}>
-                  <th scope="row">{notice.nno}</th>
-                  <td onClick={() => handleNoticeClick(notice.nno)} style={{ cursor: 'pointer' }}>
-                    {notice.n_title}
+                  <th scope="row">{review.rno}</th>
+                  <td onClick={() => handleReviewClick(review.rno)} style={{ cursor: 'pointer' }}>
+                    {review.r_title}
                   </td>
-                  <td>{formatDate(notice.regdate)}</td>
+                  <td>{formatDate(review.regdate)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <div className="mx-auto"> {/* 페이지 번호를 가운데로 정렬 */}
+            <div className="mx-auto">
               {renderPageNumbers()}
             </div>
             <div className="text-end">
               <button
                 type="button"
-                className="btn btn-outline-dark noticeRegisterBtn"
-                onClick={handleRegisterClick} // 등록 버튼 클릭 시 handleRegisterClick 호출
+                className="btn btn-outline-dark reviewRegisterBtn"
+                onClick={handleRegisterClick}
               >
                 등록
               </button>
@@ -203,4 +203,4 @@ function Noticelist() {
   );
 }
 
-export default Noticelist;
+export default ReviewList;

@@ -26,7 +26,6 @@ const Navbar = () => {
                 <Link to="/info/list">INFO</Link>
                 <Link to="/free/list">FREE</Link>
                 <Link to="/review/list">REVIEW</Link>
-
                 <Link to="/mypage">MyPage</Link>
             </div>
             <div className="auth-links">

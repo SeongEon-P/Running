@@ -9,19 +9,28 @@ import Update from './member/member/Update';
 import MyPage from './member/page/MyPage';
 import NoticeRegister from './notice/NoticeRegister';
 import Noticelist from './notice/Noticelist';
+import RecruitRegister from './recruit/RecruitRegister';
+import RecruitList from './recruit/RecruitList';
+import RecruitRead from './recruit/RecruitRead';
+import RecruitModify from './recruit/RecruitModify';
 import NoticeDetail from './notice/NoticeDetail';
 import FindId from './member/page/FindId';
 import FindPassword from './member/page/FindPassword';
 import ResetPassword from './member/page/ResetPassword';
 import { AuthProvider } from './context/AuthContext';
+
 import KakaoCallback from './member/member/KakaoCallback ';
 import FreeBoard from './pages/FreeBoard/FreeBoard';
 import './App.css';
+
+import KakaoMap from './recruit/sample/KakaoMap';
+
 
 const App = () => {
   return (
     <Router>
       <AuthProvider>
+
         <Navbar />
         <Routes>
           <Route path="/" element={<MainPage />} />
@@ -40,6 +49,13 @@ const App = () => {
             element={<KakaoCallback />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
           />
           <Route path="/free/*" element={<FreeBoard />} />
+
+          <Route path='/recruit/register' element={<RecruitRegister/>}/>
+           <Route path='/recruit/list' element={<RecruitList/>}/>
+           <Route path='/recruit/read/:rno' element={<RecruitRead />} />
+          <Route path='/recruit/modify/:rno' element={<RecruitModify />} />
+          <Route path='/map' element={<KakaoMap />} />
+
         </Routes>
       </AuthProvider>
     </Router>

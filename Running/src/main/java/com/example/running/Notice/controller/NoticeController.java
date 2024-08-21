@@ -33,13 +33,14 @@ public class NoticeController {
     private NoticeDTO noticeDTO;
 
     @GetMapping("/list")
-    public List<NoticeDTO> getNoticeList(){
+    public List<NoticeDTO> getNoticeList() {
         return noticeService.findAllNotice();
     }
 
+    // Multipart file data 처리
     @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Object> addNotice(NoticeDTO noticeDTO){
-        List<NoticeResourceDTO> resourceDtoList = new ArrayList<NoticeResourceDTO>();
+    public ResponseEntity<Object> addNotice(@ModelAttribute NoticeDTO noticeDTO) {
+        List<NoticeResourceDTO> resourceDtoList = new ArrayList<>();
         NoticeDTO savedNotice = noticeService.addNotice(noticeDTO);
         if (noticeDTO.getFiles() != null) {
             int ord = 0;
@@ -61,54 +62,39 @@ public class NoticeController {
             }
             noticeResourceService.saveAll(resourceDtoList);
         }
-
         return new ResponseEntity<>(savedNotice, HttpStatus.CREATED);
     }
 
-    @GetMapping("/read")
-    public ResponseEntity<Object> getReadNotice(@RequestParam Long nno){
-        NoticeDTO oneNotice  = noticeService.findOneNoticeById(nno);
-        if(oneNotice != null && oneNotice.getNno() != null){
-            return new ResponseEntity<>(oneNotice, HttpStatus.OK);
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Notice not found with id " + nno);
-        }
-
-    }
-    @DeleteMapping("/{nno}")
-    public ResponseEntity<Object> deleteNotice(@PathVariable Long nno){
-        noticeService.deleteNotice(nno);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
     @PutMapping("/{nno}")
-    public ResponseEntity<Object> modifyNotice(@ModelAttribute NoticeDTO noticeDTO){
+    public ResponseEntity<Object> modifyNotice(@PathVariable("nno") Long nno, @ModelAttribute NoticeDTO noticeDTO) {
         try {
             int ord = 0;
-            List<NoticeResourceDTO> resourceDTOList = new ArrayList<>();
-
-            if (noticeDTO.getFiles() != null) {
+            List<NoticeResourceDTO> resourceDtoList = new ArrayList<NoticeResourceDTO>();
+            log.info(noticeDTO);
+            if (noticeDTO.getFiles() != null && !noticeDTO.getFiles().isEmpty()) {
                 for (MultipartFile file : noticeDTO.getFiles()) {
                     Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
                     try {
                         file.transferTo(savePath);
-                    } catch (IOException e) {
-                        log.error("File upload error for file: " + file.getOriginalFilename(), e);
-                        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                        NoticeResourceDTO dto = NoticeResourceDTO.builder()
+                                .nr_name(file.getOriginalFilename())
+                                .nr_ord(ord++)
+                                .nr_type(file.getContentType())
+                                .nno(nno)
+                                .build();
+                        resourceDtoList.add(dto);
+                    } catch (Exception e) {
+                        log.error("파일 저장 오류: {}", file.getOriginalFilename(), e);
                     }
-
-                    NoticeResourceDTO dto = NoticeResourceDTO.builder()
-                            .nr_name(file.getOriginalFilename())
-                            .nr_ord(ord)
-                            .nr_type(file.getContentType())
-                            .nno(noticeDTO.getNno())
-                            .build();
-                    resourceDTOList.add(dto);
-                    ord++;
                 }
-
-                noticeResourceService.deleteNoticeResource(noticeDTO.getNno());
-                noticeResourceService.saveAll(resourceDTOList);
             }
+
+            log.info("자원 관리 시작.");
+            // 기존 자원 삭제
+            noticeResourceService.deleteNoticeResource(nno);
+            // 새로운 자원 저장
+            noticeResourceService.saveAll(resourceDtoList);
+            log.info("자원 관리 완료.");
 
             Notice modifiedNotice = noticeService.modifyNotice(noticeDTO);
             return new ResponseEntity<>(modifiedNotice, HttpStatus.OK);
@@ -116,10 +102,23 @@ public class NoticeController {
             log.error("Notice not found with ID: " + noticeDTO.getNno(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("Unexpected error during notice modification", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @GetMapping("/read")
+    public ResponseEntity<Object> getReadNotice(@RequestParam Long nno) {
+        NoticeDTO oneNotice = noticeService.findOneNoticeById(nno);
+        if (oneNotice != null && oneNotice.getNno() != null) {
+            return new ResponseEntity<>(oneNotice, HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Notice not found with id " + nno);
+        }
+    }
 
+    @DeleteMapping("/{nno}")
+    public ResponseEntity<Object> deleteNotice(@PathVariable Long nno) {
+        noticeService.deleteNotice(nno);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
