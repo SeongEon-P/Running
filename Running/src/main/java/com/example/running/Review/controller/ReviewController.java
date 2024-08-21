@@ -83,14 +83,12 @@ public class ReviewController {
                     }
                 }
             }
-
             log.info("자원 관리 시작.");
             // 기존 자원 삭제
             reviewResourceService.deleteReview(rno);
             // 새로운 자원 저장
             reviewResourceService.saveReview(resourceDtoList);
             log.info("자원 관리 완료.");
-
             Review modifiedReview = reviewService.modifyReview(reviewDTO);
             return new ResponseEntity<>(modifiedReview, HttpStatus.OK);
         } catch (NoSuchElementException e) {

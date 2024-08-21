@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReviewDetail from "./ReviewDetail";
 import Reviewlist from "./ReviewList";
 
@@ -9,19 +9,23 @@ const ReviewRegister = () => {
     const [review, setReview] = useState({
         r_title: "",
         r_content: "",
-        writer: localStorage.getItem('mid') || "",
+        writer:"",
     });
-    const [rr_name, setRrName] = useState(null);
-
     const [showReviewList, setShowReviewList] = useState(false);
     const [showReviewDetail, setShowReviewDetail] = useState(false);
     const [registeredRno, setRegisteredRno] = useState(null); 
+    const [rr_files, setRrFiles] = useState([]);
 
 
     const onInputChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === "rr_name") {
-            setRrName(files[0]);
+        const { name, value, files, type, checked } = e.target;
+        if (name === "rr_files") {
+            setRrFiles([...files]); 
+        } else if (type === "checkbox") {
+            setReview({
+                ...review,
+                [name]: checked,
+            });
         } else {
             setReview({
                 ...review,
@@ -29,6 +33,16 @@ const ReviewRegister = () => {
             });
         }
     };
+
+    useEffect(() => {
+        const loginData = JSON.parse(localStorage.getItem('login'));
+        if (loginData && loginData.name) {
+            setReview(prevData => ({
+                ...prevData,
+                writer: loginData.name
+            }));
+        }
+    }, []);
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -40,10 +54,11 @@ const ReviewRegister = () => {
             formData.append("writer", review.writer);
             console.log(formData)
 
-            if (rr_name) {
-                formData.append("files", rr_name);
+            if (rr_files.length > 0) {
+                rr_files.forEach((file) => {
+                    formData.append("files", file);
+                });
             }
-
             const response = await axios.post("http://localhost:8080/review/register", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -56,7 +71,6 @@ const ReviewRegister = () => {
                 setShowReviewDetail(true); 
             }
         } catch (error) {
-
             console.error("등록 중 오류가 발생했습니다.", error);
             alert("등록 중 오류가 발생했습니다.");
         }
@@ -65,16 +79,6 @@ const ReviewRegister = () => {
     const handleListClick = () => {
         setShowReviewList(true);
     }
-    useEffect(() => {
-        const loginData = JSON.parse(localStorage.getItem('login'));
-        if (loginData && loginData.name) {
-          setReview(prevData => ({
-            ...prevData,
-            writer: loginData.name
-          }));
-        }
-      }, []);
-      
 
     return (
         <>
@@ -84,7 +88,7 @@ const ReviewRegister = () => {
                 <ReviewDetail rno={registeredRno} />
             ) : (
                 <>
-                    <h2 class="review">공지사항</h2>
+                    <h2 class="review">리뷰</h2>
                     <form onSubmit={onSubmit}>
                         <div class="container">
                             <div class="d-flex flex-wrap justify-content-between">
@@ -116,9 +120,10 @@ const ReviewRegister = () => {
                             <input
                                 onChange={onInputChange}
                                 type="file"
-                                id="rr_name"
+                                id="rr_files"
                                 className="form-control"
-                                name="rr_name"
+                                name="rr_files"
+                                multiple
                             />
                         </div>
                         <div class="d-flex flex-wrap justify-content-between btns">

@@ -22,11 +22,28 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
             });
         }
     };
+    
+    useEffect(() => {
+        const loginData = JSON.parse(localStorage.getItem('login'));
+        if (loginData && loginData.name) {
+            setNotice(prevData => ({
+                ...prevData,
+                writer: loginData.name
+            }));
+        }
+    }, []);
+
 
     const getNotice = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/notice/read?nno=${nno}`);
-            console.log(response.data);
+            console.log("Fetched notice data:", response.data);
+            
+            // 만약 writer가 제대로 들어오지 않으면 디버깅 메시지 출력
+            if (!response.data.writer) {
+                console.warn("Fetched notice has no writer field!");
+            }
+    
             setNotice(response.data);
             setNoticeResource(response.data.notice_resource);
             setLoading(false);

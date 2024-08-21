@@ -4,11 +4,16 @@ import com.example.running.Review.dto.ReviewResourceDTO;
 import com.example.running.Review.service.ReviewResourceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,7 +25,7 @@ import java.util.List;
 @Log4j2
 public class ReviewResourceController {
     private final ReviewResourceService reviewResourceService;
-    private final Path fileStorageLocation = Paths.get("file-storage").toAbsolutePath().normalize();
+    private final Path fileStorageLocation = Paths.get("C:\\upload").toAbsolutePath().normalize();
 
     @DeleteMapping("{rrno}")
     public ResponseEntity<Object> deleteFile(@PathVariable long rrno) {
@@ -29,7 +34,7 @@ public class ReviewResourceController {
 
     }
     @PostMapping("{rno}")
-    public ResponseEntity<Object> createReview(@PathVariable("rno") Long rno, List<MultipartFile> files) {
+    public ResponseEntity<Object> createReview(@PathVariable("rno") Long rno, @RequestParam("files")List<MultipartFile> files) {
         List<ReviewResourceDTO> resourceDtoList = new ArrayList<ReviewResourceDTO>();
         if (files != null) {
             int ord = reviewResourceService.getMaxOrd(rno);
@@ -52,5 +57,24 @@ public class ReviewResourceController {
             reviewResourceService.saveReview(resourceDtoList);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping("/{filename:.+}")
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+        try {
+            Path file = fileStorageLocation.resolve(filename).normalize();
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            } else {
+                throw new FileNotFoundException("Could not find or read the file: " + filename);
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Error: Malformed URL " + e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
     }
 }

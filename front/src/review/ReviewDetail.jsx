@@ -11,6 +11,8 @@ const ReviewDetail = ({ rno }) => {
     const [reviewResource, setReviewResource] = useState([]);
     const [showModify, setShowModify] = useState(false);
     const [showList, setShowList] = useState(false);
+    const [currentUser, setCurrentUser] = useState("");
+    
 
     const getReview = async () => {
         const response = await (await axios.get(`http://localhost:8080/review/read?rno=${rno}`)).data;
@@ -18,6 +20,14 @@ const ReviewDetail = ({ rno }) => {
         setReviewResource(response.review_resource);
         setLoading(false);
     };
+    useEffect(() => {
+        // Fetch current user info from localStorage
+        const user = JSON.parse(localStorage.getItem('login'));
+        if (user) {
+            setCurrentUser(user.name); // Set current user
+        }
+    }, []);
+
     const handleModify = () => {
         setShowModify(true);
     }
@@ -37,20 +47,7 @@ const ReviewDetail = ({ rno }) => {
         getReview();
     }, [rno, showModify]);
 
-    const formatDate = (dateStr) => {
-        if (!dateStr) {
-            return 'Date Not available';
-        }
-        const data = new Date(dateStr);
-        if (isNaN(data.getTime())) {
-            console.warn(`Invalid date: ${dateStr}`);
-            return 'Invalid Date';
-        }
-        const year = data.getFullYear();
-        const month = String(data.getMonth() + 1).padStart(2, '0');
-        const day = String(data.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
+    const canModifyOrDelete = review.writer === currentUser;
 
     return (
         <>
@@ -71,30 +68,53 @@ const ReviewDetail = ({ rno }) => {
                             </div>
                         </div>
                         <div className="form-control">
-                            <span> 등록일 : {formatDate(review.regDate)} </span>
+                            <span> 등록일 : {new Date(review.regDate[0], review.regDate[1] - 1, review.regDate[2], review.regDate[3], review.regDate[4], review.regDate[5]).toLocaleDateString()}</span>
                             
                         </div>
                         <div className="form-control">
-                            <pre className="review_content">{review.r_content}</pre>
-                        </div>
-                        <div className="form-control">
-                            {reviewResource.map((rr, index) => (
-                                <p key={index}>
-                                    <a href={'http://localhost:8080/file/' + rr.rr_name}>{rr.rr_name}</a>
-                                </p>
-                            ))}
+                            <p className="review_content">내용: {review.r_content}</p> {/* Add this line to display the content */}
+                            {reviewResource.length > 0 ? (
+                                reviewResource.map((resource, index) => (
+                                    <div key={index} style={{ marginBottom: '15px' }}>
+                                        {resource.rr_type.startsWith("image") ? (
+                                            <img
+                                                src={`http://localhost:8080/review/files/${resource.rr_name}`}
+                                                alt={resource.rr_name}
+                                                style={{ width: '100%', maxWidth: '600px', height: 'auto' }}
+                                            />
+                                        ) : (
+                                            <p>
+                                                <a href={`http://localhost:8080/review/files/${resource.rr_name}`}>
+                                                    {resource.rr_name}
+                                                </a>
+                                            </p>
+                                        )}
+                                    </div>
+                                ))
+                            ) : (
+                                <p>첨부 파일이 없습니다.</p>
+                            )}
                         </div>
                     </div>
 
                     <div className="d-flex flex-wrap justify-content-between btns">
                         <button
-                          className="btn btn-outline-dark reviewListBtn"
-                          onClick={() =>setShowList(true)}>
+                            className="btn btn-outline-dark noticeListBtn"
+                            onClick={() => setShowList(true)}
+                        >
                             목록으로 가기
-                          </button>
-                          <div className="">
-                            <button className="btn btn-outline-primary reviewModifyBtn" onClick={handleModify}>수정</button>
-                            <button className="btn btn-outline-danger reviewRemoveBtn" onClick={handleDelete}>삭제</button>
+                        </button>
+                        <div className="">
+                            {canModifyOrDelete && (
+                                <>
+                                    <button className="btn btn-outline-primary reviewModifyBtn" onClick={handleModify}>
+                                        수정
+                                    </button>
+                                    <button className="btn btn-outline-danger reviewRemoveBtn" onClick={handleDelete}>
+                                        삭제
+                                    </button>
+                                </>
+                            )}
                           </div>
                     </div>
                 </>

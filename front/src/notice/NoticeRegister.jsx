@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Noticelist from "./Noticelist";
-import NoticeModify from "./NoticeModify";
 import NoticeDetail from "./NoticeDetail";
 
 const NoticeRegister = () => {

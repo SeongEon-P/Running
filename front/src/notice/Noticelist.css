@@ -1,0 +1,42 @@
+/* 페이지네이션 */
+.pagination {
+    margin-top: 20px;
+    display: flex;  
+    justify-content: center;  
+    list-style: none;  
+    padding-left: 0;  
+}
+
+.pagination .page-item {
+    margin: 0 5px;  
+}
+
+.pagination .page-item .page-link {
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    margin: 0 2px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    padding: 8px 12px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #6c757d;
+    color: #ffffff;
+    border-color: #6c757d;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.pagination .page-item:first-child .page-link {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.pagination .page-item:last-child .page-link {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}

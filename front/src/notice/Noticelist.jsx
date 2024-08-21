@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import NoticeDetail from "./NoticeDetail";
 import NoticeRegister from "./NoticeRegister";
+import './Noticelist.css'
 
 function Noticelist() {
   const [noticeList, setNoticeList] = useState([]);
@@ -12,6 +13,7 @@ function Noticelist() {
   const [searchType, setSearchType] = useState("all");
   const [showRegister, setShowRegister] = useState(false);
   const [selectedNotice, setSelectedNotice] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
 
   const uploadRegister = async () => {
     try {
@@ -33,7 +35,7 @@ function Noticelist() {
         const title = notice.n_title ? notice.n_title.toLowerCase() : "";
         const content = notice.n_content ? notice.n_content.toLowerCase() : "";
         const writer = notice.writer ? notice.writer.toLowerCase() : "";
-
+  
         switch (searchType) {
           case "title":
             return title.includes(lowerSearchTerm);
@@ -50,39 +52,21 @@ function Noticelist() {
             );
         }
       })
-      .sort((a, b) => b.is_important - a.is_important || b.nno - a.nno); // 중요 공지 먼저 정렬 후 최신 순 정렬
-
-    // 페이지네이션 설정
+      .sort((a, b) => b.is_important - a.is_important || b.nno - a.nno);
+  
+    // 전체 항목 수 계산
+    const totalItems = filteredList.length;
+  
+    // 페이지네이션에 따른 현재 페이지의 항목들 설정
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    setCurrentItems(filteredList.slice(indexOfFirstItem, indexOfLastItem));
+    const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
+  
+    // 현재 페이지 항목 설정 및 전체 페이지 수 설정
+    setCurrentItems(currentItems);
+    setTotalPages(Math.ceil(totalItems / itemsPerPage));
   }, [currentPage, itemsPerPage, noticeList, searchTerm, searchType]);
-
-  const totalPages = Math.ceil(
-    noticeList.filter(notice => {
-      const title = notice.n_title ? notice.n_title.toLowerCase() : "";
-      const content = notice.n_content ? notice.n_content.toLowerCase() : "";
-      const writer = notice.writer ? notice.writer.toLowerCase() : "";
-      const lowerSearchTerm = searchTerm ? searchTerm.toLowerCase() : "";
-
-      switch (searchType) {
-        case "title":
-          return title.includes(lowerSearchTerm);
-        case "content":
-          return content.includes(lowerSearchTerm);
-        case "writer":
-          return writer.includes(lowerSearchTerm);
-        case "all":
-        default:
-          return (
-            title.includes(lowerSearchTerm) ||
-            content.includes(lowerSearchTerm) ||
-            writer.includes(lowerSearchTerm)
-          );
-      }
-    }).length / itemsPerPage
-  );
-
+  
   const maxPageNumbers = 5;
 
   const handleClick = (pageNumber) => {
@@ -93,12 +77,12 @@ function Noticelist() {
     const pageNumbers = [];
     let startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
     let endPage = startPage + maxPageNumbers - 1;
-
+  
     if (endPage > totalPages) {
       endPage = totalPages;
       startPage = Math.max(1, endPage - maxPageNumbers + 1);
     }
-
+  
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
         <li
@@ -115,7 +99,7 @@ function Noticelist() {
         </li>
       );
     }
-
+  
     return (
       <ul className="pagination mb-0">
         {startPage > 1 && (
@@ -144,6 +128,7 @@ function Noticelist() {
       </ul>
     );
   };
+  
 
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);

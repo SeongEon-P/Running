@@ -39,6 +39,7 @@ public class Review extends BaseEntity {
         this.r_title = r_title;
         this.r_content = r_content;
         this.r_image = r_image;
+        this.writer = member.getMid();
     }
 }
 
