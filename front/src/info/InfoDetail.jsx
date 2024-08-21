@@ -37,10 +37,10 @@ const InfoDetail = ({ ino }) => {
     };
 
     const handleDelete = async () => {
-        if (window.confirm(`${info.ino}번의 공지사항을 삭제 하시겠습니까?`)) {
+        if (window.confirm(`${info.ino}번의 Info 삭제 하시겠습니까?`)) {
             try {
                 await axios.delete(`http://localhost:8080/info/${ino}`);
-                console.log(`${info.ino} 공지사항 삭제 완료`);
+                console.log(`${info.ino} Info 삭제 완료`);
                 alert(`${info.ino}가 삭제되었습니다.`);
                 setShowList(true);
             } catch (error) {
@@ -66,7 +66,7 @@ const InfoDetail = ({ ino }) => {
                 <InfoModify ino={ino} setShowModify={setShowModify} setShowDetail={() => setShowList(false)} />
             ) : (
                 <>
-                    <h2 className="info">공지사항</h2>
+                    <h2 className="info">Info</h2>
                     <div className="container">
                         <div className="form-control">
                             <div className="d-flex flex-wrap justify-content-between">

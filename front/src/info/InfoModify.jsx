@@ -87,7 +87,7 @@ const InfoModify = ({ ino, setShowModify, setShowDetail }) => {
             });
 
             if (response.status === 200) {
-                alert("공지사항 수정이 성공적으로 완료되었습니다.");
+                alert("Info 수정이 성공적으로 완료되었습니다.");
                 setShowModify(false);
                 setShowDetail(true);
             }

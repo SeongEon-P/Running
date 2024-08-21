@@ -68,7 +68,7 @@ const InfoRegister = () => {
             });
 
             if (response.status === 201) {
-                alert("공지사항 등록이 성공적으로 완료되었습니다.");
+                alert("Info 등록이 성공적으로 완료되었습니다.");
                 setRegisteredIno(response.data.ino);
                 setShowInfoDetail(true);
             }
