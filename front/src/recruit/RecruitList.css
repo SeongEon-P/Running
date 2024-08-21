@@ -1,0 +1,11 @@
+/* RecruitList.css */
+
+.recruit-page {
+    display: flex;
+}
+
+.recruit-content {
+    width: 100%;
+    margin-left: 220px; /* 사이드바 너비만큼 오른쪽으로 밀기 */
+    padding: 20px;
+}
