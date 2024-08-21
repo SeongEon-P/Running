@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const RecruitRead = () => {
     const { rno, ano } = useParams();
@@ -8,14 +8,9 @@ const RecruitRead = () => {
     const [count, setCount] = useState(null);
     const [appliedList, setAppliedList] = useState([]);
     const [currentUser, setCurrentUser] = useState([]);
-    const [locations, setLocations] = useState({ x: null, y: null });
+    const [location, setLocation] = useState({ x: null, y: null });
     const navigate = useNavigate();
     const { kakao } = window;
-
-    // 추가: 이전 페이지 정보를 저장하기 위한 useLocation 훅 사용
-    const locationState = useLocation();
-    const previousPage = locationState.state?.page || 1; // 이전 페이지 정보가 없으면 1페이지로 설정
-
 
     useEffect(() => {
         // 모집 글 데이터 가져오기
@@ -64,7 +59,7 @@ const RecruitRead = () => {
             })
                 .then(response => {
                     const locationData = response.data.documents[0];
-                    setLocations({
+                    setLocation({
                         x: locationData.x,
                         y: locationData.y
                     });
@@ -81,7 +76,7 @@ const RecruitRead = () => {
 
     // 목록으로 가기
     const handleBackClick = () => {
-        navigate('/recruit/list', { state: { page: previousPage } }); // 이전 페이지 정보를 포함하여 목록으로 이동
+        navigate('/recruit/list');
     };
 
     // 수정 페이지로 가기
@@ -94,7 +89,7 @@ const RecruitRead = () => {
             axios.delete(`http://localhost:8080/recruit/${rno}`)
                 .then(response => {
                     alert('게시글이 삭제되었습니다.');
-                    navigate('/recruit/list', { state: { page: previousPage } }); // 삭제 후에도 이전 페이지 정보 전달
+                    navigate('/recruit/list')
                 })
                 .catch(error => {
                     console.error('There was an error deleting the recruit!', error);
@@ -199,7 +194,7 @@ const RecruitRead = () => {
                 const infowindow = new kakao.maps.InfoWindow({
                     position: iwPosition,
                     content: iwContent,
-                    removable: iwRemoveable
+                    removable : iwRemoveable
                 });
 
                 // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
@@ -275,8 +270,8 @@ const RecruitRead = () => {
                         </tr>
                     )}
                 </tbody>
-                {locations.x && locations.y &&
-                    <KakaoMap x={locations.x} y={locations.y} />}
+                {location.x && location.y &&
+                    <KakaoMap x={location.x} y={location.y} />}
             </div>
         </>
     )

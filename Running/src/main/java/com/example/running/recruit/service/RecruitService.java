@@ -2,8 +2,6 @@ package com.example.running.recruit.service;
 
 import com.example.running.recruit.domain.Recruit;
 import com.example.running.recruit.dto.RecruitDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +25,5 @@ public interface RecruitService {
 
     List<Recruit> findPostByMid(String mid);
 
-    // 기존 메서드에 추가하여 페이지네이션을 처리하는 메서드
-    Page<RecruitDTO> getList(Pageable pageable);
+
 }

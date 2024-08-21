@@ -1,42 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const RecruitList = () => {
   const [recruits, setRecruits] = useState([]);
   const [counts, setCounts] = useState({});
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
-  const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const itemsPerPage = 10; // 페이지당 아이템 수
 
   useEffect(() => {
-    // 페이지 복귀 시 전달된 상태로 currentPage 설정
-    const pageFromState = location.state?.page;
-    if (pageFromState) {
-      setCurrentPage(pageFromState);
-    } else {
-      fetchRecruits(currentPage);
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    fetchRecruits(currentPage);
-  }, [currentPage]);
-
-  const fetchRecruits = (page) => {
-    axios.get('http://localhost:8080/recruit/list', {
-      params: {
-        page: page - 1,
-        size: itemsPerPage
-      }
-    })
+    axios.get('http://localhost:8080/recruit/list')
       .then(response => {
-        setRecruits(response.data.content);
-        setTotalPages(response.data.totalPages);
-        setCounts({}); // 페이지 이동 시 기존 counts 초기화
+        setRecruits(response.data);
 
         // 각 모집 게시글에 대해 신청 인원을 가져오는 추가 API 호출
         response.data.forEach(recruit => {
@@ -55,11 +29,12 @@ const RecruitList = () => {
       .catch(error => {
         console.error('There was an error fetching the recruit list!', error);
       });
-  };
+  }, []);
 
   const handleRowClick = (rno) => {
-    navigate(`/recruit/read/${rno}`, { state: { page: currentPage } }); // 현재 페이지 상태 전달
+    navigate(`/recruit/read/${rno}`);
   };
+
   // 날짜 형식 변환 함수
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -80,11 +55,7 @@ const RecruitList = () => {
 
   const handleRecruitRegister = () => {
     navigate('/recruit/register')
-  }
-
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage); // 페이지 번호 변경
-  }
+}
 
   return (
     <div>
@@ -116,17 +87,6 @@ const RecruitList = () => {
           ))}
         </tbody>
       </table>
-      <div>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            disabled={currentPage === index + 1}
-            onClick={() => handlePageChange(index + 1)}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
     </div>
   )
 }
