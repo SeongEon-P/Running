@@ -85,7 +85,6 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
     }
 
     private Claims extractClaims(String token) {
-
         if (token == null) {
             return null;
         }

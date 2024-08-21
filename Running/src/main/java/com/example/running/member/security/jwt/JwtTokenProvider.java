@@ -8,4 +8,5 @@ public interface JwtTokenProvider {
     Authentication getAuthentication(HttpServletRequest request);
     boolean validateToken(String token);
     String resolveToken(HttpServletRequest request);
+
 }
