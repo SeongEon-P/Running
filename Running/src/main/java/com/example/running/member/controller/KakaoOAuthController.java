@@ -26,6 +26,8 @@ public class KakaoOAuthController {
     @PostMapping("/callback")
     public ResponseEntity<?> kakaoCallback(@RequestBody Map<String, String> payload) {
         String code = payload.get("code"); // 프론트엔드에서 전달된 인가 코드
+        System.out.println("인가코드 로그 출력: " + code);
+
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
 
         try {
@@ -49,6 +51,7 @@ public class KakaoOAuthController {
                     request,
                     Map.class
             );
+            System.out.println("카카오 응답 로그: " + response);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 Map<String, Object> body = response.getBody();
