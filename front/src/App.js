@@ -17,6 +17,9 @@ import { AuthProvider } from './context/AuthContext';
 import ReviewList from './review/ReviewList';
 import ReviewDetail from './review/ReviewDetail';
 import ReviewRegister from './review/ReviewRegister';
+import InfoList from './info/InfoList';
+import InfoRegister from './info/InfoRegister';
+import InfoDetail from './info/InfoDetail';
 
 const App = () => {
   return (
@@ -39,6 +42,9 @@ const App = () => {
         <Route path="/review/list" element={<ReviewList/>}/>
         <Route path="/review/register" element={<ReviewDetail/>}/>
         <Route path="/review/:rno" element={<ReviewRegister/>}/>
+        <Route path="/info/list" element={<InfoList/>}/>
+        <Route path="/info/register" element={<InfoRegister/>}/>
+        <Route path="/info/:ino" element={<InfoDetail/>}/>
         </Routes>
       </AuthProvider>
     </Router>
