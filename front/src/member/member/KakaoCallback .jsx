@@ -21,6 +21,8 @@ const KakaoCallback = () => {
             // 로컬 스토리지에 토큰 저장
             localStorage.setItem('token', token);
 
+            console.log("토큰을 성공적으로 받았습니다:", token);
+
             // AuthContext를 통해 로그인 상태 업데이트
             loginWithToken(token)
               .then(() => {
