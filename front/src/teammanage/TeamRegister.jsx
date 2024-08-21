@@ -9,7 +9,6 @@ const TeamRegister = () => {
     teamMembers: '',
     teamStartdate: '',
     teamLeader: '',
-    teamLogoFiles: [], // 파일을 배열로 관리
     teamExplain: '',
     teamFromPro: null,
     teamLevel: 1,
@@ -18,7 +17,7 @@ const TeamRegister = () => {
   const [errors, setErrors] = useState(null);
   const [success, setSuccess] = useState(null);
   const [newImages, setNewImages] = useState([]); // 새로 추가된 이미지
-  const navigate = useNavigate(); // navigate 함수 추가
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 로컬스토리지에서 로그인한 사용자의 이름을 가져와 팀 리더로 설정
@@ -48,69 +47,36 @@ const TeamRegister = () => {
     setNewImages(updatedImages);
   };
 
-  // 사용자의 역할을 LEADER로 업데이트하는 메서드
-  const updateRole = async (username) => {
-    try {
-      await axios.post('/members/updateRole', {
-        mid: username,
-        role: 'LEADER'
-      });
-    } catch (error) {
-      console.error('사용자 역할 업데이트 중 오류가 발생했습니다:', error);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     try {
-      // 1. 팀 등록 요청
-      const teamResponse = await axios.post('/team/register', {
-        teamName: teamData.teamName,
-        teamMemberCount: teamData.teamMemberCount,
-        teamMembers: teamData.teamMembers,
-        teamStartdate: teamData.teamStartdate,
-        teamLeader: teamData.teamLeader,
-        teamExplain: teamData.teamExplain,
-        teamFromPro: teamData.teamFromPro,
-        teamLevel: teamData.teamLevel,
+      // 1. 팀 생성 요청을 위한 FormData 구성
+      const formData = new FormData();
+      formData.append('teamData', new Blob([JSON.stringify(teamData)], { type: 'application/json' }));
+      
+      // 이미지 파일 추가
+      newImages.forEach((file) => {
+        formData.append('images', file);
       });
 
-      const registeredTeamName = teamResponse.data;
+      // 팀 생성 요청을 서버에 전송
+      await axios.post('/team/register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-      // 2. 이미지 업로드 요청
-      if (newImages.length > 0) {
-        const formData = new FormData();
-        newImages.forEach((file) => {
-          formData.append('files', file); // 'files'로 이름을 맞추기
-        });
-        formData.append('teamName', registeredTeamName);
-
-        const uploadResponse = await axios.post('/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
-        console.log("Upload Response:", uploadResponse.data);
-      }
-
-      setSuccess('팀이 성공적으로 등록되고 로고 이미지가 업로드되었습니다!');
+      setSuccess('팀 생성 요청이 제출되었습니다. 관리자의 승인을 기다려주세요.');
       
-      // 3. 팀 등록 후 역할 업데이트
-      const loginData = JSON.parse(localStorage.getItem('login'));
-      if (loginData && loginData.name) {
-        await updateRole(loginData.mid);  // 사용자 역할을 LEADER로 업데이트
-      }
-
-      // 성공적으로 등록된 후 팀 목록으로 이동
-      navigate('/team/list');
+      // 팀 생성 대기 목록으로 이동
+      navigate('/team/request/list');
 
     } catch (error) {
       if (error.response && error.response.data) {
         setErrors(`오류: ${error.response.data.message || '알 수 없는 오류가 발생했습니다.'}`);
       } else {
-        setErrors('팀 등록 또는 이미지 업로드 중 오류가 발생했습니다.');
+        setErrors('팀 생성 요청 중 오류가 발생했습니다.');
       }
       console.error('Error details:', error);
     }
@@ -118,7 +84,7 @@ const TeamRegister = () => {
 
   return (
     <div>
-      <h2>팀 등록 및 로고 이미지 업로드</h2>
+      <h2>팀 생성 요청</h2>
       {errors && <p style={{ color: 'red' }}>{errors}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
       <form onSubmit={handleSubmit}>
@@ -230,7 +196,7 @@ const TeamRegister = () => {
             required
           />
         </div>
-        <button type="submit">팀 등록</button>
+        <button type="submit">팀 생성 요청</button>
       </form>
     </div>
   );

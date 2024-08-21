@@ -1,21 +1,25 @@
 package com.example.running.teamincruit.controller;
 
+import com.example.running.teamincruit.domain.TeamRequest;
+import com.example.running.teamincruit.domain.TeamRequestImg;
 import com.example.running.teamincruit.dto.TeamManageDTO;
 import com.example.running.teamincruit.dto.TeamManageImgDTO;
-import com.example.running.teamincruit.repository.TeamManageRepository;
+import com.example.running.teamincruit.dto.TeamRequestDTO;
 import com.example.running.teamincruit.service.TeamManageImgService;
 import com.example.running.teamincruit.service.TeamManageService;
+import com.example.running.teamincruit.service.TeamRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -23,17 +27,69 @@ import java.util.Optional;
 @RequestMapping("/team")
 @CrossOrigin(origins = "http://localhost:3000")
 public class TeamManageController {
+
     private final TeamManageService teamManageService;
     private final TeamManageImgService teamManageImgService;
-    private final TeamManageRepository teamManageRepository;
+    private final TeamRequestService teamRequestService;
 
+    // 팀 생성 요청을 임시 저장소에 저장
     @PostMapping("/register")
-    public ResponseEntity<String> registerTeam(@RequestBody TeamManageDTO teamManageDTO) {
-        String teamName = teamManageService.registerTeam(teamManageDTO);
-        return ResponseEntity.ok(teamName); // 팀 이름을 반환하여 이후 이미지 업로드에 사용
+    public ResponseEntity<String> registerTeam(
+            @RequestPart("teamData") TeamRequestDTO teamRequestDTO,
+            @RequestPart("images") List<MultipartFile> images) {
+        try {
+            // 팀 생성 요청 처리 로직
+            TeamRequest teamRequest = new TeamRequest();
+            // DTO의 데이터를 TeamRequest 엔티티로 변환
+            teamRequest.setTeamName(teamRequestDTO.getTeamName());
+            teamRequest.setTeamLeader(teamRequestDTO.getTeamLeader());
+            teamRequest.setTeamMemberCount(teamRequestDTO.getTeamMemberCount());
+            teamRequest.setTeamMembers(teamRequestDTO.getTeamMembers());
+            teamRequest.setTeamStartdate(teamRequestDTO.getTeamStartdate());
+            teamRequest.setTeamLogo(teamRequestDTO.getTeamLogo());
+            teamRequest.setTeamExplain(teamRequestDTO.getTeamExplain());
+            teamRequest.setTeamFromPro(teamRequestDTO.getTeamFromPro());
+            teamRequest.setTeamLevel(teamRequestDTO.getTeamLevel());
+
+            // 여기서 status를 PENDING으로 설정
+            teamRequest.setStatus("PENDING");
+
+            // 이미지 파일 저장 경로 설정
+            String uploadPath = "C:\\upload";
+
+            // 이미지 파일 저장
+            for (MultipartFile image : images) {
+                if (!image.isEmpty()) {
+                    String uuid = UUID.randomUUID().toString();
+                    String fileName = uuid + "_" + image.getOriginalFilename();
+
+                    // 파일 저장 경로 + 파일명 설정
+                    File saveFile = new File(uploadPath, fileName);
+
+                    try {
+                        // 파일 저장
+                        image.transferTo(saveFile);
+
+                        // TeamRequest에 이미지 추가
+                        teamRequest.addImage(uuid, fileName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 저장 중 오류가 발생했습니다.");
+                    }
+                }
+            }
+
+            // TeamRequest를 DB에 저장
+            teamRequestService.createTeamRequest(teamRequest);
+
+            return ResponseEntity.ok("팀 생성 요청이 성공적으로 제출되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("팀 생성 요청 처리 중 오류가 발생했습니다.");
+        }
     }
 
-    // 모든 팀을 가져올 때 첫 번째 이미지(ord = 0)만 가져오기
+
     @GetMapping("/all")
     public ResponseEntity<List<TeamManageDTO>> getAllTeams() {
         log.info("모든 팀 가져오기");
@@ -41,7 +97,6 @@ public class TeamManageController {
         List<TeamManageDTO> teamManageDTOList = teamManageService.getAllTeam();
 
         if (!teamManageDTOList.isEmpty()) {
-            // 각 팀에 첫 번째 이미지(ord = 0)를 첨부
             for (TeamManageDTO team : teamManageDTOList) {
                 Optional<TeamManageImgDTO> firstImage = teamManageImgService.getFirstImageForTeam(team.getTeamName());
                 firstImage.ifPresent(image -> team.setTeamLogo(image.getTeamManageFileName()));
@@ -53,7 +108,6 @@ public class TeamManageController {
         }
     }
 
-    // 특정 팀의 세부 정보와 모든 이미지 가져오기
     @GetMapping("/{teamName}")
     public ResponseEntity<TeamManageDTO> getTeamByName(@PathVariable("teamName") String teamName) {
         log.info("팀 세부 정보 가져오기: {}", teamName);
@@ -61,7 +115,6 @@ public class TeamManageController {
         TeamManageDTO teamManageDTO = teamManageService.getTeam(teamName);
 
         if (teamManageDTO != null) {
-            // 해당 팀에 연결된 모든 이미지 첨부
             List<TeamManageImgDTO> images = teamManageImgService.getAllImagesForTeam(teamManageDTO.getTeamName());
             teamManageDTO.setImages(images);
             return ResponseEntity.ok(teamManageDTO);
@@ -87,11 +140,46 @@ public class TeamManageController {
     public ResponseEntity<Void> deleteTeam(@PathVariable Long tno) {
         try {
             teamManageService.removeTeam(tno);
-            return ResponseEntity.noContent().build(); // 성공 시 204 No Content 응답
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 실패 시 500 Internal Server Error 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+    // 팀 요청 목록 가져오기
+    @GetMapping("/request/list")
+    public ResponseEntity<List<TeamRequestDTO>> getAllPendingRequests() {
+        List<TeamRequestDTO> pendingRequests = teamRequestService.getAllPendingRequests();
+        if (pendingRequests.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(pendingRequests);
+        }
+    }
 
+    // 팀 요청 승인
+    @PostMapping("/request/approve/{requestId}")
+    public ResponseEntity<Void> approveTeamRequest(@PathVariable Long requestId) {
+        try {
+            teamRequestService.approveTeam(requestId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 팀 요청 거절
+    @PostMapping("/request/reject/{requestId}")
+    public ResponseEntity<Void> rejectTeamRequest(@PathVariable Long requestId) {
+        try {
+            teamRequestService.rejectTeam(requestId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

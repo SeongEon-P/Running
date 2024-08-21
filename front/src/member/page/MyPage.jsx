@@ -9,6 +9,7 @@ const MyPage = () => {
     name: '',
     phone: '',
     email: '',
+    role: '', // role 정보를 추가합니다.
   });
 
   const navigate = useNavigate();
@@ -60,6 +61,9 @@ const MyPage = () => {
           <li><a href="#">내가 쓴 글</a></li>
           <li><a href="#">내가 공감한 글</a></li>
           <li><a href="/update">내 정보 변경</a></li>
+          {member.role === 'ADMIN' && ( // role이 ADMIN인 경우에만 관리자 페이지가 보이도록 설정
+            <li><a href="/admin">관리자 페이지</a></li>
+          )}
         </ul>
       </nav><hr />
       <h2 className="mypage-about-title">ABOUT ME</h2>
