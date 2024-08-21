@@ -1,10 +1,12 @@
 package com.example.running.teamincruit.controller;
 
+import com.example.running.teamincruit.domain.TeamManage;
+import com.example.running.teamincruit.domain.TeamMemberRequest;
 import com.example.running.teamincruit.domain.TeamRequest;
 import com.example.running.teamincruit.domain.TeamRequestImg;
-import com.example.running.teamincruit.dto.TeamManageDTO;
-import com.example.running.teamincruit.dto.TeamManageImgDTO;
-import com.example.running.teamincruit.dto.TeamRequestDTO;
+import com.example.running.teamincruit.dto.*;
+import com.example.running.teamincruit.repository.TeamManageRepository;
+import com.example.running.teamincruit.repository.TeamMemberRequestRepository;
 import com.example.running.teamincruit.service.TeamManageImgService;
 import com.example.running.teamincruit.service.TeamManageService;
 import com.example.running.teamincruit.service.TeamRequestService;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -31,6 +34,8 @@ public class TeamManageController {
     private final TeamManageService teamManageService;
     private final TeamManageImgService teamManageImgService;
     private final TeamRequestService teamRequestService;
+    private final TeamManageRepository teamManageRepository;
+    private final TeamMemberRequestRepository teamMemberRequestRepository;
 
     // 팀 생성 요청을 임시 저장소에 저장
     @PostMapping("/register")
@@ -146,6 +151,7 @@ public class TeamManageController {
         }
     }
 
+
     // 팀 요청 목록 가져오기
     @GetMapping("/request/list")
     public ResponseEntity<List<TeamRequestDTO>> getAllPendingRequests() {
@@ -180,6 +186,75 @@ public class TeamManageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/leader/{teamLeader}")
+    public ResponseEntity<TeamManage> getTeamByLeader(@PathVariable String teamLeader) {
+        TeamManage team = teamManageService.findByTeamLeader(teamLeader);
+        if (team == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(team);  // 이 응답에 이미지 데이터도 포함되어야 합니다.
+    }
+
+    @GetMapping("/members/{teamMember}")
+    public ResponseEntity<TeamManage> getTeamByMember(@PathVariable String teamMember) {
+        TeamManage team = teamManageService.findByTeamMember(teamMember);
+        if (team == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(team);  // 이 응답에 이미지 데이터도 포함되어야 합니다.
+    }
+
+    // 팀원 등록 요청
+    @PostMapping("/join-request")
+    public ResponseEntity<String> joinTeamRequest(@RequestBody JoinRequestDTO request) {
+        TeamManage teamManage = teamManageRepository.findByTeamName(request.getTeamName())
+                .orElseThrow(() -> new IllegalArgumentException("팀을 찾을 수 없습니다."));
+
+        // 팀 리더에게 등록 요청 전송
+        TeamMemberRequest teamMemberRequest = new TeamMemberRequest();
+        teamMemberRequest.setTeamManage(teamManage);
+        teamMemberRequest.setUserName(request.getUserName());
+        teamMemberRequestRepository.save(teamMemberRequest);
+
+        return ResponseEntity.ok("팀원 등록 요청이 전송되었습니다.");
+    }
+
+    // 팀 리더가 팀원 등록 요청을 수락
+    @PostMapping("/accept-request")
+    public ResponseEntity<String> acceptJoinRequest(@RequestBody AcceptRequestDTO request) {
+        TeamMemberRequest teamMemberRequest = teamMemberRequestRepository.findById(request.getRequestId())
+                .orElseThrow(() -> new IllegalArgumentException("요청을 찾을 수 없습니다."));
+
+        TeamManage teamManage = teamMemberRequest.getTeamManage();
+        teamManage.setTeamMemberCount(teamManage.getTeamMemberCount() + 1);
+        teamManage.setTeamMembers(teamManage.getTeamMembers() + ", " + teamMemberRequest.getUserName());
+
+        teamManageRepository.save(teamManage);
+        teamMemberRequestRepository.delete(teamMemberRequest); // 요청 삭제
+
+        return ResponseEntity.ok("팀원 등록 요청이 수락되었습니다.");
+    }
+
+    // 팀 리더가 팀원 등록 요청 목록을 가져옴
+    @GetMapping("/member-requests")
+    public ResponseEntity<List<TeamMemberRequestDTO>> getTeamMemberRequests() {
+        List<TeamMemberRequestDTO> requests = teamMemberRequestRepository.findAll()
+                .stream()
+                .map(request -> new TeamMemberRequestDTO(request.getId(), request.getUserName(), request.getTeamManage().getTeamName()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(requests);
+    }
+
+    @PostMapping("/reject-request")
+    public ResponseEntity<String> rejectJoinRequest(@RequestBody AcceptRequestDTO request) {
+        try {
+            teamMemberRequestRepository.deleteById(request.getRequestId());
+            return ResponseEntity.ok("팀원 등록 요청이 거절되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("팀원 등록 요청 거절 중 오류가 발생했습니다.");
         }
     }
 }

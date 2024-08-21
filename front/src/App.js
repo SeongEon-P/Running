@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import TeamRegister from './teammanage/TeamRegister';
 import TeamList from './teammanage/TeamList';
 import TeamView from './teammanage/TeamView';
+import TeamView2 from './teammanage/TeamView2';
 import TeamEdit from './teammanage/TeamEdit';
 
 import IncruitRegister from './incruit/IncruitRegister';
@@ -38,8 +39,6 @@ const App = () => {
         <Routes>
           <Route path="/team/register" element={<TeamRegister />} />
           <Route path="/team/list" element={<TeamList />} />
-          <Route path="/team/:teamName" element={<TeamView />} />
-          <Route path="/team/edit/:teamName" element={<TeamEdit />} />
 
           <Route path="/incruit/register" element={<IncruitRegister />} />
           <Route path="/incruit/list" element={<IncruitList />} />
@@ -48,6 +47,9 @@ const App = () => {
 
           <Route path="/" element={<MainPage />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/team/view/:teamLeader" element={<TeamView />} />
+          <Route path="/team/view2/:teamMembers" element={<TeamView2 />} />
+          <Route path="/team/edit/:teamName" element={<TeamEdit />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path='/findId' element={<FindId />} />

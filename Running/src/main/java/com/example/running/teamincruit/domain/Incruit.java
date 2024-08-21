@@ -42,6 +42,9 @@ public class Incruit extends BaseEntity{
     @Column(name = "team_member_count", nullable = false, columnDefinition = "INT(11) DEFAULT 1")
     private int teamMemberCount;
 
+    @Column(name = "team_members", nullable = false, columnDefinition = "LONGTEXT")
+    private String teamMembers;
+
     @Column(name = "team_startdate")
     private LocalDate teamStartdate;
 

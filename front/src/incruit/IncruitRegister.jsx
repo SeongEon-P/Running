@@ -4,59 +4,51 @@ import { useNavigate } from 'react-router-dom';
 import './IncruitRegister.css';  // 스타일 파일 import
 
 const IncruitRegister = () => {
-    const [teamNames, setTeamNames] = useState([]);
-    const [selectedTeam, setSelectedTeam] = useState(null);
     const [incruitData, setIncruitData] = useState({
         ititle: '',
         icontent: '',
         iwriter: '',
         teamName: '',
     });
+    const [selectedTeam, setSelectedTeam] = useState(null);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    // 팀 이름 목록 불러오기
+    // 팀 데이터를 로드하는 함수
     useEffect(() => {
-        const fetchTeamNames = async () => {
+        const loadTeamData = async () => {
             try {
-                const response = await axios.get('/incruit/names');
-                setTeamNames(response.data);
-            } catch (err) {
-                setError('팀 이름을 불러오는 중 오류가 발생했습니다.');
-                console.error(err);
-            }
-        };
+                // 로컬스토리지에서 login 정보 가져오기
+                const loginData = JSON.parse(localStorage.getItem('login'));
+                if (!loginData || !loginData.name) {
+                    setError('로그인 정보가 없습니다.');
+                    return;
+                }
 
-        fetchTeamNames();
-    }, []);
-
-    // 팀 선택 시 해당 팀 정보 불러오기
-    const handleTeamChange = async (e) => {
-        const teamName = e.target.value;
-        setIncruitData({ ...incruitData, teamName });
-    
-        if (teamName) {
-            try {
-                const response = await axios.get(`/incruit/team/${teamName}`);
+                // teamLeader와 일치하는 팀 데이터 가져오기
+                const response = await axios.get(`/incruit/team/leader/${loginData.name}`);
                 const teamData = response.data;
-    
-                console.log(teamData); // 여기에 teamData를 출력하여 백엔드에서 반환된 데이터를 확인
-    
-                setSelectedTeam(teamData);
-                setIncruitData({ 
-                    ...incruitData, 
-                    teamName, 
-                    iwriter: teamData.teamLeader
+
+                // 팀 시작일을 'yyyy-MM-dd' 형식으로 변환
+                const formattedStartDate = new Date(teamData.teamStartdate).toISOString().split('T')[0];
+
+                setSelectedTeam({
+                    ...teamData,
+                    teamStartdate: formattedStartDate,
+                });
+                setIncruitData({
+                    ...incruitData,
+                    teamName: teamData.teamName,
+                    iwriter: teamData.teamLeader,
                 });
             } catch (err) {
                 setError('팀 데이터를 불러오는 중 오류가 발생했습니다.');
                 console.error(err);
             }
-        } else {
-            setSelectedTeam(null);
-            setIncruitData({ ...incruitData, iwriter: '', teamName: '' });
-        }
-    };
+        };
+
+        loadTeamData();
+    }, []); // 의존성 배열에 아무 것도 없으므로 컴포넌트가 처음 마운트될 때만 실행됨
 
     // 인풋 필드 변경 시 상태 업데이트
     const handleInputChange = (e) => {
@@ -86,29 +78,14 @@ const IncruitRegister = () => {
             <h2 className="IncruitRegister_h2">모집 등록</h2>
             {error && <p className="IncruitRegister_error">{error}</p>}
             <form onSubmit={handleSubmit}>
-                <div className="IncruitRegister_formGroup">
-                    <label className="IncruitRegister_label">팀 선택:</label>
-                    <select 
-                        onChange={handleTeamChange} 
-                        value={incruitData.teamName} 
-                        required 
-                        className="IncruitRegister_select"
-                    >
-                        <option value="">팀을 선택하세요</option>
-                        {teamNames.map((name) => (
-                            <option key={name} value={name}>
-                                {name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
                 {selectedTeam && (
                     <div className="IncruitRegister_teamInfo">
-                        <h3>선택된 팀 정보</h3>
+                        <h3>팀 정보</h3>
+                        <p>팀 이름: {selectedTeam.teamName}</p>
                         <p>팀 설명: {selectedTeam.teamExplain}</p>
                         <p>팀 리더: {selectedTeam.teamLeader}</p>
                         <p>팀원 수: {selectedTeam.teamMemberCount}</p>
+                        <p>팀원: {selectedTeam.teamMembers}</p>
                         <p>팀 시작일: {selectedTeam.teamStartdate}</p>
 
                         <h3>팀 이미지:</h3>

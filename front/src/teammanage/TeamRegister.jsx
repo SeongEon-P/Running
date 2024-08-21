@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './TeamRegister.css';  // CSS 파일을 import 합니다.
 
 const TeamRegister = () => {
   const [teamData, setTeamData] = useState({
@@ -82,8 +83,13 @@ const TeamRegister = () => {
     }
   };
 
+  // 돌아가기 버튼 핸들러
+  const handleBackClick = () => {
+    navigate('/incruit/list');
+  };
+
   return (
-    <div>
+    <div className="team-register-container">  {/* 적용된 스타일 */}
       <h2>팀 생성 요청</h2>
       {errors && <p style={{ color: 'red' }}>{errors}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
@@ -135,7 +141,7 @@ const TeamRegister = () => {
             value={teamData.teamLeader}
             onChange={handleInputChange}
             required
-            readOnly // 팀 리더 필드를 읽기 전용으로 설정
+            readOnly  // 팀 리더 필드를 읽기 전용으로 설정
           />
         </div>
         <div>
@@ -149,26 +155,15 @@ const TeamRegister = () => {
         </div>
 
         {newImages.length > 0 && (
-          <div style={{ display: 'flex', gap: '10px', overflowX: 'auto' }}>
+          <div className="image-preview-container"> {/* 이미지 미리보기 스타일 적용 */}
             {newImages.map((image, index) => (
               <div key={index} style={{ position: 'relative' }}>
                 <img
                   src={URL.createObjectURL(image)}
                   alt={`new-${index}`}
-                  style={{ width: '150px', height: 'auto' }}
                 />
                 <button
                   type="button"
-                  style={{
-                    position: 'absolute',
-                    top: '5px',
-                    right: '5px',
-                    background: 'red',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '50%',
-                    cursor: 'pointer'
-                  }}
                   onClick={() => handleImageDelete(index)}
                 >
                   X
@@ -196,7 +191,10 @@ const TeamRegister = () => {
             required
           />
         </div>
-        <button type="submit">팀 생성 요청</button>
+        <div className="button-container">
+          <button type="submit">팀 생성 요청</button>
+          <button type="button" onClick={handleBackClick} style={{ marginLeft: '10px' }}>돌아가기</button> {/* 돌아가기 버튼 추가 */}
+        </div>
       </form>
     </div>
   );

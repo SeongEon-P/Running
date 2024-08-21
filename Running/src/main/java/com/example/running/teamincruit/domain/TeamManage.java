@@ -1,10 +1,14 @@
 package com.example.running.teamincruit.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +18,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = {"incruitList", "imageSet"})  // toString에서 순환 참조 방지를 위해 제외
 @Builder
 @Table(name = "team_manage", uniqueConstraints = {
         @UniqueConstraint(name = "team_leader", columnNames = "team_leader")})
@@ -53,30 +57,33 @@ public class TeamManage extends BaseEntity{
     private Integer teamLevel;
 
     @OneToMany(mappedBy = "team")
+    @JsonIgnore  // 이 관계는 JSON 직렬화에서 제외
     private List<Incruit> incruitList;
 
-
-
     @OneToMany(mappedBy = "teamManage",
-            cascade = {CascadeType.ALL},
-            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
             orphanRemoval = true)
     @Builder.Default
     @BatchSize(size = 20)
-    private Set<TeamManageImg> imageSet = new HashSet<>();
+    @JsonManagedReference  // 이미지 데이터를 포함하도록 설정
+    @OrderBy("teamManageOrd ASC")  // teamManageOrd 필드로 오름차순 정렬
+    private List<TeamManageImg> imageList = new ArrayList<>();
 
     public void addImage(String uuid, String fileName){
         TeamManageImg teamManageImg = TeamManageImg.builder()
                 .teamManageUuid(uuid)
                 .teamManageFileName(fileName)
                 .teamManage(this)
-                .teamManageOrd(imageSet.size())
+                .teamManageOrd(imageList.size())  // 이미지 순서 지정
                 .build();
-        imageSet.add(teamManageImg);
+        imageList.add(teamManageImg);
     }
+
+
     public void clearImages(){
-        imageSet.forEach(teamManageImg -> teamManageImg.changeBoard(null));
-        this.imageSet.clear();
+        imageList.forEach(teamManageImg -> teamManageImg.changeBoard(null));
+        this.imageList.clear();
     }
 
     public void change(String teamName, String teamExplain){
@@ -84,5 +91,3 @@ public class TeamManage extends BaseEntity{
         this.teamExplain = teamExplain;
     }
 }
-
-

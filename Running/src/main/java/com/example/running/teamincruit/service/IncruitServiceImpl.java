@@ -46,6 +46,7 @@ public class IncruitServiceImpl implements IncruitService {
             incruit.setTeamLevel(teamManage.getTeamLevel());
             incruit.setTeamLogo(teamManage.getTeamLogo());
             incruit.setTeamMemberCount(teamManage.getTeamMemberCount());
+            incruit.setTeamMembers(teamManage.getTeamMembers());
             incruit.setTeamStartdate(teamManage.getTeamStartdate());
 
             // Incruit 엔티티를 저장하고 생성된 ID 반환
@@ -77,6 +78,7 @@ public class IncruitServiceImpl implements IncruitService {
                     .teamExplain(incruit.getTeam().getTeamExplain())
                     .teamLeader(incruit.getTeam().getTeamLeader())
                     .teamMemberCount(incruit.getTeam().getTeamMemberCount())
+                    .teamMembers(incruit.getTeam().getTeamMembers())
                     .teamStartdate(incruit.getTeam().getTeamStartdate())
                     .teamLevel(incruit.getTeam().getTeamLevel())
                     .teamFromPro(incruit.getTeam().getTeamFromPro())
@@ -84,7 +86,7 @@ public class IncruitServiceImpl implements IncruitService {
                     .build();
 
             // 이미지 데이터 추가
-            List<TeamManageImgDTO> images = incruit.getTeam().getImageSet().stream()
+            List<TeamManageImgDTO> images = incruit.getTeam().getImageList().stream()
                     .map(img -> TeamManageImgDTO.builder()
                             .teamManageUuid(img.getTeamManageUuid())
                             .teamManageFileName(img.getTeamManageFileName())
@@ -162,6 +164,7 @@ public class IncruitServiceImpl implements IncruitService {
                 .iviews(incruit.getIviews())
                 .teamName(incruit.getTeam().getTeamName())
                 .teamMemberCount(incruit.getTeamMemberCount())
+                .teamMembers(incruit.getTeamMembers())
                 .teamStartdate(incruit.getTeamStartdate())
                 .teamExplain(incruit.getTeamExplain())
                 .teamLeader(incruit.getTeamLeader())
@@ -169,7 +172,7 @@ public class IncruitServiceImpl implements IncruitService {
                 .teamLevel(incruit.getTeamLevel())
                 .teamFromPro(incruit.getTeamFromPro())
                 .regDate(incruit.getRegDate())  // regDate 추가
-                .images(incruit.getTeam().getImageSet().stream()
+                .images(incruit.getTeam().getImageList().stream()
                         .map(img -> TeamManageImgDTO.builder()
                                 .teamManageUuid(img.getTeamManageUuid())
                                 .teamManageFileName(img.getTeamManageFileName())

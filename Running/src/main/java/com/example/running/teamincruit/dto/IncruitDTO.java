@@ -20,6 +20,7 @@ public class IncruitDTO {
     private int iviews;
     private String teamName;
     private int teamMemberCount;
+    private String teamMembers;
     private LocalDate teamStartdate;
     private String teamExplain;
     private String teamLeader;

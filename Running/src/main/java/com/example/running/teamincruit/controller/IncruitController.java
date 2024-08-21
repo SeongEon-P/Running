@@ -45,10 +45,42 @@ public class IncruitController {
         teamManageDTO.setTeamLogo(teamManage.getTeamLogo());
         teamManageDTO.setTeamExplain(teamManage.getTeamExplain());
         teamManageDTO.setTeamMemberCount(teamManage.getTeamMemberCount());
+        teamManageDTO.setTeamMembers(teamManage.getTeamMembers());
         teamManageDTO.setTeamStartdate(teamManage.getTeamStartdate());
 
         // 연관된 이미지들을 TeamManageImgDTO로 변환
-        List<TeamManageImgDTO> imageDTOs = teamManage.getImageSet().stream()
+        List<TeamManageImgDTO> imageDTOs = teamManage.getImageList().stream()
+                .map(img -> {
+                    TeamManageImgDTO imgDTO = new TeamManageImgDTO();
+                    imgDTO.setTeamManageUuid(img.getTeamManageUuid());
+                    imgDTO.setTeamManageFileName(img.getTeamManageFileName());
+                    return imgDTO;
+                })
+                .collect(Collectors.toList());
+
+        teamManageDTO.setImages(imageDTOs);
+        return ResponseEntity.ok(teamManageDTO);
+    }
+
+    // 팀 리더로 팀을 조회하는 메소드
+    @GetMapping("/team/leader/{teamLeader}")
+    public ResponseEntity<TeamManageDTO> getTeamByTeamLeader(@PathVariable String teamLeader) {
+        // 팀 리더를 기준으로 팀을 조회
+        TeamManage teamManage = teamManageRepository.findByTeamLeaderWithImages(teamLeader)
+                .orElseThrow(() -> new IllegalArgumentException("해당 팀을 찾을 수 없습니다."));
+
+        // 팀 정보를 DTO로 변환
+        TeamManageDTO teamManageDTO = new TeamManageDTO();
+        teamManageDTO.setTeamName(teamManage.getTeamName());
+        teamManageDTO.setTeamLeader(teamManage.getTeamLeader());
+        teamManageDTO.setTeamLogo(teamManage.getTeamLogo());
+        teamManageDTO.setTeamExplain(teamManage.getTeamExplain());
+        teamManageDTO.setTeamMemberCount(teamManage.getTeamMemberCount());
+        teamManageDTO.setTeamMembers(teamManage.getTeamMembers());
+        teamManageDTO.setTeamStartdate(teamManage.getTeamStartdate());
+
+        // 연관된 이미지들을 TeamManageImgDTO로 변환
+        List<TeamManageImgDTO> imageDTOs = teamManage.getImageList().stream()
                 .map(img -> {
                     TeamManageImgDTO imgDTO = new TeamManageImgDTO();
                     imgDTO.setTeamManageUuid(img.getTeamManageUuid());

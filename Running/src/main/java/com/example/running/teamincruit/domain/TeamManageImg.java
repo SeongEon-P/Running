@@ -1,5 +1,6 @@
 package com.example.running.teamincruit.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,14 +27,15 @@ public class TeamManageImg implements Comparable<TeamManageImg>{
 
     @ManyToOne
     @JoinColumn(name = "team_name", referencedColumnName = "team_name", foreignKey = @ForeignKey(name = "team_manage_team_name_fk"), nullable = false)
+    @JsonBackReference
     private TeamManage teamManage;
 
     @Override
     public int compareTo(TeamManageImg other) {
         return this.teamManageOrd - other.teamManageOrd;
     }
+
     public void changeBoard(TeamManage teamManage){
         this.teamManage = teamManage;
     }
 }
-

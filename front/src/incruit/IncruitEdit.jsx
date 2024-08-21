@@ -146,6 +146,7 @@ const IncruitEdit = () => {
                         <p>팀 설명: {selectedTeam.teamExplain}</p>
                         <p>팀 리더: {selectedTeam.teamLeader}</p>
                         <p>팀원 수: {selectedTeam.teamMemberCount}</p>
+                        <p>팀원: {selectedTeam.teamMembers}</p>
                         <p>팀 시작일: {selectedTeam.teamStartdate}</p>
 
                         <h3>팀 이미지:</h3>

@@ -39,6 +39,8 @@ public class UpDownController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImages(@RequestParam("teamName") String teamName, @RequestParam("files") MultipartFile[] files) {
         try {
+            List<Map<String, String>> uploadedFiles = new ArrayList<>();
+
             for (int i = 0; i < files.length; i++) {
                 MultipartFile file = files[i];
                 if (!file.isEmpty()) {
@@ -52,15 +54,21 @@ public class UpDownController {
 
                     // 이미지 저장 로직 호출
                     teamManageImgService.saveUploadedImages(uuid, teamName, fileName, i);
+
+                    // 업로드된 파일 정보를 리스트에 추가
+                    Map<String, String> fileInfo = new HashMap<>();
+                    fileInfo.put("fileName", fileName);
+                    uploadedFiles.add(fileInfo);
                 }
             }
-            return ResponseEntity.ok().build();
+
+            // 업로드된 파일 정보를 포함한 응답 반환
+            return ResponseEntity.ok(uploadedFiles);
         } catch (IOException e) {
             log.error("파일 업로드 오류: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
     //Controller를 이용한 파일 취득 방식
     @Tag(name = "view 파일", description = "GET방식으로 첨부파일 조회")

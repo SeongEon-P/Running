@@ -233,7 +233,7 @@ public class MemberController {
         }
     }
 
-    //롤 업데이트
+   // 롤 업데이트
     @PostMapping("/updateRole")
     public ResponseEntity<String> updateRole(@RequestBody Map<String, String> request) {
         String mid = request.get("mid");

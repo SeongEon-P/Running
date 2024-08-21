@@ -1,5 +1,3 @@
-/* IncruitList.css */
-
 /* 전체 배경과 기본 스타일 설정 */
 .IncruitList_body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -29,6 +27,30 @@
     color: red;
     text-align: center;
     margin-bottom: 20px;
+}
+
+/* 버튼 컨테이너 스타일 - 버튼들을 가로로 정렬 */
+.IncruitList_buttons {
+    display: flex;
+    justify-content: flex-start; /* 버튼을 왼쪽으로 정렬 */
+    gap: 10px; /* 버튼 사이의 간격 */
+    margin-bottom: 20px;
+}
+
+/* 버튼 스타일 */
+.IncruitList_button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #111;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.IncruitList_button:hover {
+    background-color: #555;
 }
 
 /* 리스트 스타일 */
@@ -61,22 +83,4 @@
 
 .IncruitList_link:hover {
     color: #555;
-}
-
-.IncruitList_button {
-    display: block;
-    margin: 20px 0;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #ffffff;
-    background-color: #111;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-align: center;
-}
-
-.IncruitList_button:hover {
-    background-color: #555;
 }
