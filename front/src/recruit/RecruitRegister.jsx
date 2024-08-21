@@ -5,13 +5,13 @@ import DaumPostcode from 'react-daum-postcode';
 
 const RecruitRegister = () => {
     const [recruit, setRecruit] = useState({
-        r_title: '',
-        r_content:'',
+        title: '',
+        content:'',
         address: '',
-        r_place2: '',
-        r_date: '',
-        r_time: '',
-        max_number:'',
+        place: '',
+        date: '',
+        time: '',
+        maxnumber:'',
         mid: ''
     });
     const [openPostcode, setOpenPostcode] = useState(false);
@@ -78,8 +78,8 @@ const RecruitRegister = () => {
                     <label>제목: </label>
                     <input
                         type="text"
-                        name="r_title"
-                        value={recruit.r_title}
+                        name="title"
+                        value={recruit.title}
                         onChange={handleChange}
                         required
                     />
@@ -87,8 +87,8 @@ const RecruitRegister = () => {
                 <div>
                     <label>내용: </label>
                     <textarea
-                        name="r_content"
-                        value={recruit.r_content}
+                        name="content"
+                        value={recruit.content}
                         onChange={handleChange}
                         required
                     />
@@ -97,8 +97,8 @@ const RecruitRegister = () => {
                     <label>모이는 날짜: </label>
                     <input
                         type="date"
-                        name="r_date"
-                        value={recruit.r_date}
+                        name="date"
+                        value={recruit.date}
                         onChange={handleChange}
                         required
                     />
@@ -119,8 +119,8 @@ const RecruitRegister = () => {
                     <label>모이는 장소: </label>
                     <input
                         type="text"
-                        name="r_place2"
-                        value={recruit.r_place2}
+                        name="place"
+                        value={recruit.place}
                         onChange={handleChange}
                         required
                     />
@@ -131,8 +131,8 @@ const RecruitRegister = () => {
                     <label>모이는 시간: </label>
                     <input
                         type="time"
-                        name="r_time"
-                        value={recruit.r_time}
+                        name="time"
+                        value={recruit.time}
                         onChange={handleChange}
                         required
                     />
@@ -141,8 +141,8 @@ const RecruitRegister = () => {
                     <label>모집 인원: </label>
                     <input
                         type="number"
-                        name="max_number"
-                        value={recruit.max_number}
+                        name="maxnumber"
+                        value={recruit.maxnumber}
                         onChange={handleChange}
                         required
                     />
@@ -162,9 +162,9 @@ const RecruitRegister = () => {
 
             {openPostcode && (
                 <div className="modal">
-                    <div className="modla-content">
+                    <div className="modal-content">
                         <span
-                            className="modal-cloas"
+                            className="modal-close"
                             onClick={() => setOpenPostcode(false)}
                         >
                             &times;

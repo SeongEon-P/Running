@@ -22,32 +22,32 @@ public class Recruit extends BaseEntity {
     private Long rno;
 
     // 게시글 제목
-    @Column(name = "r_title", nullable = false, length = 100)
-    private String r_title;
+    @Column(name = "title", nullable = false, length = 100)
+    private String title;
 
     // 게시글 내용
-    @Column(name = "r_content", nullable = false)
-    private String r_content;
+    @Column(name = "content", nullable = false)
+    private String content;
 
     // 모이는 장소(주소 api 추가용)
     @Column(name = "address", nullable = false)
     private String address;
 
     // 상세 장소명
-    @Column(name = "r_place2", nullable = false)
-    private String r_place2;
+    @Column(name = "place", nullable = false)
+    private String place;
 
     // 모이는 날짜
-    @Column(name = "r_date", nullable = false)
-    private LocalDate r_date;
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
 
     // 모이는 시간
-    @Column(name = "r_time", nullable = false)
-    private LocalTime r_time;
+    @Column(name = "time", nullable = false)
+    private LocalTime time;
 
     // 모집 인원
-    @Column(name = "max_number", nullable = false)
-    private Integer max_number;
+    @Column(name = "maxnumber", nullable = false)
+    private Integer maxnumber;
 
     // 작성자 -> member의 mid
     @ManyToOne
@@ -57,20 +57,20 @@ public class Recruit extends BaseEntity {
 
 
     // 게시글 변경
-    public void changeRecruit(String r_title,
-                              String r_content,
+    public void changeRecruit(String title,
+                              String content,
                               String address,
-                              String r_place2,
-                              LocalDate r_date,
-                              LocalTime r_time,
-                              Integer max_number) {
-        this.r_title = r_title;
-        this.r_content = r_content;
+                              String place,
+                              LocalDate date,
+                              LocalTime time,
+                              Integer maxnumber) {
+        this.title = title;
+        this.content = content;
         this.address = address;
-        this.r_place2 = r_place2;
-        this.r_date = r_date;
-        this.r_time = r_time;
-        this.max_number = max_number;
+        this.place = place;
+        this.date = date;
+        this.time = time;
+        this.maxnumber = maxnumber;
     }
 
     public void setMember(Member memberRecruit) {

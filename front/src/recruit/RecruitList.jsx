@@ -77,12 +77,12 @@ const RecruitList = () => {
           {recruits.map(recruit => (
             <tr key={recruit.rno} onClick={() => handleRowClick(recruit.rno)}>
               <td>{recruit.rno}</td>
-              <td>{recruit.r_title}</td>
-              <td>{recruit.r_content}</td>
-              <td>{recruit.r_place2}</td>
-              <td>{formatDate(recruit.r_date)}</td>
-              <td>{formatTime(recruit.r_time)}</td>
-              <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.max_number}</td>
+              <td>{recruit.title}</td>
+              <td>{recruit.content}</td>
+              <td>{recruit.place}</td>
+              <td>{formatDate(recruit.date)}</td>
+              <td>{formatTime(recruit.time)}</td>
+              <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.maxnumber}</td>
             </tr>
           ))}
         </tbody>

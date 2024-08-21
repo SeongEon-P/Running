@@ -7,13 +7,13 @@ const RecruitModify = () => {
     const { rno } = useParams();
     const [recruit, setRecruit] = useState({
         rno: '',
-        r_title: '',
-        r_content: '',
+        title: '',
+        content: '',
         address: '',
-        r_place2: '',
-        r_date: '',
-        r_time: '',
-        max_number: '',
+        place: '',
+        date: '',
+        time: '',
+        maxnumber: '',
         mid: ''
     });
     const [openPostcode, setOpenPostcode] = useState(false);
@@ -25,13 +25,13 @@ const RecruitModify = () => {
                 const data = response.data;
                 setRecruit({
                     rno: data.rno,
-                    r_title: data.r_title,
-                    r_content: data.r_content,
+                    title: data.title,
+                    content: data.content,
                     address: data.address,
-                    r_place2: data.r_place2,
-                    r_date: `${data.r_date[0]}-${String(data.r_date[1]).padStart(2, '0')}-${String(data.r_date[2]).padStart(2, '0')}`, // 배열을 'yyyy-MM-dd' 형식의 문자열로 변환
-                    r_time: data.r_time.slice(0, 2).map(num => String(num).padStart(2, '0')).join(':'), // 배열을 'hh:mm' 형식의 문자열로 변환
-                    max_number: data.max_number,
+                    place: data.place,
+                    date: `${data.date[0]}-${String(data.date[1]).padStart(2, '0')}-${String(data.date[2]).padStart(2, '0')}`, // 배열을 'yyyy-MM-dd' 형식의 문자열로 변환
+                    time: data.time.slice(0, 2).map(num => String(num).padStart(2, '0')).join(':'), // 배열을 'hh:mm' 형식의 문자열로 변환
+                    maxnumber: data.maxnumber,
                     mid: data.memberRecruit.mid
                 });
             })
@@ -94,11 +94,11 @@ const RecruitModify = () => {
                 </div>
                 <div>
                     <label>제목:</label>
-                    <input type="text" name="r_title" value={recruit.r_title} onChange={handleChange} />
+                    <input type="text" name="title" value={recruit.title} onChange={handleChange} />
                 </div>
                 <div>
                     <label>내용:</label>
-                    <textarea name="r_content" value={recruit.r_content} onChange={handleChange}></textarea>
+                    <textarea name="content" value={recruit.content} onChange={handleChange}></textarea>
                 </div>
                 <div>
                     <div>
@@ -116,19 +116,19 @@ const RecruitModify = () => {
                 </div>
                 <div>
                     <label>장소2:</label>
-                    <input type="text" name="r_place2" value={recruit.r_place2} onChange={handleChange} />
+                    <input type="text" name="place" value={recruit.place} onChange={handleChange} />
                 </div>
                 <div>
                     <label>날짜:</label>
-                    <input type="date" name="r_date" value={recruit.r_date} onChange={handleChange} />
+                    <input type="date" name="date" value={recruit.date} onChange={handleChange} />
                 </div>
                 <div>
                     <label>시간:</label>
-                    <input type="time" name="r_time" value={recruit.r_time} onChange={handleChange} />
+                    <input type="time" name="time" value={recruit.time} onChange={handleChange} />
                 </div>
                 <div>
                     <label>모집인원:</label>
-                    <input type="number" name="max_number" value={recruit.max_number} onChange={handleChange} />
+                    <input type="number" name="maxnumber" value={recruit.maxnumber} onChange={handleChange} />
                 </div>
                 <button type="button" onClick={() => handleModify(rno)}>수정 완료</button>
                 <button type="button" onClick={() => handleRowClick(rno)}>수정 취소</button>
@@ -136,9 +136,9 @@ const RecruitModify = () => {
 
             {openPostcode && (
                 <div className="modal">
-                    <div className="modla-content">
+                    <div className="modal-content">
                         <span
-                            className="modal-cloas"
+                            className="modal-close"
                             onClick={() => setOpenPostcode(false)}
                         >
                             &times;
