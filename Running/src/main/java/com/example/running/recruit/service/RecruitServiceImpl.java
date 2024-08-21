@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -92,5 +94,13 @@ public class RecruitServiceImpl implements RecruitService {
     @Override
     public List<Recruit> findPostByMid(String mid) {
         return List.of();
+    }
+
+    @Override
+    public Page<RecruitDTO> getList(Pageable pageable) {
+        Page<Recruit> result = recruitRepository.findAll(pageable);
+
+        // Recruit 엔티티를 RecruitDTO로 변환하여 반환
+        return result.map(recruit -> modelMapper.map(recruit, RecruitDTO.class));
     }
 }

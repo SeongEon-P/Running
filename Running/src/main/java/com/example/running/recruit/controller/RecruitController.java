@@ -7,6 +7,8 @@ import com.example.running.recruit.service.AppliedService;
 import com.example.running.recruit.service.RecruitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +50,9 @@ public class RecruitController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Object> getAllRecruits() {
-        return new ResponseEntity<>(recruitService.findAllRecruits(), HttpStatus.OK);
+    public ResponseEntity<Page<RecruitDTO>> getAllRecruits(Pageable pageable) {
+        Page<RecruitDTO> recruitList = recruitService.getList(pageable);
+        return new ResponseEntity<>(recruitList, HttpStatus.OK);
     }
 
     @GetMapping("/read")
