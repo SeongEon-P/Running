@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const RecruitRead = () => {
     const { rno, ano } = useParams();
+    const { state } = useLocation();
     const [recruit, setRecruit] = useState([]);
     const [count, setCount] = useState(null);
     const [appliedList, setAppliedList] = useState([]);
@@ -76,7 +77,8 @@ const RecruitRead = () => {
 
     // 목록으로 가기
     const handleBackClick = () => {
-        navigate('/recruit/list');
+        // 이전 페이지로 돌아갈 때 현재 페이지 번호를 전달
+        navigate('/recruit/list', { state: { currentPage: state?.currentPage } });
     };
 
     // 수정 페이지로 가기

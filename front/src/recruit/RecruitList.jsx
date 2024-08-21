@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 
 const RecruitList = () => {
   const [recruits, setRecruits] = useState([]);
   const [counts, setCounts] = useState({});
+  const [currentPage, setCurrentPage] = useState(0);
+  const recruitsPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:8080/recruit/list')
       .then(response => {
+        console.log('Recruit List:', response.data); // 데이터가 배열인지 확인
         setRecruits(response.data);
 
-        // 각 모집 게시글에 대해 신청 인원을 가져오는 추가 API 호출
         response.data.forEach(recruit => {
           axios.get('http://localhost:8080/apply/count', { params: { rno: recruit.rno } })
             .then(countResponse => {
@@ -32,7 +35,7 @@ const RecruitList = () => {
   }, []);
 
   const handleRowClick = (rno) => {
-    navigate(`/recruit/read/${rno}`);
+    navigate(`/recruit/read/${rno}`, { state: { currentPage } });
   };
 
   // 날짜 형식 변환 함수
@@ -55,7 +58,16 @@ const RecruitList = () => {
 
   const handleRecruitRegister = () => {
     navigate('/recruit/register')
-}
+  }
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+  };
+
+  // 현재 페이지에 해당하는 모집 정보만 추출
+  const offset = currentPage * recruitsPerPage;
+  const currentRecruits = recruits.slice(offset, offset + recruitsPerPage);
+
 
   return (
     <div>
@@ -74,7 +86,7 @@ const RecruitList = () => {
           </tr>
         </thead>
         <tbody>
-          {recruits.map(recruit => (
+          {currentRecruits.map(recruit => (
             <tr key={recruit.rno} onClick={() => handleRowClick(recruit.rno)}>
               <td>{recruit.rno}</td>
               <td>{recruit.title}</td>
@@ -87,6 +99,19 @@ const RecruitList = () => {
           ))}
         </tbody>
       </table>
+      <ReactPaginate
+        previousLabel={"previous"}
+        nextLabel={"next"}
+        breakLabel={"..."}
+        breakClassName={"break-me"}
+        pageCount={Math.ceil(recruits.length / recruitsPerPage)}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={"pagination"}
+        subContainerClassName={"pages pagination"}
+        activeClassName={"active"}
+      />
     </div>
   )
 }
