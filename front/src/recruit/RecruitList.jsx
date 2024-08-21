@@ -11,11 +11,28 @@ const RecruitList = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchCategory, setSearchCategory] = useState('title');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const recruitsPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:8080/recruit/list')
+    fetchRecruits();
+  }, [])
+
+  const fetchRecruits = () => {
+    axios.get('http://localhost:8080/recruit/list', {
+      params: {
+        searchKeyword,
+        searchCategory,
+        startDate,
+        endDate,
+        startTime,
+        endTime
+      }
+    })
       .then(response => {
         const sortedRecruits = response.data.sort((a, b) => b.rno - a.rno);
         setRecruits(sortedRecruits);
@@ -36,28 +53,24 @@ const RecruitList = () => {
       .catch(error => {
         console.error('There was an error fetching the recruit list!', error);
       });
-  }, []);
+  };
 
   const handleRowClick = (rno) => {
     navigate(`/recruit/read/${rno}`, { state: { currentPage } });
   };
 
   const handleSearch = () => {
-    axios.get('http://localhost:8080/recruit/list', {
-      params: {
-        searchKeyword,
-        searchCategory
-      }
-    })
-      .then(response => {
-        const sortedRecruits = response.data.sort((a, b) => b.rno - a.rno);
-        setRecruits(sortedRecruits);
-        setCurrentPage(0);
-      })
-      .catch(error => {
-        console.error('There was an error searching the recruit list', error);
-      });
+    fetchRecruits();
   }
+
+  const handleReset = () => {
+    setSearchKeyword('');
+    setSearchCategory('title');
+    setStartDate('');
+    setEndDate('');
+    setStartTime('');
+    setEndTime('');
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -97,7 +110,28 @@ const RecruitList = () => {
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
           />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <input
+            type="time"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+          />
+          <input
+            type="time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+          />
           <button type="button" onClick={handleSearch}>검색</button>
+          <button type="button" onClick={handleReset}>초기화</button>
         </div>
         <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
         <table>

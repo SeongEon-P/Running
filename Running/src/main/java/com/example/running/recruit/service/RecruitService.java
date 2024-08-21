@@ -3,6 +3,8 @@ package com.example.running.recruit.service;
 import com.example.running.recruit.domain.Recruit;
 import com.example.running.recruit.dto.RecruitDTO;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,5 +28,7 @@ public interface RecruitService {
     List<Recruit> findPostByMid(String mid);
 
     // 검색
-    List<Recruit> searchRecruits(String keyword);
+    public List<Recruit> searchRecruits(String keyword,
+                                        LocalDate startDate, LocalDate endDate,
+                                        LocalTime startTime, LocalTime endTime);
 }
