@@ -25,5 +25,6 @@ public interface RecruitService {
 
     List<Recruit> findPostByMid(String mid);
 
-
+    // 검색
+    List<Recruit> searchRecruits(String keyword);
 }

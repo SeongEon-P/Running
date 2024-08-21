@@ -9,6 +9,8 @@ const RecruitList = () => {
   const [recruits, setRecruits] = useState([]);
   const [counts, setCounts] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchCategory, setSearchCategory] = useState('title');
   const recruitsPerPage = 10;
   const navigate = useNavigate();
 
@@ -18,7 +20,7 @@ const RecruitList = () => {
         const sortedRecruits = response.data.sort((a, b) => b.rno - a.rno);
         setRecruits(sortedRecruits);
 
-        response.data.forEach(recruit => {
+        sortedRecruits.forEach(recruit => {
           axios.get('http://localhost:8080/apply/count', { params: { rno: recruit.rno } })
             .then(countResponse => {
               setCounts(prevCounts => ({
@@ -40,9 +42,26 @@ const RecruitList = () => {
     navigate(`/recruit/read/${rno}`, { state: { currentPage } });
   };
 
+  const handleSearch = () => {
+    axios.get('http://localhost:8080/recruit/list', {
+      params: {
+        searchKeyword,
+        searchCategory
+      }
+    })
+      .then(response => {
+        const sortedRecruits = response.data.sort((a, b) => b.rno - a.rno);
+        setRecruits(sortedRecruits);
+        setCurrentPage(0);
+      })
+      .catch(error => {
+        console.error('There was an error searching the recruit list', error);
+      });
+  }
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-CA'); 
+    return date.toLocaleDateString('en-CA');
   };
 
   const formatTime = (timeArray) => {
@@ -66,6 +85,20 @@ const RecruitList = () => {
       <Sidebar />
       <div className="recruit-content">
         <h1>Recruit List</h1>
+        <div>
+          <select value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)}>
+            <option value="title">제목</option>
+            <option value="content">내용</option>
+            <option value="memberRecruit.mid">작성자</option>
+          </select>
+          <input
+            type="text"
+            placeholder="검색어를 입력하세요"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+          />
+          <button type="button" onClick={handleSearch}>검색</button>
+        </div>
         <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
         <table>
           <thead>
@@ -94,8 +127,8 @@ const RecruitList = () => {
           </tbody>
         </table>
         <ReactPaginate
-          previousLabel={"previous"}
-          nextLabel={"next"}
+          previousLabel={"이전"}
+          nextLabel={"다음"}
           breakLabel={"..."}
           breakClassName={"break-me"}
           pageCount={Math.ceil(recruits.length / recruitsPerPage)}

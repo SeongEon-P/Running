@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -48,8 +49,14 @@ public class RecruitController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Object> getAllRecruits() {
-        return new ResponseEntity<>(recruitService.findAllRecruits(), HttpStatus.OK);
+    public ResponseEntity<Object> getAllRecruits(@RequestParam(required = false) String searchKeyword) {
+        List<Recruit> recruits;
+        if (searchKeyword != null && !searchKeyword.isEmpty()) {
+            recruits = recruitService.searchRecruits(searchKeyword);
+        } else {
+            recruits = recruitService.findAllRecruits();
+        }
+        return new ResponseEntity<>(recruits, HttpStatus.OK);
     }
 
     @GetMapping("/read")

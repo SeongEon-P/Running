@@ -93,4 +93,9 @@ public class RecruitServiceImpl implements RecruitService {
     public List<Recruit> findPostByMid(String mid) {
         return List.of();
     }
+
+    @Override
+    public List<Recruit> searchRecruits(String keyword) {
+        return recruitRepository.searchRecruitsByKeyword(keyword);
+    }
 }
