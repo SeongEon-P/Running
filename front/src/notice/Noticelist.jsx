@@ -155,7 +155,7 @@ function Noticelist() {
       ) : (
         <>
           <div className="d-flex justify-content-between mb-4">
-            <h2 className="notice_title" style={{ fontSize: "30px" }}>공지사항</h2>
+            <h2 className="notice_title">공지사항</h2>
             <div className="d-flex">
               <select className="form-select me-2" onChange={handleSearchTypeChange} value={searchType}>
                 <option value="all">전체</option>
@@ -174,7 +174,7 @@ function Noticelist() {
                 type="button"
                 onClick={handleSearch}
               >
-                Search
+                검색
               </button>
             </div>
           </div>
@@ -197,7 +197,7 @@ function Noticelist() {
                   >
                     {notice.n_title}
                   </td>
-                  <td className="NoticeView_p">
+                  <td>
                     {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
                   </td>
                 </tr>
