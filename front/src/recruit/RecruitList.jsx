@@ -131,7 +131,7 @@ const RecruitList = () => {
             onChange={(e) => setEndTime(e.target.value)}
           />
           <button type="button" onClick={handleSearch}>검색</button>
-          <button type="button" onClick={handleReset}>초기화</button>
+          <button type="button" onClick={handleReset}>검색어 초기화</button>
         </div>
         <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
         <table>
