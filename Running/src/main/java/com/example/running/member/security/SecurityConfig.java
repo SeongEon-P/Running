@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -51,6 +52,11 @@ public class SecurityConfig {
                                 .defaultSuccessUrl("/") // 로그인 성공 시 리다이렉트 URL 설정
                                 .permitAll()
                 )
+                .oauth2Login(oauth2Login ->
+                        oauth2Login
+                                .loginPage("/login") // 소셜 로그인 시 사용할 로그인 페이지 URL 설정
+                                .defaultSuccessUrl("/") // 소셜 로그인 성공 시 리다이렉트 URL 설정
+                )
                 .logout(logout ->
                         logout
                                 .permitAll()
@@ -74,5 +80,16 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+//    // 소셜로그인
+//    @Bean
+//    public CustomOAuth2UserService customOAuth2UserService() {
+//        return new CustomOAuth2UserService();
+//    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

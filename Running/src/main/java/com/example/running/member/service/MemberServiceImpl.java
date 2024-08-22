@@ -1,12 +1,22 @@
 package com.example.running.member.service;
 
 import com.example.running.member.domain.Member;
+import com.example.running.member.domain.Role;
+import com.example.running.member.dto.KakaoTokenResponse;
 import com.example.running.member.repositroy.MemberRepository;
+import com.example.running.member.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpHeaders;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,6 +27,9 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RestTemplate restTemplate;
+
 
     // 회원가입
     @Override
@@ -174,6 +187,55 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+//    // 카카오 로그인
+//    @Override
+//    public String processKakaoLogin(KakaoTokenResponse kakaoToken) {
+//        String accessToken = kakaoToken.getAccess_token();
+//
+//        // 카카오 사용자 정보 요청
+//        String userInfoUri = "https://kapi.kakao.com/v2/user/me";
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", "Bearer " + accessToken);  // 헤더 추가
+//
+//        HttpEntity<Void> request = new HttpEntity<>(headers);
+//        ResponseEntity<Map> response = restTemplate.exchange(userInfoUri, HttpMethod.GET, request, Map.class);
+//
+//        Map<String, Object> userInfo = response.getBody();
+//        if (userInfo != null) {
+//            // 사용자 정보에서 필요한 정보 추출
+//            String kakaoId = userInfo.get("id").toString();
+//            String email = ((Map<String, Object>) userInfo.get("kakao_account")).get("email").toString();
+//
+//            // 사용자 정보로 Member 객체 생성 및 DB 저장 또는 로그인 처리
+//            Member member = findOrCreateKakaoMember(kakaoId, email);
+//
+//            // JWT 토큰 생성 및 반환
+//            return jwtTokenProvider.createToken(member.getMid(), member.getRole().name());
+//        } else {
+//            throw new RuntimeException("Failed to retrieve user info from Kakao");
+//        }
+//    }
+//
+//    @Override
+//    public Member findOrCreateKakaoMember(String kakaoId, String email) {
+//        Optional<Member> existingMember = memberRepository.findByKakaoId(kakaoId);
+//        if (existingMember.isPresent()) {
+//            return existingMember.get();
+//        } else {
+//
+//            // 새로운 사용자 생성
+//            Member newMember = new Member();
+//            newMember.setKakaoId(kakaoId);
+//            newMember.setEmail(email);
+//            newMember.setRole(Role.USER); // 기본 역할 설정
+//
+//
+//            System.out.println("New Member: " + newMember); // 로그 추가
+//            return memberRepository.save(newMember);
+//        }
+//    }
+//
 
     private String generateResetToken() {
         return UUID.randomUUID().toString();

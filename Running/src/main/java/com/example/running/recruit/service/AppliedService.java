@@ -16,4 +16,5 @@ public interface AppliedService {
     // 신청 목록
     List<Applied> getAppliedByRno(Long rno);
 
+    Long getAppliedCountByRno(Long rno);
 }

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Noticelist from "./Noticelist";
 import NoticeDetail from "./NoticeDetail";
 
+
 const NoticeRegister = () => {
     const navigate = useNavigate();
     const [notice, setNotice] = useState({

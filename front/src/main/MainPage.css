@@ -1,4 +1,3 @@
-/* MainPage.css */
 .main-page {
     display: flex;
     flex-direction: column;
@@ -26,11 +25,22 @@
 
 .main-content p {
     font-size: 1.2em;
-    margin-bottom: 30px;
+    margin-bottom: 10px; /* 간격 줄이기 */
+}
+
+.github-text {
+    margin-top: 1px; /* 이미지와 텍스트 사이의 간격 */
+}
+
+.qr-image {
+    width: 10%;
+    object-fit: cover; /* 이미지를 화면에 맞게 조정 */
+    margin-bottom: 1px; /* 이미지와 텍스트 사이 간격 줄이기 */
 }
 
 .main-buttons {
     display: flex;
+    justify-content: center;
     gap: 20px;
 }
 
@@ -41,4 +51,9 @@
     text-decoration: none;
     border-radius: 5px;
     font-size: 1em;
+}
+
+.ImageSlider-title {
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    margin-left: 0; /* 추가적인 여백 조정 */
 }
