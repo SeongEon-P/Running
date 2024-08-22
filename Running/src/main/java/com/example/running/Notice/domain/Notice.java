@@ -23,6 +23,7 @@ public class Notice extends BaseEntity {
     private String n_content;
     private String writer;
     private String n_image;
+    private boolean important;
 
     @OneToMany(mappedBy = "notice",
             cascade = {CascadeType.ALL},
@@ -37,5 +38,10 @@ public class Notice extends BaseEntity {
         this.n_content = n_content;
         this.n_image = n_image;
         this.writer = member.getMid();
+    }
+
+    // 중요 공지사항 설정 메서드 추가
+    public void markAsImportant(boolean important) {
+        this.important = important;
     }
 }

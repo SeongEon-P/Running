@@ -37,32 +37,47 @@ public class NoticeController {
     }
 
     // Multipart file data 처리
-    @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Object> addNotice(@ModelAttribute NoticeDTO noticeDTO) {
-        List<NoticeResourceDTO> resourceDtoList = new ArrayList<>();
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<NoticeDTO> addNotice(
+            @RequestParam("n_title") String nTitle,
+            @RequestParam("n_content") String nContent,
+            @RequestParam("writer") String writer,
+            @RequestParam("is_important") boolean isImportant,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setN_title(nTitle);
+        noticeDTO.setN_content(nContent);
+        noticeDTO.setWriter(writer);
+        noticeDTO.setImportant(isImportant);
+
         NoticeDTO savedNotice = noticeService.addNotice(noticeDTO);
-        if (noticeDTO.getFiles() != null) {
+
+        if (files != null) {
+            List<NoticeResourceDTO> resourceDtoList = new ArrayList<>();
             int ord = 0;
-            for (MultipartFile file : noticeDTO.getFiles()) {
-                Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
+            for (MultipartFile file : files) {
+                Path savePath = Paths.get("C:\\upload",file.getOriginalFilename());
                 try {
-                    file.transferTo(savePath);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    file.transferTo(savePath.toFile());
+                    NoticeResourceDTO dto = NoticeResourceDTO.builder()
+                            .nr_name(file.getOriginalFilename())
+                            .nr_ord(ord++)
+                            .nr_type(file.getContentType())
+                            .nno(savedNotice.getNno())
+                            .build();
+                    resourceDtoList.add(dto);
+                } catch (IOException e) {
+                    log.error("파일 저장 중 오류 발생", e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-                NoticeResourceDTO dto = NoticeResourceDTO.builder()
-                        .nr_name(file.getOriginalFilename())
-                        .nr_ord(ord)
-                        .nr_type(file.getContentType())
-                        .nno(savedNotice.getNno())
-                        .build();
-                resourceDtoList.add(dto);
-                ord++;
             }
             noticeResourceService.saveAll(resourceDtoList);
         }
+
         return new ResponseEntity<>(savedNotice, HttpStatus.CREATED);
     }
+
 
     @PutMapping("/{nno}")
     public ResponseEntity<Object> modifyNotice(@PathVariable("nno") Long nno, @ModelAttribute NoticeDTO noticeDTO) {
@@ -118,4 +133,10 @@ public class NoticeController {
         noticeService.deleteNotice(nno);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping("/important")
+    public ResponseEntity<List<NoticeDTO>> getImportantNotices() {
+        List<NoticeDTO> importantNotices = noticeService.findImportantNotices();
+        return new ResponseEntity<>(importantNotices, HttpStatus.OK);
+    }
+
 }

@@ -1,11 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Noticelist from "./Noticelist";
 import NoticeModify from "./NoticeModify";
 
 const NoticeDetail = ({ nno }) => {
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [notice, setNotice] = useState({});
     const [noticeResources, setNoticeResources] = useState([]);
@@ -17,7 +15,7 @@ const NoticeDetail = ({ nno }) => {
         try {
             const response = await axios.get(`http://localhost:8080/notice/read?nno=${nno}`);
             setNotice(response.data);
-            setNoticeResources(response.data.notice_resource);
+            setNoticeResources(response.data.notice_resource || []);
             setLoading(false);
         } catch (error) {
             console.error("Error fetching notice details", error);
@@ -70,7 +68,10 @@ const NoticeDetail = ({ nno }) => {
                     <div className="container">
                         <div className="form-control">
                             <div className="d-flex flex-wrap justify-content-between">
-                                <p className="notice_title">{notice.n_title}</p>
+                                <p className="notice_title">
+                                    {notice.n_title}
+                                    {notice.is_important && <span className="important-tag">[중요]</span>}
+                                </p>
                                 <span>작성자 : {notice.writer}</span>
                             </div>
                         </div>
@@ -80,7 +81,7 @@ const NoticeDetail = ({ nno }) => {
                             </p>
                         </div>
                         <div className="form-control">
-                            <p className="notice_content">내용: {notice.n_content}</p> {/* Add this line to display the content */}
+                            <p className="notice_content">내용: {notice.n_content}</p>
                             {noticeResources.length > 0 ? (
                                 noticeResources.map((resource, index) => (
                                     <div key={index} style={{ marginBottom: '15px' }}>

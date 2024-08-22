@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import NoticeDetail from "./NoticeDetail";
 import NoticeRegister from "./NoticeRegister";
-import './Noticelist.css'
+import './Noticelist.css';
 
 function Noticelist() {
   const [noticeList, setNoticeList] = useState([]);
@@ -35,7 +35,7 @@ function Noticelist() {
         const title = notice.n_title ? notice.n_title.toLowerCase() : "";
         const content = notice.n_content ? notice.n_content.toLowerCase() : "";
         const writer = notice.writer ? notice.writer.toLowerCase() : "";
-  
+
         switch (searchType) {
           case "title":
             return title.includes(lowerSearchTerm);
@@ -51,22 +51,26 @@ function Noticelist() {
               writer.includes(lowerSearchTerm)
             );
         }
-      })
-      .sort((a, b) => b.is_important - a.is_important || b.nno - a.nno);
-  
-    // 전체 항목 수 계산
-    const totalItems = filteredList.length;
-  
-    // 페이지네이션에 따른 현재 페이지의 항목들 설정
+      });
+
+    // 중요 공지사항과 일반 공지사항을 분리
+    const importantNotices = filteredList.filter(notice => notice.important === true);
+    const regularNotices = filteredList.filter(notice => notice.important !== true).reverse(); // 역순 정렬
+
+    // 페이지네이션 적용
+    const totalItems = importantNotices.length + regularNotices.length;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
-  
+    const paginatedRegularNotices = regularNotices.slice(indexOfFirstItem, indexOfLastItem);
+
+    // 중요 공지사항을 맨 위에 표시
+    const currentItems = [...importantNotices, ...paginatedRegularNotices];
+
     // 현재 페이지 항목 설정 및 전체 페이지 수 설정
     setCurrentItems(currentItems);
     setTotalPages(Math.ceil(totalItems / itemsPerPage));
   }, [currentPage, itemsPerPage, noticeList, searchTerm, searchType]);
-  
+
   const maxPageNumbers = 5;
 
   const handleClick = (pageNumber) => {
@@ -77,12 +81,12 @@ function Noticelist() {
     const pageNumbers = [];
     let startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
     let endPage = startPage + maxPageNumbers - 1;
-  
+
     if (endPage > totalPages) {
       endPage = totalPages;
       startPage = Math.max(1, endPage - maxPageNumbers + 1);
     }
-  
+
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
         <li
@@ -99,7 +103,7 @@ function Noticelist() {
         </li>
       );
     }
-  
+
     return (
       <ul className="pagination mb-0">
         {startPage > 1 && (
@@ -128,7 +132,6 @@ function Noticelist() {
       </ul>
     );
   };
-  
 
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);
@@ -195,6 +198,7 @@ function Noticelist() {
                     onClick={() => handleNoticeClick(notice.nno)} 
                     style={{ cursor: 'pointer' }}
                   >
+                    {notice.important === true && <strong>[중요] </strong>}
                     {notice.n_title}
                   </td>
                   <td>

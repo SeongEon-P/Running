@@ -7,14 +7,20 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
         n_title: "",
         n_content: "",
         writer: localStorage.getItem('mid') || "",
+        is_important: false, // 중요 공지사항 상태 추가
     });
     const [noticeResource, setNoticeResource] = useState([]);
     const [files, setFiles] = useState([]);
 
     const onInputChange = (e) => {
-        const { name, value, files: selectedFiles } = e.target;
+        const { name, value, files: selectedFiles, type, checked } = e.target;
         if (name === "files") {
             setFiles(Array.from(selectedFiles));
+        } else if (type === "checkbox") {
+            setNotice({
+                ...notice,
+                [name]: checked,
+            });
         } else {
             setNotice({
                 ...notice,
@@ -33,17 +39,15 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
         }
     }, []);
 
-
     const getNotice = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/notice/read?nno=${nno}`);
             console.log("Fetched notice data:", response.data);
             
-            // 만약 writer가 제대로 들어오지 않으면 디버깅 메시지 출력
             if (!response.data.writer) {
                 console.warn("Fetched notice has no writer field!");
             }
-    
+
             setNotice(response.data);
             setNoticeResource(response.data.notice_resource);
             setLoading(false);
@@ -75,6 +79,7 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
             formData.append("n_title", notice.n_title);
             formData.append("n_content", notice.n_content);
             formData.append("writer", notice.writer);
+            formData.append("is_important", notice.is_important); // 중요 공지사항 상태 포함
 
             files.forEach(file => {
                 formData.append("files", file);
@@ -126,6 +131,17 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
                             value={notice.n_content}
                             rows="20"
                         />
+                    </p>
+                    <p>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="is_important"
+                                checked={notice.is_important}
+                                onChange={onInputChange}
+                            />
+                            중요 공지사항
+                        </label>
                     </p>
                     <p>첨부파일</p>
                     <input

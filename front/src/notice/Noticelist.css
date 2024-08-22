@@ -1,42 +1,114 @@
-/* 페이지네이션 */
-.pagination {
-    margin-top: 20px;
-    display: flex;  
-    justify-content: center;  
-    list-style: none;  
-    padding-left: 0;  
-}
+/* Noticelist.css */
 
-.pagination .page-item {
-    margin: 0 5px;  
-}
-
-.pagination .page-item .page-link {
-    color: #6c757d;
-    border: 1px solid #dee2e6;
+/* General container styling */
+.notice_con {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Heading styling */
+  .notice_title {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+  }
+  
+  /* Table styling */
+  .table {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .table thead {
+    background-color: #f4f4f4;
+  }
+  
+  .table th, .table td {
+    padding: 15px;
+    text-align: left;
+  }
+  
+  .table tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  
+  /* Pagination styling */
+  .pagination {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+  
+  .page-item {
     margin: 0 2px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    padding: 8px 12px;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #6c757d;
-    color: #ffffff;
-    border-color: #6c757d;
-}
-
-.pagination .page-item .page-link:hover {
-    background-color: #343a40;
-    color: #ffffff;
-}
-
-.pagination .page-item:first-child .page-link {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-}
-
-.pagination .page-item:last-child .page-link {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
+  }
+  
+  .page-link {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .page-link:hover {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  /* Button styling */
+  .btn-outline-dark {
+    border: 1px solid #333;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .btn-outline-dark:hover {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  /* Input and select styling */
+  .form-control, .form-select {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 10px;
+  }
+  
+  .form-control:focus, .form-select:focus {
+    border-color: #333;
+    box-shadow: none;
+  }
+  
+  .noticeRegisterBtn {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .table th, .table td {
+      padding: 10px;
+    }
+  
+    .pagination {
+      font-size: 14px;
+    }
+  
+    .btn-outline-dark {
+      padding: 8px 16px;
+    }
+  }
+  

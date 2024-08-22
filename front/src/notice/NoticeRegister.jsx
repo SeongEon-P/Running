@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Noticelist from "./Noticelist";
 import NoticeDetail from "./NoticeDetail";
 
-
 const NoticeRegister = () => {
     const navigate = useNavigate();
     const [notice, setNotice] = useState({
@@ -17,7 +16,6 @@ const NoticeRegister = () => {
     const [showNoticeList, setShowNoticeList] = useState(false);
     const [showNoticeDetail, setShowNoticeDetail] = useState(false);
     const [registeredNno, setRegisteredNno] = useState(null);
-    const [isAdmin, setIsAdmin] = useState(false);
 
     const onInputChange = (e) => {
         const { name, value, files, type, checked } = e.target;
@@ -35,7 +33,7 @@ const NoticeRegister = () => {
             });
         }
     };
-    
+
     useEffect(() => {
         const loginData = JSON.parse(localStorage.getItem('login'));
         if (loginData && loginData.name) {
@@ -48,26 +46,31 @@ const NoticeRegister = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const formData = new FormData();
             formData.append("n_title", notice.n_title);
             formData.append("n_content", notice.n_content);
             formData.append("writer", notice.writer);
-            formData.append("is_important", notice.is_important);
-
+            formData.append("is_important", notice.is_important); // boolean 값 처리
+    
             if (nr_files.length > 0) {
                 nr_files.forEach((file) => {
                     formData.append("files", file);
                 });
             }
-
+    
+            // FormData의 내용을 콘솔에 출력
+            for (let pair of formData.entries()) {
+                console.log(`${pair[0]}: ${pair[1]}`);
+            }
+    
             const response = await axios.post("http://localhost:8080/notice/register", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-
+    
             if (response.status === 201) {
                 alert("공지사항 등록이 성공적으로 완료되었습니다.");
                 setRegisteredNno(response.data.nno);
@@ -78,7 +81,7 @@ const NoticeRegister = () => {
             alert("등록 중 오류가 발생했습니다.");
         }
     };
-
+    
     const handleListClick = () => {
         setShowNoticeList(true);
     };
@@ -91,7 +94,7 @@ const NoticeRegister = () => {
                 <NoticeDetail nno={registeredNno} />
             ) : (
                 <>
-                    <h2 className="notice">공지사항</h2>
+                    <h2 className="notice">공지사항 등록</h2>
                     <form onSubmit={onSubmit}>
                         <div className="container">
                             <div className="d-flex flex-wrap justify-content-between">
@@ -119,7 +122,18 @@ const NoticeRegister = () => {
                                     rows="20"
                                 />
                             </p>
-                            <a>첨부파일</a>
+                            <p>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="is_important"
+                                        checked={notice.is_important}
+                                        onChange={onInputChange}
+                                    />
+                                    중요 공지사항
+                                </label>
+                            </p>
+                            <p>첨부파일</p>
                             <input
                                 onChange={onInputChange}
                                 type="file"
