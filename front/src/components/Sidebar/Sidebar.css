@@ -1,0 +1,40 @@
+.sidebar {
+    width: 200px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    position: fixed;
+    top: 80px; /* 네비게이션 바 아래에 위치하도록 설정 */
+    left: 0;
+    height: 100%;
+}
+
+.sidebar h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+    transition: color 0.2s;
+}
+
+.sidebar nav ul li a:hover {
+    color: #000;
+}
+
+.sidebar nav ul li a.active {
+    font-weight: bold;
+    text-decoration: underline;
+    color: #000;
+}

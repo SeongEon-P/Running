@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -21,32 +22,32 @@ public class Recruit extends BaseEntity {
     private Long rno;
 
     // 게시글 제목
-    @Column(name = "r_title", nullable = false, length = 100)
-    private String r_title;
+    @Column(name = "title", nullable = false, length = 100)
+    private String title;
 
     // 게시글 내용
-    @Column(name = "r_content", nullable = false)
-    private String r_content;
+    @Column(name = "content", nullable = false)
+    private String content;
 
-    // 모이는 장소
-    @Column(name = "r_place", nullable = false)
-    private String r_place;
+    // 모이는 장소(주소 api 추가용)
+    @Column(name = "address", nullable = false)
+    private String address;
+
+    // 상세 장소명
+    @Column(name = "place", nullable = false)
+    private String place;
 
     // 모이는 날짜
-    @Column(name = "r_date", nullable = false)
-    private LocalDate r_date;
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
 
     // 모이는 시간
-    @Column(name = "r_time", nullable = false)
-    private Time r_time;
+    @Column(name = "time", nullable = false)
+    private LocalTime time;
 
     // 모집 인원
-    @Column(name = "max_number", nullable = false)
-    private Integer max_number;
-
-    // 현재 인원
-//    @Column(name = "current_number", nullable = false)
-//    private Integer current_number = 1;
+    @Column(name = "maxnumber", nullable = false)
+    private Integer maxnumber;
 
     // 작성자 -> member의 mid
     @ManyToOne
@@ -56,18 +57,20 @@ public class Recruit extends BaseEntity {
 
 
     // 게시글 변경
-    public void changeRecruit(String r_title,
-                              String r_content,
-                              String r_place,
-                              LocalDate r_date,
-                              Time r_time,
-                              Integer max_number) {
-        this.r_title = r_title;
-        this.r_content = r_content;
-        this.r_place = r_place;
-        this.r_date = r_date;
-        this.r_time = r_time;
-        this.max_number = max_number;
+    public void changeRecruit(String title,
+                              String content,
+                              String address,
+                              String place,
+                              LocalDate date,
+                              LocalTime time,
+                              Integer maxnumber) {
+        this.title = title;
+        this.content = content;
+        this.address = address;
+        this.place = place;
+        this.date = date;
+        this.time = time;
+        this.maxnumber = maxnumber;
     }
 
     public void setMember(Member memberRecruit) {

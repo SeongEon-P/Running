@@ -1,18 +1,72 @@
-/* Navbar.css */
 .navbar {
     display: flex;
-    justify-content: center; /* 네비게이션 바를 중앙에 정렬 */
+    justify-content: space-between; /* 로고와 링크 그룹을 양 끝으로 정렬 */
     align-items: center;
-    padding: 10px 0;
+    padding: 10px 20px;
     background-color: #ffffff;
     border-bottom: 1px solid #e6e6e6;
 }
 
-.nav-links {
-    display: flex;
-    gap: 20px;
-}
-
 .logo {
     height: 50px; /* 로고 크기 조정 */
+    margin-right: 20px; /* 로고와 링크 사이에 여백 추가 */
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center; /* 네비게이션 링크를 가운데 정렬 */
+    gap: 20px;
+    flex-grow: 1; /* 네비게이션 링크들이 가운데에 위치하도록 설정 */
+}
+
+.auth-links { /* 새로 추가된 CSS */
+    display: flex;
+    gap: 20px;
+    margin-left: auto; /* 오른쪽 끝으로 밀어내기 */
+}
+
+.nav-links a, .auth-links a {
+    text-decoration: none; /* 밑줄 제거 */
+    font-weight: bold; /* 글자 굵게 */
+    color: #000000; /* 글자 색 검정 */
+    padding-bottom: 2px; /* 밑줄 공간을 미리 확보 */
+    transition: border-bottom 0.2s; /* 부드러운 밑줄 애니메이션 */
+}
+
+.nav-links a:hover, .auth-links a:hover {
+    border-bottom: 2px solid #000000; /* 마우스 오버 시 밑줄 추가 */
+}
+
+.nav-links .crew-link > a:hover {
+    border-bottom: none; /* CREW 링크에 마우스 오버 시 밑줄 제거 */
+}
+
+.crew-link {
+    position: relative; /* 드롭다운 메뉴를 위한 부모 요소 설정 */
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%; /* 부모 요소의 아래에 위치 */
+    left: 0;
+    display: none; /* 기본적으로 드롭다운 숨기기 */
+    background-color: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 10px 0;
+    z-index: 1;
+}
+
+.dropdown a {
+    display: block;
+    padding: 10px 20px;
+    white-space: nowrap;
+}
+
+.dropdown a:hover {
+    background-color: #f0f0f0; /* 드롭다운 메뉴 항목에 마우스 오버 시 배경색 변경 */
+}
+
+.crew-link:hover .dropdown {
+    display: block; /* CREW 링크에 마우스 오버 시 드롭다운 표시 */
 }
