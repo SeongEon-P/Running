@@ -98,34 +98,77 @@ const RecruitList = () => {
       <Sidebar />
       <div className="recruit-content">
         <div className="recruit-list">
-          <h1>Recruit List</h1>
-          <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
-          <table>
-            <thead>
-              <tr>
-                <th>rno</th>
-                <th>Title</th>
-                <th>Content</th>
-                <th>Place</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Max Number</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRecruits.map(recruit => (
-                <tr key={recruit.rno} onClick={() => handleRowClick(recruit.rno)}>
-                  <td>{recruit.rno}</td>
-                  <td>{recruit.title}</td>
-                  <td>{recruit.content}</td>
-                  <td>{recruit.place}</td>
-                  <td>{formatDate(recruit.date)}</td>
-                  <td>{formatTime(recruit.time)}</td>
-                  <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.maxnumber}</td>
+          <div className="recruit-list-title">
+            <h1>Recruit List</h1>
+            <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
+          </div>
+          <div className="recruit-search">
+            <div>
+              <select value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)}>
+                <option value="title">제목</option>
+                <option value="content">내용</option>
+                <option value="memberRecruit.mid">작성자</option>
+              </select>
+              <input
+                type="text"
+                placeholder="검색어를 입력하세요"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+              />
+
+            </div>
+            <div>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+              <input
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </div>
+            <button type="button" onClick={handleSearch}>검색</button>
+            <button type="button" onClick={handleReset}>검색어 초기화</button>
+          </div>
+          <div className="recruit-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>모이는 장소</th>
+                  <th>제목</th>
+                  <th>날짜</th>
+                  <th>시간</th>
+                  <th>인원</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentRecruits.map(recruit => (
+                  <tr key={recruit.rno} onClick={() => handleRowClick(recruit.rno)}>
+                    {/* <td>{recruit.rno}</td> */}
+                    <td>{recruit.place}</td>
+                    <td>{recruit.title}</td>
+                    <td>{formatDate(recruit.date)}</td>
+                    <td>{formatTime(recruit.time)}</td>
+                    <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.maxnumber}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <ReactPaginate
             previousLabel={"이전"}
             nextLabel={"다음"}
@@ -141,47 +184,7 @@ const RecruitList = () => {
           />
         </div>
 
-        <div className="recruit-search">
-          <div>
-            <select value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)}>
-              <option value="title">제목</option>
-              <option value="content">내용</option>
-              <option value="memberRecruit.mid">작성자</option>
-            </select>
-            <input
-              type="text"
-              placeholder="검색어를 입력하세요"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-            />
-            <button type="button" onClick={handleSearch}>검색</button>
-            <button type="button" onClick={handleReset}>검색어 초기화</button>
-          </div>
-          <div>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
-          <div>
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-            />
-            <input
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-            />
-          </div>
-        </div>
+
       </div>
     </div>
 

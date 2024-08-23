@@ -1,7 +1,7 @@
 .recruit-page {
     display: flex;
     background-color: #f8f9fa;
-    min-height: 100vh;
+    min-height: 800px;
     padding: 20px;
 }
 
@@ -20,14 +20,19 @@
     margin-bottom: 20px;
 }
 
-.recruit-list h1 {
-    font-size: 24px;
-    font-weight: bold;
+.recruit-list-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.recruit-list button {
-    margin-bottom: 20px;
+.recruit-list-title h1 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.recruit-list-title button {
     padding: 8px 16px;
     background-color: white; /* 배경색 흰색 */
     color: black; /* 폰트 색깔 검은색 */
@@ -37,8 +42,12 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.recruit-list button:hover {
-    background-color: #f0f0f0;
+.recruit-list-title button:hover {
+    background-color: #f0f0f0; /* 호버 시 약간 어두운 흰색 */
+}
+
+.recruit-table {
+    min-height: 700px;
 }
 
 .recruit-list table {
@@ -58,6 +67,13 @@
 .recruit-list table th {
     background-color: #e9ecef;
     font-weight: bold;
+    text-align: center;
+}
+
+.recruit-list table td:nth-child(3),
+.recruit-list table td:nth-child(4),
+.recruit-list table td:nth-child(5) {
+    text-align: center; /* tbody의 날짜, 시간, 인원 가운데 정렬 */
 }
 
 .pagination {
