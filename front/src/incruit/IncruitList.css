@@ -29,18 +29,65 @@
     margin-bottom: 20px;
 }
 
+/* 검색 및 버튼 컨테이너 스타일 */
+.IncruitList_actionsContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* 검색창 컨테이너 스타일 */
+.IncruitList_searchContainer {
+    display: flex;
+    align-items: center;
+}
+
+/* 검색 기준 선택 드롭다운 스타일 */
+.IncruitList_searchSelect {
+    font-size: 18px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* 검색 입력 필드 스타일 */
+.IncruitList_searchInput {
+    font-size: 18px;
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* 검색 버튼 스타일 */
+.IncruitList_searchButton {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #ffffff;
+    background-color: #111;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.IncruitList_searchButton:hover {
+    background-color: #555;
+}
+
 /* 버튼 컨테이너 스타일 - 버튼들을 가로로 정렬 */
 .IncruitList_buttons {
     display: flex;
-    justify-content: flex-start; /* 버튼을 왼쪽으로 정렬 */
-    gap: 10px; /* 버튼 사이의 간격 */
-    margin-bottom: 20px;
+    gap: 10px;
 }
 
 /* 버튼 스타일 */
 .IncruitList_button {
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 18px;
     color: #ffffff;
     background-color: #111;
     border: none;

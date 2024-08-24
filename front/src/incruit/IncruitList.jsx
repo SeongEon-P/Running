@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import './IncruitList.css';  // 스타일 파일 import
+import './IncruitList.css';  // 수정된 스타일 파일 import
 
 const IncruitList = () => {
     const [incruitList, setIncruitList] = useState([]);
+    const [filteredIncruitList, setFilteredIncruitList] = useState([]); // 필터링된 리스트 상태
+    const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
+    const [searchField, setSearchField] = useState('ititle'); // 검색 기준 상태 (기본값은 ititle)
     const [error, setError] = useState(null);
     const [isLeader, setIsLeader] = useState(false); // LEADER인지 확인하는 상태
     const [showTeamRegisterButton, setShowTeamRegisterButton] = useState(true); // 팀 등록 버튼 표시 여부 상태
+    const [isAdmin, setIsAdmin] = useState(false); // ADMIN 여부 확인 상태
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,6 +20,8 @@ const IncruitList = () => {
         if (loginData) {
             if (loginData.role === 'LEADER') {
                 setIsLeader(true); // LEADER이면 true로 설정
+            } else if (loginData.role === 'ADMIN') {
+                setIsAdmin(true); // admin이면 true로 설정
             } else {
                 setIsLeader(false);
             }
@@ -27,6 +33,7 @@ const IncruitList = () => {
             try {
                 const response = await axios.get('/incruit/list');
                 setIncruitList(response.data);
+                setFilteredIncruitList(response.data); // 초기 리스트를 필터링된 리스트로 설정
             } catch (err) {
                 setError('모집 리스트를 불러오는 중 오류가 발생했습니다.');
                 console.error(err);
@@ -35,6 +42,26 @@ const IncruitList = () => {
 
         fetchIncruitList();
     }, []);
+
+    // 검색어가 변경될 때 호출되는 함수
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value.toLowerCase());
+    };
+
+    // 검색 기준이 변경될 때 호출되는 함수
+    const handleSearchFieldChange = (e) => {
+        setSearchField(e.target.value);
+        setSearchQuery(''); // 검색어 초기화
+        setFilteredIncruitList(incruitList); // 필터링된 리스트 초기화
+    };
+
+    // 검색 버튼 클릭 시 호출되는 함수
+    const handleSearchClick = () => {
+        const filteredList = incruitList.filter(incruit =>
+            incruit[searchField].toLowerCase().includes(searchQuery)
+        );
+        setFilteredIncruitList(filteredList);
+    };
 
     // 조회수 증가 후 상세보기 페이지로 이동하는 함수
     const handleViewClick = async (ino) => {
@@ -62,31 +89,64 @@ const IncruitList = () => {
         <div className="IncruitList_container">
             <h2 className="IncruitList_h2">모집 리스트</h2>
             {error && <p className="IncruitList_error">{error}</p>}
-            <div className="IncruitList_buttons">
-                {/* 로컬스토리지에 login 키가 있을 때만 팀 등록 버튼을 표시 */}
-                {showTeamRegisterButton && !isLeader && (
-                    <button 
-                        className="IncruitList_button" 
-                        onClick={handleTeamRegisterClick} 
+
+            {/* 검색 및 버튼 컨테이너 */}
+            <div className="IncruitList_actionsContainer">
+                <div className="IncruitList_searchContainer">
+                    {/* 검색 기준 선택 드롭다운 */}
+                    <select
+                        value={searchField}
+                        onChange={handleSearchFieldChange}
+                        className="IncruitList_searchSelect"
                     >
-                        팀 등록
+                        <option value="ititle">제목</option>
+                        <option value="iwriter">작성자</option>
+                    </select>
+
+                    {/* 검색 입력 필드 */}
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        placeholder="검색어를 입력하세요"
+                        className="IncruitList_searchInput"
+                    />
+
+                    {/* 검색 버튼 */}
+                    <button onClick={handleSearchClick} className="IncruitList_searchButton">
+                        검색
                     </button>
-                )}
-                {/* isLeader가 true일 경우에만 모집글 작성 버튼을 표시 */}
-                {isLeader && (
-                    <button 
-                        className="IncruitList_button" 
-                        onClick={handleCreateClick}
-                    >
-                        모집글 작성
-                    </button>
+                </div>
+
+                {!isAdmin && (
+                    <div className="IncruitList_buttons">
+                        {/* 로컬스토리지에 login 키가 있을 때만 팀 등록 버튼을 표시 */}
+                        {showTeamRegisterButton && !isLeader && (
+                            <button
+                                className="IncruitList_button"
+                                onClick={handleTeamRegisterClick}
+                            >
+                                팀 등록
+                            </button>
+                        )}
+                        {/* isLeader가 true일 경우에만 모집글 작성 버튼을 표시 */}
+                        {isLeader && (
+                            <button
+                                className="IncruitList_button"
+                                onClick={handleCreateClick}
+                            >
+                                모집글 작성
+                            </button>
+                        )}
+                    </div>
                 )}
             </div>
+
             <ul className="IncruitList_ul">
-                {incruitList.map((incruit) => (
+                {filteredIncruitList.map((incruit) => (
                     <li key={incruit.ino} className="IncruitList_li">
                         <Link to={`/incruit/${incruit.ino}`} className="IncruitList_link"
-                        onClick={() => handleViewClick(incruit.ino)}>
+                            onClick={() => handleViewClick(incruit.ino)}>
                             {incruit.ititle} - {incruit.iwriter} (조회수: {incruit.iviews})
                         </Link>
                     </li>
