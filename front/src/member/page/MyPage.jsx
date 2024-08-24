@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './MyPage.css';
+import './MyPage.css'; // 분리된 CSS 파일을 가져옵니다
 
 const MyPage = () => {
   const [member, setMember] = useState({
@@ -9,30 +8,18 @@ const MyPage = () => {
     name: '',
     phone: '',
     email: '',
-    role: '',
+    introduction: ''
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const loginData = JSON.parse(localStorage.getItem('login'));
-
-    if (token) {
-      axios.get('http://localhost:8080/members/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    // 회원 정보를 불러오는 API 호출
+    axios.get('http://localhost:8080/members/login')
       .then(response => {
-        setMember({
-          ...response.data,
-          name: loginData?.name || response.data.name,
-        });
+        setMember(response.data);
       })
       .catch(error => {
         console.error('회원 정보 불러오기 실패:', error);
       });
-    } else {
-      console.error('토큰이 없습니다. 로그인해 주세요.');
-    }
   }, []);
 
   const handleDeleteAccount = () => {
@@ -119,15 +106,11 @@ const MyPage = () => {
             <td className="mypage-table-value">{member.email}</td>
           </tr>
           <tr>
-            <td className="mypage-table-label">회원 등급</td>
-            <td className="mypage-table-value">{member.role}</td>
+            <td className="mypage-table-label">소개</td>
+            <td className="mypage-table-value">{member.introduction}</td>
           </tr>
         </tbody>
-        <button className="delete-account-button" onClick={handleDeleteAccount}>
-        회원탈퇴
-      </button>
       </table>
-      
     </div>
   );
 };

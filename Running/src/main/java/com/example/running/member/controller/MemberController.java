@@ -6,18 +6,21 @@ import com.example.running.member.dto.*;
 import com.example.running.member.security.jwt.JwtTokenProvider;
 import com.example.running.member.service.MemberService;
 import com.example.running.member.utils.SecurityUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,7 +37,8 @@ public class MemberController {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private AuthenticationManager authenticationManager;
-
+    @Autowired
+    private RestTemplate restTemplate;
 
     // 회원가입
     @PostMapping("/signup")
@@ -243,6 +247,49 @@ public class MemberController {
 
         return ResponseEntity.ok("Role 업데이트를 성공했습니다.");
     }
+
+
+    // 카카오 로그인
+//    @PostMapping("/kakao/callback")
+//    public ResponseEntity<?> kakaoLoginCallback(@RequestBody Map<String, String> requestBody) {
+//        String code = requestBody.get("code");
+//
+//        try {
+//            // 카카오 토큰 요청 로직
+//            String tokenRequestUrl = "https://kauth.kakao.com/oauth/token";
+//
+//            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//            params.add("grant_type", "authorization_code");
+//            params.add("client_id", "4ef446a79d53d180b43311c6b5a4ff46");
+//            params.add("redirect_uri", "http://localhost:3000/login/oauth2/code/kakao");
+//            params.add("code", code);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+//
+//            ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
+//                    tokenRequestUrl, request, KakaoTokenResponse.class
+//            );
+//
+//            KakaoTokenResponse kakaoToken = response.getBody();
+//            if (kakaoToken == null) {
+//                throw new RuntimeException("카카오 서버로부터 토큰을 받아오지 못했습니다.");
+//            }
+//
+//            System.out.println("Access Token: " + kakaoToken.getAccess_token());
+//
+//            // JWT 토큰 생성 로직
+//            String jwt = memberService.processKakaoLogin(kakaoToken);
+//            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();  // 에러 로그 출력
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그인 실패: " + e.getMessage());
+//        }
+//    }
+
 
 
 }

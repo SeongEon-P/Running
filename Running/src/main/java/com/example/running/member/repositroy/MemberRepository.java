@@ -17,4 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     boolean existsByPhone(String phone);  // 전화번호 중복 체크
 
     Optional<Member> findByResetToken(String resetToken);
+
+    // 카카오
+    Optional<Member> findByKakaoId(String kakaoId);
 }

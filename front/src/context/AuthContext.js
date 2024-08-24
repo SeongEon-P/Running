@@ -48,6 +48,19 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const loginWithToken = async (token) => {
+        try {
+            localStorage.setItem('token', token);
+            setIsLoggedIn(true);
+            navigate('/');
+
+        } catch (error) {
+            console.error('토큰으로 로그인 실패:', error);
+            setIsLoggedIn(false);
+            setUser(null);
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('login');
@@ -57,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, user, login, loginWithToken, logout }}>
             {children}
         </AuthContext.Provider>
     );

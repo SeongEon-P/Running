@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notice")
+@RequestMapping("/notice/files")
 @Log4j2
 public class NoticeResourceController {
     private final NoticeResourceService noticeResourceService;

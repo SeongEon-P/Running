@@ -7,10 +7,14 @@ import com.example.running.recruit.service.AppliedService;
 import com.example.running.recruit.service.RecruitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -18,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/recruit")
 @Log4j2
+@CrossOrigin(origins = "http://localhost:3000")
 public class RecruitController {
 
     private final RecruitService recruitService;
@@ -47,8 +52,15 @@ public class RecruitController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Object> getAllRecruits() {
-        return new ResponseEntity<>(recruitService.findAllRecruits(), HttpStatus.OK);
+    public ResponseEntity<Object> getAllRecruits(
+            @RequestParam(required = false) String searchKeyword,
+            @RequestParam(required = false) String searchCategory,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime) {
+        List<Recruit> recruits = recruitService.searchRecruits(searchKeyword, startDate, endDate, startTime, endTime);
+        return new ResponseEntity<>(recruits, HttpStatus.OK);
     }
 
     @GetMapping("/read")

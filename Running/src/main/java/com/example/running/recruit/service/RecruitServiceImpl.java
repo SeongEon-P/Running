@@ -12,6 +12,8 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -61,12 +63,13 @@ public class RecruitServiceImpl implements RecruitService {
         log.info("Recruit Found : {}" , recruit);
 
         recruit.changeRecruit(
-                recruitDTO.getR_title(),
-                recruitDTO.getR_content(),
-                recruitDTO.getR_place(),
-                recruitDTO.getR_date(),
-                recruitDTO.getR_time(),
-                recruitDTO.getMax_number()
+                recruitDTO.getTitle(),
+                recruitDTO.getContent(),
+                recruitDTO.getAddress(),
+                recruitDTO.getPlace(),
+                recruitDTO.getDate(),
+                recruitDTO.getTime(),
+                recruitDTO.getMaxnumber()
         );
 
         Optional<Member> memberResult = memberRepository.findById(recruitDTO.getMid());
@@ -91,5 +94,17 @@ public class RecruitServiceImpl implements RecruitService {
     @Override
     public List<Recruit> findPostByMid(String mid) {
         return List.of();
+    }
+
+    @Override
+    public List<Recruit> searchRecruits(String keyword,
+                                        LocalDate startDate, LocalDate endDate,
+                                        LocalTime startTime, LocalTime endTime) {
+        return recruitRepository.searchRecruitsByKeywordAndDateTime(
+                keyword,
+                startDate != null ? startDate : LocalDate.of(1900, 1, 1),
+                endDate != null ? endDate : LocalDate.of(9999, 12, 31),
+                startTime != null ? startTime : LocalTime.of(0, 0),
+                endTime != null ? endTime : LocalTime.of(23, 59));
     }
 }

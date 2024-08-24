@@ -24,15 +24,16 @@ public class NoticeResourceServiceImpl implements NoticeResourceService{
 
     @Override
     public void saveAll(List<NoticeResourceDTO> resourceDTOList) {
-        List<NoticeResource> ResourceList =
-                resourceDTOList.stream().map(dto -> modelMapper.map(dto, NoticeResource.class)
+        List<NoticeResource> resourceList =
+                resourceDTOList.stream().map
+                        (dto -> modelMapper.map(dto, NoticeResource.class)
                 ).collect(Collectors.toList());
-        noticeResourceRepository.saveAll(ResourceList);
+        noticeResourceRepository.saveAll(resourceList);
     }
 
     @Override
     public void deleteNoticeResource(Long nrno) {
-        noticeRepository.deleteById(nrno);
+        noticeResourceRepository.deleteById(nrno);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.running.member.service;
 
 import com.example.running.member.domain.Member;
 import com.example.running.member.domain.Role;
+import com.example.running.member.dto.KakaoTokenResponse;
 
 import java.util.Optional;
 
@@ -27,5 +28,9 @@ public interface MemberService {
 
     //롤 업데이트
     void updateRole(String mid, Role newRole);
+
+    // 카카오 로그인
+//    String processKakaoLogin(KakaoTokenResponse kakaoToken);
+//    Member findOrCreateKakaoMember(String kakaoId, String email);
 
 }

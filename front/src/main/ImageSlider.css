@@ -1,0 +1,86 @@
+.image-slider {
+    position: relative;
+    width: 100%;
+    max-width: 900px; 
+    margin: 0 auto;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.slider-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: calc(100% * (5 / 3)); /* 이미지 수에 비례해 슬라이더 너비 설정 */
+}
+
+.slider-item {
+    width: calc(100% / 3);
+    position: relative;
+    text-align: center;
+}
+
+.slider-image {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px; /* 이미지 모서리 둥글게 */
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.register-button {
+    background-color: #000000; /* 검은색 버튼 */
+    color: #ffffff;
+    padding: 5px 10px; /* 버튼 크기 조정 */
+    text-decoration: none;
+    border-radius: 20px; /* 버튼 모서리 둥글게 */
+    font-size: 0.2em; /* 버튼 글씨 크기 조정 */
+}
+
+.register-button:hover {
+    background-color: #333333; /* 호버 시 색상 변경 */
+}
+
+.prev-button, .next-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 2;
+    border-radius: 50%;
+}
+
+.prev-button {
+    left: 10px;
+}
+
+.next-button {
+    right: 10px;
+}
+
+.slider-bar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 5px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.image-slider:hover .slider-bar {
+    opacity: 1;
+}

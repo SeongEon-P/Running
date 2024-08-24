@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // AuthContext 가져오기
+import { KAKAO_AUTH_URL } from './Kakao';
+import axios from 'axios';
 
 const Login = () => {
   const [login, setLogin] = useState({
@@ -36,6 +38,13 @@ const Login = () => {
     }
   };
 
+  const kakaoLogin = () => {
+    window.location.href = KAKAO_AUTH_URL;
+}
+
+const code = new URL(window.location.href).searchParams.get("code");
+
+
   return (
     <div>
       <h1>로그인</h1>
@@ -64,9 +73,12 @@ const Login = () => {
         <br />
         <button type="submit">로그인</button>
       </form>
+      <button onClick={kakaoLogin}>카카오 로그인</button>
+
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <div>
-        <Link to="/findId">아이디 찾기</Link> | <Link to="/findPassword">비밀번호 찾기</Link>
+        <Link to="/findId">아이디 찾기</Link> |{' '}
+        <Link to="/findPassword">비밀번호 찾기</Link>
       </div>
     </div>
   );

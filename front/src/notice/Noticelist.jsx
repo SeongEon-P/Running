@@ -16,6 +16,7 @@ function Noticelist() {
   const uploadRegister = async () => {
     try {
         const result = await axios.get("http://localhost:8080/notice/list");
+        console.log(result.data);
         setNoticeList(result.data);
     } catch (error) {
       console.error("Error fetching notice list:", error);
@@ -104,22 +105,23 @@ function Noticelist() {
   };
 
   const formatDate = (dateStr) => {
+    console.log(`Date String: ${dateStr}`); // 날짜 문자열 확인
+  
     if (!dateStr) {
       return 'Date not available';
     }
-
+  
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) {
       console.warn(`Invalid date: ${dateStr}`);
       return 'Invalid Date';
     }
-
+  
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
-
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);
   };
@@ -149,7 +151,7 @@ function Noticelist() {
                 type="text"
                 placeholder="검색..."
               />
-              <button
+              <button 
                 className="btn btn-outline-dark"
                 type="button"
                 onClick={handleSearch} // 검색 버튼 클릭 시 handleSearch 호출
@@ -174,7 +176,7 @@ function Noticelist() {
                   <td onClick={() => handleNoticeClick(notice.nno)} style={{ cursor: 'pointer' }}>
                     {notice.n_title}
                   </td>
-                  <td>{formatDate(notice.regDate)}</td>
+                  <td>{formatDate(notice.regdate)}</td>
                 </tr>
               ))}
             </tbody>
