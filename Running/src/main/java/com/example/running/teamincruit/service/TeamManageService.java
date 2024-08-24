@@ -21,4 +21,6 @@ public interface TeamManageService {
     TeamManage findByTeamLeader(String teamLeader);
 
     TeamManage findByTeamMember(String teamMember);
+
+    TeamManage findByTeamName(String teamName);
 }

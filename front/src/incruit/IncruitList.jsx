@@ -12,6 +12,8 @@ const IncruitList = () => {
     const [isLeader, setIsLeader] = useState(false); // LEADER인지 확인하는 상태
     const [showTeamRegisterButton, setShowTeamRegisterButton] = useState(true); // 팀 등록 버튼 표시 여부 상태
     const [isAdmin, setIsAdmin] = useState(false); // ADMIN 여부 확인 상태
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+    const [itemsPerPage] = useState(10); // 페이지당 항목 수
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -61,6 +63,7 @@ const IncruitList = () => {
             incruit[searchField].toLowerCase().includes(searchQuery)
         );
         setFilteredIncruitList(filteredList);
+        setCurrentPage(1); // 검색 시 첫 페이지로 이동
     };
 
     // 조회수 증가 후 상세보기 페이지로 이동하는 함수
@@ -84,6 +87,19 @@ const IncruitList = () => {
     const handleTeamRegisterClick = () => {
         navigate('/team/register');
     };
+
+    // 현재 페이지에 따른 항목 계산
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredIncruitList.slice(indexOfFirstItem, indexOfLastItem);
+
+    // 페이지 변경 함수
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    // 총 페이지 수 계산
+    const totalPages = Math.ceil(filteredIncruitList.length / itemsPerPage);
 
     return (
         <div className="IncruitList_container">
@@ -143,7 +159,7 @@ const IncruitList = () => {
             </div>
 
             <ul className="IncruitList_ul">
-                {filteredIncruitList.map((incruit) => (
+                {currentItems.map((incruit) => (
                     <li key={incruit.ino} className="IncruitList_li">
                         <Link to={`/incruit/${incruit.ino}`} className="IncruitList_link"
                             onClick={() => handleViewClick(incruit.ino)}>
@@ -152,6 +168,19 @@ const IncruitList = () => {
                     </li>
                 ))}
             </ul>
+
+            {/* 페이지네이션 버튼 */}
+            <div className="IncruitList_pagination">
+                {[...Array(totalPages)].map((_, index) => (
+                    <button
+                        key={index + 1}
+                        onClick={() => handlePageChange(index + 1)}
+                        className={index + 1 === currentPage ? 'active' : ''}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 };

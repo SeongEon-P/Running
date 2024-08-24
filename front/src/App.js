@@ -5,6 +5,7 @@ import TeamRegister from './teammanage/TeamRegister';
 import TeamList from './teammanage/TeamList';
 import TeamView from './teammanage/TeamView';
 import TeamView2 from './teammanage/TeamView2';
+import TeamView3 from './teammanage/TeamView3';
 import TeamEdit from './teammanage/TeamEdit';
 
 import IncruitRegister from './incruit/IncruitRegister';
@@ -48,6 +49,7 @@ const App = () => {
         <Routes>
           <Route path="/team/register" element={<TeamRegister />} />
           <Route path="/team/list" element={<TeamList />} />
+          <Route path="/team/:teamName" element={<TeamView3 />} />
 
           <Route path="/incruit/register" element={<IncruitRegister />} />
           <Route path="/incruit/list" element={<IncruitList />} />

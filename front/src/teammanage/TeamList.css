@@ -1,0 +1,159 @@
+/* 전체 배경과 기본 스타일 설정 */
+.TeamList_body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* 메인 컨테이너 스타일 */
+.TeamList_container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 제목 스타일 */
+.TeamList_h2 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #111;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* 오류 메시지 스타일 */
+.TeamList_error {
+    color: red;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 리스트 스타일 */
+.TeamList_ul {
+    list-style: none;
+    padding: 0;
+}
+
+.TeamList_li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.TeamList_li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 링크 스타일 */
+.TeamList_link {
+    text-decoration: none;
+    color: #111;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.TeamList_link:hover {
+    color: #555;
+}
+
+/* 팀 목록 아이템 스타일 */
+.TeamList_item {
+    display: flex;
+    align-items: center;
+}
+
+.TeamList_item img {
+    border-radius: 8px;
+    margin-right: 20px;
+    width: 120px; /* 적절한 크기 설정 */
+    height: auto;
+}
+
+.TeamList_item p {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #111;
+}
+
+/* 페이지네이션 버튼 스타일 */
+.TeamList_pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.TeamList_pagination button {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #111;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.TeamList_pagination button:hover {
+    background-color: #ddd;
+}
+
+.TeamList_pagination button.active {
+    background-color: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+/* 검색 및 버튼 컨테이너 스타일 */
+.TeamList_actionsContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* 검색창 컨테이너 스타일 */
+.TeamList_searchContainer {
+    display: flex;
+    align-items: center;
+}
+
+/* 검색 기준 선택 드롭다운 스타일 */
+.TeamList_searchSelect {
+    font-size: 18px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* 검색 입력 필드 스타일 */
+.TeamList_searchInput {
+    font-size: 18px;
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* 검색 버튼 스타일 */
+.TeamList_searchButton {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #ffffff;
+    background-color: #111;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.TeamList_searchButton:hover {
+    background-color: #555;
+}

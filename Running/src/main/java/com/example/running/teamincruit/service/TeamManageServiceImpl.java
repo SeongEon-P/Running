@@ -207,4 +207,11 @@ public class TeamManageServiceImpl implements TeamManageService {
         return teamManageRepository.findByTeamMembersContaining(teamMember)
                 .orElse(null);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TeamManage findByTeamName(String teamName) {
+        return teamManageRepository.findByTeamNameWithImages(teamName)
+                .orElse(null);
+    }
 }

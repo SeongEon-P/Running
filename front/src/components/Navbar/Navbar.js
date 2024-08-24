@@ -16,10 +16,10 @@ const Navbar = () => {
             <div className="nav-links">
                 <Link to="/recruit/list">LIGHTNING</Link>
                 <div className="crew-link">
-                    <Link to="/crew/incruit">CREW</Link>
+                    <Link to="/incruit/list">CREW</Link>
                     <div className="dropdown">
-                        <Link to="/crew/incruit">CREW 모집</Link>
-                        <Link to="/crew/manage">CREW 관리</Link>
+                        <Link to="/incruit/list">CREW 모집</Link>
+                        <Link to="/team/list">CREW 리스트</Link>
                     </div>
                 </div>
                 <Link to="/notice/list">NOTICE</Link>

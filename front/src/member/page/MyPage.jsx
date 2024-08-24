@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './MyPage.css'; // 분리된 CSS 파일을 가져옵니다
 
@@ -10,10 +11,13 @@ const MyPage = () => {
     email: '',
     introduction: ''
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 회원 정보를 불러오는 API 호출
-    axios.get('http://localhost:8080/members/login')
+    axios.get('http://localhost:8080/members/me', {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }  // JWT 토큰을 사용해 인증 헤더 추가
+    })
       .then(response => {
         setMember(response.data);
       })
@@ -29,16 +33,16 @@ const MyPage = () => {
       axios.delete('http://localhost:8080/members/delete', {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(() => {
-        alert('회원탈퇴가 완료되었습니다.');
-        localStorage.removeItem('token');
-        localStorage.removeItem('login');
-        navigate('/');
-      })
-      .catch(error => {
-        console.error('회원 탈퇴 실패:', error);
-        alert('회원 탈퇴에 실패했습니다.');
-      });
+        .then(() => {
+          alert('회원탈퇴가 완료되었습니다.');
+          localStorage.removeItem('token');
+          localStorage.removeItem('login');
+          navigate('/');
+        })
+        .catch(error => {
+          console.error('회원 탈퇴 실패:', error);
+          alert('회원 탈퇴에 실패했습니다.');
+        });
     }
   };
 
@@ -108,6 +112,12 @@ const MyPage = () => {
           <tr>
             <td className="mypage-table-label">소개</td>
             <td className="mypage-table-value">{member.introduction}</td>
+          </tr>
+          <tr>
+            <td className="mypage-table-label">등급</td>
+            <td className="mypage-table-value">
+              {JSON.parse(localStorage.getItem('login'))?.role}
+            </td>
           </tr>
         </tbody>
       </table>

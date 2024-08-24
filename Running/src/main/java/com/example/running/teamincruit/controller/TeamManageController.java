@@ -207,6 +207,15 @@ public class TeamManageController {
         return ResponseEntity.ok(team);  // 이 응답에 이미지 데이터도 포함되어야 합니다.
     }
 
+    @GetMapping("/name/{teamName}")
+    public ResponseEntity<TeamManage> getTeamByName2(@PathVariable String teamName) {
+        TeamManage team = teamManageService.findByTeamName(teamName);
+        if (team == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(team);  // 이 응답에 이미지 데이터도 포함되어야 합니다.
+    }
+
     // 팀원 등록 요청
     @PostMapping("/join-request")
     public ResponseEntity<String> joinTeamRequest(@RequestBody JoinRequestDTO request) {
