@@ -118,6 +118,15 @@ const InfoRegister = () => {
                                     rows="20"
                                 />
                             </p>
+                            <label>
+                                    <input
+                                        type="checkbox"
+                                        name="is_important"
+                                        checked={info.is_important}
+                                        onChange={onInputChange}
+                                    />
+                                    중요사항
+                                </label>
                             <a>첨부파일</a>
                             <input
                                 onChange={onInputChange}

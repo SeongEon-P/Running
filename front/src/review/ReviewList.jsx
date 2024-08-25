@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ReviewDetail from "./ReviewDetail";
 import ReviewRegister from "./ReviewRegister";
+import './ReviewList.css';
 
 function ReviewList() {
   const [reviewList, setReviewList] = useState([]);
@@ -51,19 +52,18 @@ function ReviewList() {
               writer.includes(lowerSearchTerm)
             );
         }
-      })
-      .sort((a, b) => {
-        // Sort by date in descending order
-        const dateA = new Date(a.regDate[0], a.regDate[1] - 1, a.regDate[2], a.regDate[3], a.regDate[4], a.regDate[5]);
-        const dateB = new Date(b.regDate[0], b.regDate[1] - 1, b.regDate[2], b.regDate[3], b.regDate[4], b.regDate[5]);
-        return dateB - dateA; // Descending order
       });
 
-    const totalItems = filteredList.length;
+    const importantReviews = filteredList.filter(review => review.important === true);
+    const regularReviews = filteredList.filter(review => review.important !== true).reverse(); // 역순 정렬
 
+    const totalItems = importantReviews.length + regularReviews.length;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
+    const paginatedRegularReviews = regularReviews.slice(indexOfFirstItem, indexOfLastItem);
+
+    // 중요 공지사항을 맨 위에 표시
+    const currentItems = [...importantReviews, ...paginatedRegularReviews];
 
     setCurrentItems(currentItems);
     setTotalPages(Math.ceil(totalItems / itemsPerPage));
@@ -156,7 +156,7 @@ function ReviewList() {
       ) : (
         <>
           <div className="d-flex justify-content-between mb-4">
-            <h2 className="review_title" style={{ fontSize: "30px" }}>리뷰</h2>
+            <h2 className="review_title">리뷰</h2>
             <div className="d-flex">
               <select className="form-select me-2" onChange={handleSearchTypeChange} value={searchType}>
                 <option value="all">전체</option>
@@ -194,10 +194,12 @@ function ReviewList() {
                   <th scope="row">{review.rno}</th>
                   <td
                      onClick={() => handleReviewClick(review.rno)}
-                     style={{ cursor: 'pointer' }}>
-                    {review.r_title}
+                     style={{ cursor: 'pointer' }}
+                     >
+                      {review.important === true && <strong>[중요] </strong>}
+                      {review.r_title}
                   </td>
-                  <td className="ReviewView_p">
+                  <td>
                     {new Date(review.regDate[0], review.regDate[1] - 1, review.regDate[2], review.regDate[3], review.regDate[4], review.regDate[5]).toLocaleDateString()}
                   </td>
                 </tr>

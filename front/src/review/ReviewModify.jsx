@@ -1,3 +1,4 @@
+import { type } from "@testing-library/user-event/dist/type";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -7,14 +8,20 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
         r_title: "",
         r_content: "",
         writer: localStorage.getItem('mid') || "",
+        is_important: false,
     });
     const [reviewResource, setReviewResource] = useState([]);
     const [files, setFiles] = useState([]);
 
     const onInputChange = (e) => {
-        const { name, value, files: selectedFiles } = e.target;
+        const { name, value, files: selectedFiles, type, checked } = e.target;
         if (name === "files") {
             setFiles(Array.from(selectedFiles));
+        } else if (type === "checkbox"){
+            setReview({
+                ...review,
+                [name]: checked,
+            });
         } else {
             setReview({
                 ...review,
@@ -23,10 +30,25 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
         }
     };
 
+    useEffect(() => {
+        const loginData = JSON.parse(localStorage.getItem('login'));
+        if (loginData && loginData.name) {
+            setReview(prevData => ({
+                ...prevData,
+                writer: loginData.name
+            }));
+        }
+    }, []);
+
     const getReview = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/review/read?rno=${rno}`);
             console.log(response.data);
+
+            if (!response.data.writer) {
+                console.warn("Fetched review has no writer field!");
+            }
+
             setReview(response.data);
             setReviewResource(response.data.review_resource);
             setLoading(false);
@@ -58,6 +80,7 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
             formData.append("r_title", review.r_title);
             formData.append("r_content", review.r_content);
             formData.append("writer", review.writer);
+            formData.append("is_important", review.is_important);
 
             files.forEach(file => {
                 formData.append("files", file);
@@ -109,6 +132,17 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
                             value={review.r_content}
                             rows="20"
                         />
+                    </p>
+                    <p>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="is_important"
+                                checked={review.is_important}
+                                onChange={onInputChange}
+                            />
+                            중요 공지사항
+                        </label>
                     </p>
                     <p>첨부파일</p>
                     <input

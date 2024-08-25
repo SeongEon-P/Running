@@ -7,14 +7,20 @@ const InfoModify = ({ ino, setShowModify, setShowDetail }) => {
         i_title: "",
         i_content: "",
         writer: localStorage.getItem('mid') || "",
+        is_important: false,
     });
     const [infoResource, setInfoResource] = useState([]);
     const [files, setFiles] = useState([]);
 
     const onInputChange = (e) => {
-        const { name, value, files: selectedFiles } = e.target;
+        const {  name, value, files: selectedFiles, type, checked } = e.target;
         if (name === "files") {
             setFiles(Array.from(selectedFiles));
+        } else if (type === "checkbox") {
+            setInfo({
+                ...info,
+                [name]: checked,
+            });
         } else {
             setInfo({
                 ...info,
@@ -75,6 +81,7 @@ const InfoModify = ({ ino, setShowModify, setShowDetail }) => {
             formData.append("i_title", info.i_title);
             formData.append("i_content", info.i_content);
             formData.append("writer", info.writer);
+            formData.append("is_important", info.is_important)
 
             files.forEach(file => {
                 formData.append("files", file);
@@ -126,6 +133,17 @@ const InfoModify = ({ ino, setShowModify, setShowDetail }) => {
                             value={info.i_content}
                             rows="20"
                         />
+                    </p>
+                    <p>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="is_important"
+                                checked={info.is_important}
+                                onChange={onInputChange}
+                            />
+                            중요사항
+                        </label>
                     </p>
                     <p>첨부파일</p>
                     <input

@@ -12,8 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -27,6 +30,16 @@ public class ReviewResourceController {
     private final ReviewResourceService reviewResourceService;
     private final Path fileStorageLocation = Paths.get("C:\\upload").toAbsolutePath().normalize();
 
+    private void createDirectoryIfNotExists() {
+        File directory = fileStorageLocation.toFile();
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (!created) {
+                throw new RuntimeException("Could not create directory: " + fileStorageLocation.toString());
+            }
+        }
+    }
+
     @DeleteMapping("{rrno}")
     public ResponseEntity<Object> deleteFile(@PathVariable long rrno) {
         reviewResourceService.deleteReview(rrno);
@@ -35,29 +48,33 @@ public class ReviewResourceController {
     }
     @PostMapping("{rno}")
     public ResponseEntity<Object> createReview(@PathVariable("rno") Long rno, @RequestParam("files")List<MultipartFile> files) {
-        List<ReviewResourceDTO> resourceDtoList = new ArrayList<ReviewResourceDTO>();
+        createDirectoryIfNotExists();
+
+        List<ReviewResourceDTO> resourceDtoList = new ArrayList<>();
         if (files != null) {
             int ord = reviewResourceService.getMaxOrd(rno);
             for (MultipartFile file : files) {
-                Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
+                Path targetLocation = fileStorageLocation.resolve(file.getOriginalFilename());
                 try {
-                    file.transferTo(savePath);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    Files.copy(file.getInputStream(), targetLocation); // 파일 저장
+                    ReviewResourceDTO dto = ReviewResourceDTO.builder()
+                            .rr_name(file.getOriginalFilename())
+                            .rr_ord(ord)
+                            .rr_type(file.getContentType())
+                            .rno(rno)
+                            .build();
+                    resourceDtoList.add(dto);
+                    ord++;
+                } catch (IOException e) {
+                    log.error("Failed to store file " + file.getOriginalFilename(), e);
+                    return new ResponseEntity<>("Failed to store file: " + file.getOriginalFilename(), HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-                ReviewResourceDTO dto = ReviewResourceDTO.builder()
-                        .rr_name(file.getOriginalFilename())
-                        .rr_ord(ord)
-                        .rr_type(file.getContentType())
-                        .rno(rno)
-                        .build();
-                resourceDtoList.add(dto);
-                ord++;
             }
             reviewResourceService.saveReview(resourceDtoList);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
         try {

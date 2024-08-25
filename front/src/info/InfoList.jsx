@@ -50,16 +50,18 @@ function InfoList(){
               writer.includes(lowerSearchTerm)
             );
         }
-      })
-      .sort((a, b) => b.is_important - a.is_important || b.ino - a.ino);
+      });
   
-    // 전체 항목 수 계산
-    const totalItems = filteredList.length;
+      const importantInfos = filteredList.filter(info => info.important === true);
+      const regularInfos = filteredList.filter(info => info.important !== true).reverse(); // 역순 정렬
   
-    // 페이지네이션에 따른 현재 페이지의 항목들 설정
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
+      const totalItems = importantInfos.length + regularInfos.length;
+      const indexOfLastItem = currentPage * itemsPerPage;
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+      const paginatedRegularInfos = regularInfos.slice(indexOfFirstItem, indexOfLastItem);
+  
+      // 중요 공지사항을 맨 위에 표시
+      const currentItems = [...importantInfos, ...paginatedRegularInfos];
   
     // 현재 페이지 항목 설정 및 전체 페이지 수 설정
     setCurrentItems(currentItems);
@@ -194,6 +196,7 @@ function InfoList(){
                     onClick={() => handleInfoClick(info.ino)} 
                     style={{ cursor: 'pointer' }}
                   >
+                    {info.important === true && <strong>[중요]</strong>}
                     {info.i_title}
                   </td>
                   <td className="InfoView_p">

@@ -1,7 +1,6 @@
 package com.example.running.Review.domain;
 
 
-import com.example.running.Notice.domain.NoticeResource;
 import com.example.running.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +25,7 @@ public class Review extends BaseEntity {
     private String r_content;
     private String writer;
     private String r_image;
+    private boolean important;
 
     @OneToMany(mappedBy = "review",
             cascade = {CascadeType.ALL},
@@ -35,11 +35,14 @@ public class Review extends BaseEntity {
     @Builder.Default
     private Set<ReviewResource> reviewResourceSet = new HashSet<>();
 
-    public void changeNotice(String r_title, String r_content, String r_image, Member member) {
+    public void changeReview(String r_title, String r_content, String r_image, Member member) {
         this.r_title = r_title;
         this.r_content = r_content;
         this.r_image = r_image;
         this.writer = member.getMid();
+    }
+    public void markAsImportant(boolean important) {
+        this.important = important;
     }
 }
 

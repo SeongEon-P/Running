@@ -1,5 +1,7 @@
 package com.example.running.info.service;
 
+import com.example.running.Review.domain.Review;
+import com.example.running.Review.dto.ReviewDTO;
 import com.example.running.info.domain.Info;
 import com.example.running.info.domain.InfoResource;
 import com.example.running.info.dto.InfoDTO;
@@ -39,6 +41,7 @@ public class InfoServiceImpl implements InfoService {
                 .i_title(infoDTO.getI_title())
                 .i_image(infoDTO.getI_image())
                 .writer(infoDTO.getWriter())
+                .important(infoDTO.isImportant())
                 .build();
         Info savedInfo = infoRepository.save(info);
         return modelMapper.map(savedInfo, InfoDTO.class);
@@ -93,6 +96,7 @@ public class InfoServiceImpl implements InfoService {
                 Member.builder().mid(infoDTO.getWriter()).build()
         );
         Info savedInfo = infoRepository.save(info);
+        info.markAsImportant(infoDTO.isImportant());
         return savedInfo;
     }
 
@@ -100,6 +104,14 @@ public class InfoServiceImpl implements InfoService {
     public List<InfoDTO> findLatestInfo() {
         List<Info> infos = infoRepository.findTop5ByOrderByRegDateDesc();
         return infos.stream()
+                .map(info -> modelMapper.map(info, InfoDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InfoDTO> findImportantInfo() {
+        List<Info> importantInfos = infoRepository.findTop5ByOrderByRegDateDesc();
+        return  importantInfos.stream()
                 .map(info -> modelMapper.map(info, InfoDTO.class))
                 .collect(Collectors.toList());
     }

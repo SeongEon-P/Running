@@ -25,6 +25,7 @@ public class Info extends BaseEntity {
     private String i_content;
     private String writer;
     private String i_image;
+    private boolean important;
 
     @OneToMany(mappedBy = "info",
             cascade = {CascadeType.ALL},
@@ -39,5 +40,8 @@ public class Info extends BaseEntity {
         this.i_content = i_content;
         this.i_image = i_image;
         this.writer = member.getMid();
+    }
+    public void markAsImportant(boolean important) {
+        this.important = important;
     }
 }

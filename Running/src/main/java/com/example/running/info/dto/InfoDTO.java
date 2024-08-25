@@ -24,4 +24,5 @@ public class InfoDTO {
     private String i_image;
     private List<InfoResourceDTO> info_resource;
     private List<MultipartFile> files;
+    private boolean important;
 }

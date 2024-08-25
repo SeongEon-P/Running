@@ -1,11 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"
-import Reviewlist from "./ReviewList";
-import Reviewmodify from "./ReviewModify";
+import ReviewList from "./ReviewList";
+import ReviewModify from "./ReviewModify";
 
 const ReviewDetail = ({ rno }) => {
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [review, setReview] = useState({});
     const [reviewResource, setReviewResource] = useState([]);
@@ -15,11 +13,16 @@ const ReviewDetail = ({ rno }) => {
     
 
     const getReview = async () => {
+        try{
         const response = await (await axios.get(`http://localhost:8080/review/read?rno=${rno}`)).data;
         setReview(response);
         setReviewResource(response.review_resource);
         setLoading(false);
+        }catch(error){
+            console.error("Error fetching review details", error);
+        }
     };
+
     useEffect(() => {
         // Fetch current user info from localStorage
         const user = JSON.parse(localStorage.getItem('login'));
@@ -54,25 +57,29 @@ const ReviewDetail = ({ rno }) => {
             {loading ? (
                 <p>Loading...</p>
             ) : showList ? (
-                <Reviewlist />
+                <ReviewList />
             ) : showModify ? (
-                <Reviewmodify rno={rno} setShowModify={setShowModify} setShowDetail={() => setShowList(false)} />
+                <ReviewModify rno={rno} setShowModify={setShowModify} setShowDetail={() => setShowList(false)} />
             ) : (
                 <>
                     <h2 className="review">리뷰</h2>
                     <div className="container">
                         <div className="form-control">
                             <div className="d-flex flex-wrap justify-content-between">
-                                <span className="review_title">{review.r_title}</span>
+                                <p className="review_title">
+                                    {review.r_title}
+                                    {review.is_important && <span className="important-tag">[중요]</span>}
+                                </p>
                                 <span>작성자 : {review.writer}</span>
                             </div>
                         </div>
                         <div className="form-control">
+                            <p className="form-control">
                             <span> 등록일 : {new Date(review.regDate[0], review.regDate[1] - 1, review.regDate[2], review.regDate[3], review.regDate[4], review.regDate[5]).toLocaleDateString()}</span>
-                            
+                            </p>
                         </div>
                         <div className="form-control">
-                            <p className="review_content">내용: {review.r_content}</p> {/* Add this line to display the content */}
+                            <p className="review_content">내용: {review.r_content}</p>
                             {reviewResource.length > 0 ? (
                                 reviewResource.map((resource, index) => (
                                     <div key={index} style={{ marginBottom: '15px' }}>

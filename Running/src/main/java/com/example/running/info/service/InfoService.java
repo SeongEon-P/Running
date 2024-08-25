@@ -14,4 +14,5 @@ public interface InfoService {
     void deleteInfo(Long ino);
     Info modifyInfo(InfoDTO infoDTO);
     List<InfoDTO> findLatestInfo();
+    List<InfoDTO> findImportantInfo();
 }
