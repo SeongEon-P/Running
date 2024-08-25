@@ -1,11 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Noticelist from "./Noticelist";
 import NoticeDetail from "./NoticeDetail";
 
 const NoticeRegister = () => {
-    const navigate = useNavigate();
     const [notice, setNotice] = useState({
         n_title: "",
         n_content: "",
@@ -146,11 +144,9 @@ const NoticeRegister = () => {
                         
                         <div className="d-flex flex-wrap justify-content-between btns">
                             <button className="btn btn-outline-dark noticeListBtn" onClick={handleListClick}>목록으로 돌아가기</button>
-                            <div className="">
                                 <button type="submit" className="btn btn-outline-primary px-3 mx-2">
                                     등록
                                 </button>
-                            </div>
                         </div>
                     </form>
                 </>

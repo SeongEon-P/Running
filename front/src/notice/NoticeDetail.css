@@ -1,4 +1,90 @@
-.important-tag {
-    color: red; /* 또는 원하는 스타일 적용 */
-    font-weight: bold;
-}
+/* Container styling */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Title styling */
+  .notice_title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  
+  /* Important tag styling */
+  .important-tag {
+    color: #e91e63; /* 강조 색상 */
+  }
+  
+  /* Content styling */
+  .notice_content {
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  /* Button styling */
+  .btn {
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-weight: 700;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .btn-outline-dark {
+    border-color: #111;
+    color: #111;
+  }
+  
+  .btn-outline-dark:hover {
+    background-color: #111;
+    color: #fff;
+  }
+  
+  .noticeListBtn {
+    /* background-color: #111; */
+    color: #fff;
+  }
+  
+  .noticeListBtn:hover {
+    background-color: #333;
+    transform: translateY(-3px); /* Hover 시 살짝 들어올리는 효과 */
+  }
+  
+  .noticeModifyBtn {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+  }
+  
+  .noticeModifyBtn:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-3px);
+  }
+  
+  .noticeRemoveBtn {
+    background-color: #dc3545;
+    color: #fff;
+    border: 1px solid #dc3545;
+  }
+  
+  .noticeRemoveBtn:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+    transform: translateY(-3px);
+  }
+  
+  /* Image styling */
+  img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 8px;
+  }
+  

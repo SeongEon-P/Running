@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Noticelist from "./Noticelist";
 import NoticeModify from "./NoticeModify";
+import './NoticeDetail.css';
 
 const NoticeDetail = ({ nno }) => {
     const [loading, setLoading] = useState(true);
@@ -63,70 +64,63 @@ const NoticeDetail = ({ nno }) => {
             ) : showModify ? (
                 <NoticeModify nno={nno} setShowModify={setShowModify} setShowDetail={() => setShowList(false)} />
             ) : (
-                <>
-                    <h2 className="notice">공지사항</h2>
-                    <div className="container">
-                        <div className="form-control">
-                            <div className="d-flex flex-wrap justify-content-between">
-                                <p className="notice_title">
-                                    {notice.n_title}
-                                    {notice.is_important && <span className="important-tag">[중요]</span>}
-                                </p>
-                                <span>작성자 : {notice.writer}</span>
-                            </div>
-                        </div>
-                        <div className="form-control">
-                            <p className="IncruitView_p">
-                                등록일: {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
+                <div className="container">
+                    <h2 className="notice_title">공지사항</h2>
+                    <div className="form-control">
+                        <div className="d-flex flex-wrap justify-content-between">
+                            <p className="notice_title">
+                                {notice.n_title}
+                                {notice.is_important && <span className="important-tag">[중요]</span>}
                             </p>
-                        </div>
-                        <div className="form-control">
-                            <p className="notice_content">내용: {notice.n_content}</p>
-                            {noticeResources.length > 0 ? (
-                                noticeResources.map((resource, index) => (
-                                    <div key={index} style={{ marginBottom: '15px' }}>
-                                        {resource.nr_type.startsWith("image") ? (
-                                            <img
-                                                src={`http://localhost:8080/notice/files/${resource.nr_name}`}
-                                                alt={resource.nr_name}
-                                                style={{ width: '100%', maxWidth: '600px', height: 'auto' }}
-                                            />
-                                        ) : (
-                                            <p>
-                                                <a href={`http://localhost:8080/notice/files/${resource.nr_name}`}>
-                                                    {resource.nr_name}
-                                                </a>
-                                            </p>
-                                        )}
-                                    </div>
-                                ))
-                            ) : (
-                                <p>첨부 파일이 없습니다.</p>
-                            )}
+                            <span>작성자: {notice.writer}</span>
                         </div>
                     </div>
-
+                    <div className="form-control">
+                        <p className="IncruitView_p">
+                            등록일: {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
+                        </p>
+                    </div>
+                    <div className="form-control">
+                        <p className="notice_content">내용: {notice.n_content}</p>
+                        {noticeResources.length > 0 ? (
+                            noticeResources.map((resource, index) => (
+                                <div key={index} style={{ marginBottom: '15px' }}>
+                                    {resource.nr_type.startsWith("image") ? (
+                                        <img
+                                            src={`http://localhost:8080/notice/files/${resource.nr_name}`}
+                                            alt={resource.nr_name}
+                                        />
+                                    ) : (
+                                        <p>
+                                            <a href={`http://localhost:8080/notice/files/${resource.nr_name}`}>
+                                                {resource.nr_name}
+                                            </a>
+                                        </p>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <p>첨부 파일이 없습니다.</p>
+                        )}
+                    </div>
                     <div className="d-flex flex-wrap justify-content-between btns">
                         <button
                             className="btn btn-outline-dark noticeListBtn"
-                            onClick={() => setShowList(true)}
-                        >
+                            onClick={() => setShowList(true)}>
                             목록으로 가기
                         </button>
-                        <div className="">
                             {canModifyOrDelete && (
                                 <>
-                                    <button className="btn btn-outline-primary noticeModifyBtn" onClick={handleModify}>
+                                    <button className="btn noticeModifyBtn" onClick={handleModify}>
                                         수정
                                     </button>
-                                    <button className="btn btn-outline-danger noticeRemoveBtn" onClick={handleDelete}>
+                                    <button className="btn noticeRemoveBtn" onClick={handleDelete}>
                                         삭제
                                     </button>
                                 </>
                             )}
-                        </div>
                     </div>
-                </>
+                </div>
             )}
         </>
     );

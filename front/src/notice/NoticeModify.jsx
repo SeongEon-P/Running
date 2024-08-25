@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import './NoticeModify.css'
 
 const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
     const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
             });
         }
     };
-    
+
     useEffect(() => {
         const loginData = JSON.parse(localStorage.getItem('login'));
         if (loginData && loginData.name) {
@@ -43,7 +44,7 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
         try {
             const response = await axios.get(`http://localhost:8080/notice/read?nno=${nno}`);
             console.log("Fetched notice data:", response.data);
-            
+
             if (!response.data.writer) {
                 console.warn("Fetched notice has no writer field!");
             }
@@ -119,30 +120,30 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
                                 placeholder="제목"
                             />
                         </p>
-                        <span>작성자 : {notice.writer}</span>
+                        <span>작성자 : {notice.writer}
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="is_important"
+                                    checked={notice.is_important}
+                                    onChange={onInputChange}
+                                />
+                                중요 공지사항
+                            </label>
+                        </span>
                     </div>
-                    <p className="notice_content">내용
-                        <textarea
-                            onChange={onInputChange}
-                            id="n_content"
-                            className="form-control"
-                            placeholder="내용"
-                            name="n_content"
-                            value={notice.n_content}
-                            rows="20"
-                        />
-                    </p>
-                    <p>
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="is_important"
-                                checked={notice.is_important}
+                        <label className="notice_content">
+                            내용
+                            <textarea
                                 onChange={onInputChange}
+                                id="n_content"
+                                className="form-control"
+                                placeholder="내용"
+                                name="n_content"
+                                value={notice.n_content}
+                                rows="10"
                             />
-                            중요 공지사항
                         </label>
-                    </p>
                     <p>첨부파일</p>
                     <input
                         onChange={onInputChange}
@@ -160,9 +161,7 @@ const NoticeModify = ({ nno, setShowModify, setShowDetail }) => {
                 </div>
                 <div className="d-flex flex-wrap justify-content-between btns">
                     <button type="button" className="btn btn-outline-dark noticeListBtn" onClick={() => setShowModify(false)}>수정 취소</button>
-                    <div>
-                        <button type="submit" className="btn btn-outline-primary px-3 mx-2">수정</button>
-                    </div>
+                    <button type="submit" className="btn btn-outline-primary px-3 mx-2">수정</button>
                 </div>
             </form>
         </>
