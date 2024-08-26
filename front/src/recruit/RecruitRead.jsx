@@ -225,7 +225,10 @@ const RecruitRead = () => {
         <>
             <Sidebar />
             <div className="recruitRead-container">
-                <h1 className="recruitRead-title">제목 : {recruit.title}</h1>
+                <div className="recruitRead-title-container">
+                    <h1 className="recruitRead-title">제목 : {recruit.title}</h1>
+                    <button className="recruitRead-button" onClick={handleBackClick}>목록으로 가기</button>
+                </div>
                 <div className="recruitRead-content">
                     <p>내용 : {recruit.content}</p>
                     <p>장소 : {recruit.address}</p>
@@ -235,7 +238,7 @@ const RecruitRead = () => {
                     <p>모집인원 : {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>
                     <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
                 </div>
-                <button className="recruitRead-button" onClick={handleBackClick}>목록으로 가기</button>
+
 
                 {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
                     <button className="recruitRead-button" onClick={() => handleModifyClick(rno)}>수정</button>

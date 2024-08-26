@@ -18,6 +18,11 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+.recruitRead-title-container{
+    display: flex;
+    justify-content: space-between;
+
+}
 
 /* 제목 스타일 */
 .recruitRead-title {
@@ -41,17 +46,19 @@
     display: inline-block;
     padding: 10px 20px;
     font-size: 1em;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
+    color: #000;
+    background-color: #fff;
+    border: 2px solid #000;
     border-radius: 4px;
     cursor: pointer;
     margin-right: 10px;
     margin-bottom: 10px;
+    text-align: center;
+    max-height: 50px;
 }
 
 .recruitRead-button:hover {
-    background-color: #0056b3;
+    background-color: #f0f0f0;
 }
 
 /* 신청한 사람 리스트 스타일 */
@@ -100,13 +107,14 @@
 .recruitRead-cancel-button {
     padding: 5px 10px;
     font-size: 0.9em;
-    color: #fff;
-    background-color: #dc3545;
-    border: none;
+    color: #000;
+    background-color: #fff;
+    border: 2px solid #dc3545;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .recruitRead-cancel-button:hover {
     background-color: #c82333;
+    color: #fff;
 }
