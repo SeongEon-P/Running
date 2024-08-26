@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import DaumPostcode from 'react-daum-postcode';
+import './RecruitRegister.css';
 
 const RecruitModify = () => {
     const { rno } = useParams();
@@ -84,61 +85,102 @@ const RecruitModify = () => {
     };
 
     return (
-        <div>
-            <h1>게시글 수정</h1>
-            <form>
-                <input type="hidden" name="mid" value={recruit.mid} onChange={handleChange} />
-                <div>
+        <div className="recruitRegister-container">
+            <h1 className="recruitRegister-title">Register Modify</h1>
+    
+            <form className="recruitRegister-form">
+                <input 
+                    type="hidden"
+                    name="mid"
+                    value={recruit.mid}
+                    onChange={handleChange}
+                    className="recruitRegister-form-input"
+                />
+                {/* <div>
                     <label>게시글 번호:</label>
                     <input type="text" name="rno" value={recruit.rno} onChange={handleChange} readOnly />
+                </div> */}
+                <div className="recruitRegister-form-group">
+                    <label className="recruitRegister-form-label">제목:</label>
+                    <input 
+                        type="text"
+                        name="title"
+                        value={recruit.title}
+                        onChange={handleChange}
+                        className="recruitRegister-form-input"
+                    />
                 </div>
-                <div>
-                    <label>제목:</label>
-                    <input type="text" name="title" value={recruit.title} onChange={handleChange} />
+                <div className="recruitRegister-form-group">
+                    <label className="recruitRegister-form-label">내용:</label>
+                    <textarea 
+                        name="content"
+                        value={recruit.content}
+                        onChange={handleChange}
+                        className="recruitRegister-form-input"></textarea>
                 </div>
-                <div>
-                    <label>내용:</label>
-                    <textarea name="content" value={recruit.content} onChange={handleChange}></textarea>
-                </div>
-                <div>
+                <div className="recruitRegister-form-group">
                     <div>
-                        {/* 다음 주소 api 넣을거임 */}
-                        <label>모이는 장소: </label>
+                        <label className="recruitRegister-form-label">모이는 장소: </label>
                         <input
                             type="text"
                             name="address"
                             value={recruit.address}
                             onChange={handleChange}
                             readOnly
+                            className="recruitRegister-form-input"
                         />
-                        <button type="button" onClick={() => setOpenPostcode(true)}>주소 검색</button>
+                        <button type="button" onClick={() => setOpenPostcode(true)} className="recruitRegister-address-search-button">주소 검색</button>
                     </div>
                 </div>
-                <div>
-                    <label>장소2:</label>
-                    <input type="text" name="place" value={recruit.place} onChange={handleChange} />
+                <div className="recruitRegister-form-group">
+                    <label className="recruitRegister-form-label">장소2:</label>
+                    <input
+                        type="text"
+                        name="place"
+                        value={recruit.place}
+                        onChange={handleChange}
+                        className="recruitRegister-form-input"
+                    />
                 </div>
-                <div>
-                    <label>날짜:</label>
-                    <input type="date" name="date" value={recruit.date} onChange={handleChange} />
+                <div className="recruitRegister-form-group">
+                    <label className="recruitRegister-form-label">날짜:</label>
+                    <input
+                        type="date"
+                        name="date"
+                        value={recruit.date}
+                        onChange={handleChange}
+                        className="recruitRegister-form-input"
+                    />
                 </div>
-                <div>
-                    <label>시간:</label>
-                    <input type="time" name="time" value={recruit.time} onChange={handleChange} />
+                <div className="recruitRegister-form-group">
+                    <label className="recruitRegister-form-label">시간:</label>
+                    <input
+                        type="time"
+                        name="time"
+                        value={recruit.time}
+                        onChange={handleChange}
+                        className="recruitRegister-form-input"
+                    />
                 </div>
-                <div>
-                    <label>모집인원:</label>
-                    <input type="number" name="maxnumber" value={recruit.maxnumber} onChange={handleChange} />
+                <div className="recruitRegister-form-group">
+                    <label className="recruitRegister-form-label">모집인원:</label>
+                    <input
+                        type="number"
+                        name="maxnumber"
+                        value={recruit.maxnumber}
+                        onChange={handleChange}
+                        className="recruitRegister-form-input"
+                    />
                 </div>
-                <button type="button" onClick={() => handleModify(rno)}>수정 완료</button>
-                <button type="button" onClick={() => handleRowClick(rno)}>수정 취소</button>
+                <button type="button" onClick={() => handleModify(rno)} className="recruitRegister-submit-button">수정 완료</button>
+                <button type="button" onClick={() => handleRowClick(rno)} className="recruitRegister-submit-button">수정 취소</button>
             </form>
 
             {openPostcode && (
-                <div className="modal">
-                    <div className="modal-content">
+                <div className="recruitRegister-modal">
+                    <div className="recruitRegister-modal-content">
                         <span
-                            className="modal-close"
+                            className="recruitRegister-modal-close"
                             onClick={() => setOpenPostcode(false)}
                         >
                             &times;

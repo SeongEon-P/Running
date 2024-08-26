@@ -103,17 +103,17 @@ const RecruitList = () => {
   const currentRecruits = recruits.slice(offset, offset + recruitsPerPage);
 
   return (
-    <div className="recruit-page">
+    <div className="recruitList-page">
       <Sidebar />
-      <div className="recruit-content">
-        <div className="recruit-list">
-          <div className="recruit-list-title">
+      <div className="recruitList-content">
+        <div className="recruitList-list">
+          <div className="recruitList-list-title">
             <h1>Recruit List</h1>
             {currentUser.mid &&
               <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
             }
           </div>
-          <div className="recruit-search">
+          <div className="recruitList-search">
             <div>
               <select value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)}>
                 <option value="title">제목</option>
@@ -155,7 +155,7 @@ const RecruitList = () => {
             <button type="button" onClick={handleSearch}>검색</button>
             <button type="button" onClick={handleReset}>검색어 초기화</button>
           </div>
-          <div className="recruit-table">
+          <div className="recruitList-table">
             <table>
               <thead>
                 <tr>
@@ -189,9 +189,9 @@ const RecruitList = () => {
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={handlePageClick}
-            containerClassName={"pagination"}
-            subContainerClassName={"pages pagination"}
-            activeClassName={"active"}
+            containerClassName={"recruitList-pagination"}
+            subContainerClassName={"recruitList-pages-pagination"}
+            activeClassName={"recruitList-active"}
           />
         </div>
 

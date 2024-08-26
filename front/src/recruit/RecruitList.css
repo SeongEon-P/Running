@@ -1,11 +1,11 @@
-.recruit-page {
+.recruitList-page {
     display: flex;
     background-color: #ffffff;
     min-height: 800px;
     padding: 20px;
 }
 
-.recruit-content {
+.recruitList-content {
     flex-grow: 1; /* 내용이 남은 공간을 채우도록 설정 */
     margin-left: 350px; 
     padding: 20px;
@@ -14,24 +14,24 @@
     max-width: 1100px;
 }
 
-.recruit-list {
+.recruitList-list {
     width: 100%;
     margin-bottom: 20px;
 }
 
-.recruit-list-title {
+.recruitList-list-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.recruit-list-title h1 {
+.recruitList-list-title h1 {
     font-size: 24px;
     font-weight: bold;
 }
 
-.recruit-list-title button {
+.recruitList-list-title button {
     padding: 8px 16px;
     background-color: white; /* 배경색 흰색 */
     color: black; /* 폰트 색깔 검은색 */
@@ -41,22 +41,22 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.recruit-list-title button:hover {
+.recruitList-list-title button:hover {
     background-color: #f0f0f0; /* 호버 시 약간 어두운 흰색 */
 }
 
-.recruit-table {
+.recruitList-table {
     min-height: 700px;
 }
 
-.recruit-list table {
+.recruitList-list table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
 
-.recruit-list table th,
-.recruit-list table td {
+.recruitList-list table th,
+.recruitList-list table td {
     padding: 12px 20px;
     border-top: 2px solid black;
     border-bottom: 1px solid #dee2e6;
@@ -65,54 +65,54 @@
     height: 30px;
 }
 
-.recruit-list table th {
+.recruitList-list table th {
     background-color: #f0f0f0;
     font-weight: bold;
     text-align: center;
 }
 
 /* th 및 td의 넓이 비율 조정 */
-.recruit-list table th:nth-child(1),
-.recruit-list table td:nth-child(1) {
+.recruitList-list table th:nth-child(1),
+.recruitList-list table td:nth-child(1) {
     width: 18%; /* 모이는 장소, 날짜, 시간, 인원의 넓이 */
 }
 
 
-.recruit-list table th:nth-child(3),
-.recruit-list table td:nth-child(3) {
+.recruitList-list table th:nth-child(3),
+.recruitList-list table td:nth-child(3) {
     width: 14px;
 }
 
-.recruit-list table th:nth-child(4),
-.recruit-list table td:nth-child(4),
-.recruit-list table th:nth-child(5),
-.recruit-list table td:nth-child(5) {
+.recruitList-list table th:nth-child(4),
+.recruitList-list table td:nth-child(4),
+.recruitList-list table th:nth-child(5),
+.recruitList-list table td:nth-child(5) {
     width: 10%;
 }
 
-.recruit-list table th:nth-child(2),
-.recruit-list table td:nth-child(2) {
+.recruitList-list table th:nth-child(2),
+.recruitList-list table td:nth-child(2) {
     width: 44%; /* 제목의 넓이 */
 }
 
-.recruit-list table td:nth-child(3),
-.recruit-list table td:nth-child(4),
-.recruit-list table td:nth-child(5) {
+.recruitList-list table td:nth-child(3),
+.recruitList-list table td:nth-child(4),
+.recruitList-list table td:nth-child(5) {
     text-align: center; /* tbody의 날짜, 시간, 인원 가운데 정렬 */
 }
 
-.pagination {
+.recruitList-pagination {
     display: flex;
     justify-content: center;
     list-style: none;
     padding: 0;
 }
 
-.pagination li {
+.recruitList-pagination li {
     margin: 0 5px;
 }
 
-.pagination li a {
+.recruitList-pagination li a {
     padding: 8px 12px;
     background-color: white; /* 배경색 흰색 */
     color: black; /* 폰트 색깔 검은색 */
@@ -123,28 +123,28 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.pagination li a:hover {
+.recruitList-pagination li a:hover {
     background-color: #f0f0f0;
 }
 
-.pagination .active a {
+.recruitList-pagination .recruitList-active a {
     background-color: black; /* 활성화된 페이지는 배경이 검은색 */
     color: white; /* 활성화된 페이지는 글자색이 흰색 */
     border-color: black;
 }
 
-.recruit-search {
+.recruitList-search {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     /* margin-bottom: 20px; */
 }
 
-.recruit-search select,
-.recruit-search input[type="text"],
-.recruit-search input[type="date"],
-.recruit-search input[type="time"],
-.recruit-search button {
+.recruitList-search select,
+.recruitList-search input[type="text"],
+.recruitList-search input[type="date"],
+.recruitList-search input[type="time"],
+.recruitList-search button {
     padding: 8px;
     border: 1px solid #dee2e6;
     border-radius: 4px;
@@ -152,7 +152,7 @@
     color: black;
 }
 
-.recruit-search button {
+.recruitList-search button {
     margin-bottom: 20px;
     padding: 8px 16px;
     background-color: white;
@@ -166,6 +166,6 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.recruit-search button:hover {
+.recruitList-search button:hover {
     background-color: #f0f0f0;
 }
