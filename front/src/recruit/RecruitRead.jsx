@@ -215,7 +215,7 @@ const RecruitRead = () => {
         }, [x, y]);
 
         return (
-            <div id="map" style={{ width: '500px', height: '400px' }}></div>
+            <div id="map" style={{ width: '800px', height: '600px' }}></div>
         );
     };
 
@@ -226,17 +226,24 @@ const RecruitRead = () => {
             <Sidebar />
             <div className="recruitRead-container">
                 <div className="recruitRead-title-container">
-                    <h1 className="recruitRead-title">제목 : {recruit.title}</h1>
+                    <div className="recruitRead-title-detail">
+                        <h1 className="recruitRead-title">{recruit.title}</h1>
+                        <span>{recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'} / </span>
+                        <span>{recruit.place}</span>
+                    </div>
                     <button className="recruitRead-button" onClick={handleBackClick}>목록으로 가기</button>
                 </div>
+
                 <div className="recruitRead-content">
-                    <p>내용 : {recruit.content}</p>
-                    <p>장소 : {recruit.address}</p>
-                    <p>장소 : {recruit.place}</p>
-                    <p>날짜 : {formatDate(recruit.date)}</p>
-                    <p>시간 : {formatTime(recruit.time)}</p>
-                    <p>모집인원 : {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>
-                    <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
+                    <p className="recruitRead-content-detail">{recruit.content}</p>
+
+                    <div>
+                        <p>날짜 : {formatDate(recruit.date)}</p>
+                        <p>시간 : {formatTime(recruit.time)}</p>
+                    </div>
+
+
+
                 </div>
 
 
@@ -257,8 +264,11 @@ const RecruitRead = () => {
                     )}
             </div>
             <div className="recruitRead-applied-list-container">
-                <h1>신청한 사람</h1>
-                <table className="recruitRead-applied-list">
+                <div className="recruitRead-applied-header">
+                    <h1>신청 목록</h1>
+                    <p>모집인원 - {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>
+                </div>
+                <div className="recruitRead-applied-list">
 
                     <tbody>
                         {appliedList.length > 0 ? ( // appliedList가 유효한 배열인지 확인
@@ -280,7 +290,14 @@ const RecruitRead = () => {
                             </tr>
                         )}
                     </tbody>
-                </table>
+                </div>
+
+            </div>
+            <div className="recruitRead-applied-list-container">
+                <div className="recruitRead-map">
+                    <h1>상세 주소</h1>
+                    <p>{recruit.address}</p>
+                </div>
                 {location.x && location.y && (
                     <div className="recruitRead-kakao-map-container">
                         <KakaoMap x={location.x} y={location.y} />

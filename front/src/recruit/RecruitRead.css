@@ -3,8 +3,8 @@
 /* 전체 컨테이너 */
 .recruitRead-container {
     max-width: 800px; /* 기존 800px에서 200px 증가 */
-    margin: 0 auto;
-    padding: 20px;
+    margin: 20px auto;
+    padding: 15px 30px;
     
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -14,23 +14,29 @@
 .recruitRead-applied-list-container {
     margin: 30px auto 0 auto; /* 상단 30px, 좌우 중앙 정렬 */
     max-width: 800px; /* recruit-container와 동일하게 설정 */
-    padding: 20px;
+    padding: 20px 30px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .recruitRead-title-container{
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
 
+}
+
+.recruitRead-title-detail{
+    margin-bottom: 10px;
 }
 
 /* 제목 스타일 */
 .recruitRead-title {
     font-size: 2em;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     color: #333;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
+
+    padding: 0px;
 }
 
 /* 본문 스타일 */
@@ -39,6 +45,11 @@
     margin-bottom: 10px;
     line-height: 1.6;
     color: #555;
+}
+
+.recruitRead-content-detail{
+    min-height: 400px;
+    border-bottom: #ddd solid 1px;
 }
 
 /* 버튼 스타일 */
@@ -64,10 +75,10 @@
 /* 신청한 사람 리스트 스타일 */
 .recruitRead-applied-list-container h1 {
     font-size: 1.8em;
-    margin-bottom: 20px;
+    margin: 0px;
     color: #333;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
+    
+    padding: 0px;
 }
 
 .recruitRead-applied-list {
@@ -88,18 +99,26 @@
     color: #999;
 }
 
+.recruitRead-applied-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 10px;
+}
+
 /* 카카오 맵 스타일 */
 .recruitRead-kakao-map-container {
     margin-top: 20px;
-    width: 100%;
-    height: 400px;
+    /* width: 100%; */
+    /* height: 400px; */
     border-radius: 8px;
     overflow: hidden;
 }
 
 .recruitRead-kakao-map-container iframe {
-    width: 100%;
-    height: 100%;
+    /* min-width: 800px;
+    min-height: 600px; */
     border: none;
 }
 
@@ -117,4 +136,9 @@
 .recruitRead-cancel-button:hover {
     background-color: #c82333;
     color: #fff;
+}
+
+.recruitRead-map{
+    display: flex;
+    justify-content: space-between;
 }
