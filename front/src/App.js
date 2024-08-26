@@ -24,6 +24,7 @@ import FreeBoard from './pages/FreeBoard/FreeBoard';
 import './App.css';
 
 import KakaoMap from './recruit/sample/KakaoMap';
+import Parking from './recruit/parking/Parking';
 
 
 const App = () => {
@@ -55,6 +56,7 @@ const App = () => {
            <Route path='/recruit/read/:rno' element={<RecruitRead />} />
           <Route path='/recruit/modify/:rno' element={<RecruitModify />} />
           <Route path='/map' element={<KakaoMap />} />
+          <Route path='/parking' element={<Parking />} />
 
         </Routes>
       </AuthProvider>

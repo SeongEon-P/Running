@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const RecruitRead = () => {
     const { rno, ano } = useParams();
@@ -226,6 +226,8 @@ const RecruitRead = () => {
                 <p>내용 : {recruit.content}</p>
                 <p>장소 : {recruit.address}</p>
                 <p>장소 : {recruit.place}</p>
+                <NavLink to="/parking">주차정보</NavLink>
+
                 <p>날짜 : {formatDate(recruit.date)}</p>
                 <p>시간 : {formatTime(recruit.time)}</p>
                 <p>모집인원 : {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>

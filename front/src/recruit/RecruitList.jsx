@@ -98,7 +98,7 @@ const RecruitList = () => {
       <Sidebar />
       <div className="recruit-content">
         <h1>Recruit List</h1>
-        <div>
+        <div className="box-wrap">
           <select value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)}>
             <option value="title">제목</option>
             <option value="content">내용</option>
