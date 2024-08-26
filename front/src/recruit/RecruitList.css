@@ -1,6 +1,6 @@
 .recruit-page {
     display: flex;
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     min-height: 800px;
     padding: 20px;
 }
@@ -57,16 +57,42 @@
 
 .recruit-list table th,
 .recruit-list table td {
-    padding: 12px;
-    border: 1px solid #dee2e6;
+    padding: 12px 20px;
+    border-top: 2px solid black;
+    border-bottom: 1px solid #dee2e6;
     text-align: left;
     color: black;
+    height: 30px;
 }
 
 .recruit-list table th {
-    background-color: #e9ecef;
+    background-color: #f0f0f0;
     font-weight: bold;
     text-align: center;
+}
+
+/* th 및 td의 넓이 비율 조정 */
+.recruit-list table th:nth-child(1),
+.recruit-list table td:nth-child(1) {
+    width: 18%; /* 모이는 장소, 날짜, 시간, 인원의 넓이 */
+}
+
+
+.recruit-list table th:nth-child(3),
+.recruit-list table td:nth-child(3) {
+    width: 14px;
+}
+
+.recruit-list table th:nth-child(4),
+.recruit-list table td:nth-child(4),
+.recruit-list table th:nth-child(5),
+.recruit-list table td:nth-child(5) {
+    width: 10%;
+}
+
+.recruit-list table th:nth-child(2),
+.recruit-list table td:nth-child(2) {
+    width: 44%; /* 제목의 넓이 */
 }
 
 .recruit-list table td:nth-child(3),
@@ -111,7 +137,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 .recruit-search select,
