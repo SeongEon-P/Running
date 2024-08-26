@@ -47,7 +47,8 @@ const RecruitRead = () => {
         if (userInfo && userInfo.mid) {
             setCurrentUser((prevState) => ({
                 ...prevState,
-                mid: userInfo.mid
+                mid: userInfo.mid,
+                role: userInfo.role
             }))
         }
     }, [rno, ano])
@@ -251,7 +252,7 @@ const RecruitRead = () => {
                     <button className="recruitRead-button" onClick={() => handleModifyClick(rno)}>수정</button>
                 ) : null}
 
-                {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
+                {(currentUser && currentUser.mid === recruit.memberRecruit.mid) || (currentUser.role === 'ADMIN') ? (
                     <button className="recruitRead-button" onClick={handleDeleteClick}>삭제</button>
                 ) : null}
 

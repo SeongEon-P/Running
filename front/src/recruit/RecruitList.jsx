@@ -7,6 +7,7 @@ import './RecruitList.css';
 
 const RecruitList = () => {
   const [recruits, setRecruits] = useState([]);
+  const [currentUser, setCurrentUser] = useState([]);
   const [counts, setCounts] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -20,6 +21,14 @@ const RecruitList = () => {
 
   useEffect(() => {
     fetchRecruits();
+    const userInfo = JSON.parse(localStorage.getItem('login'));
+    if (userInfo && userInfo.mid) {
+      setCurrentUser((prevState) => ({
+        ...prevState,
+        mid: userInfo.mid,
+        role: userInfo.role
+      }))
+    }
   }, [])
 
   const fetchRecruits = () => {
@@ -100,7 +109,9 @@ const RecruitList = () => {
         <div className="recruit-list">
           <div className="recruit-list-title">
             <h1>Recruit List</h1>
-            <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
+            {currentUser.mid &&
+              <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
+            }
           </div>
           <div className="recruit-search">
             <div>
