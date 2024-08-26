@@ -6,10 +6,8 @@
 }
 
 .recruit-content {
-    width: calc(100% - 250px);
-    /* 사이드바를 제외한 나머지 영역 */
-    margin-left: 250px;
-    background-color: white;
+    flex-grow: 1; /* 내용이 남은 공간을 채우도록 설정 */
+    margin-left: 350px; 
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
