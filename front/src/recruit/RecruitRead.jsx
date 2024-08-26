@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import "./RecruitRead.css";
+import Sidebar from "../components/Sidebar/Sidebar";
 
 const RecruitRead = () => {
     const { rno, ano } = useParams();
@@ -196,7 +198,7 @@ const RecruitRead = () => {
                 const infowindow = new kakao.maps.InfoWindow({
                     position: iwPosition,
                     content: iwContent,
-                    removable : iwRemoveable
+                    removable: iwRemoveable
                 });
 
                 // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
@@ -221,24 +223,26 @@ const RecruitRead = () => {
 
     return (
         <>
-            <div>
-                <h1>제목 : {recruit.title}</h1>
-                <p>내용 : {recruit.content}</p>
-                <p>장소 : {recruit.address}</p>
-                <p>장소 : {recruit.place}</p>
-                <p>날짜 : {formatDate(recruit.date)}</p>
-                <p>시간 : {formatTime(recruit.time)}</p>
-                <p>모집인원 : {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>
-                <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
-
-                <button onClick={handleBackClick}>목록으로 가기</button>
+            <Sidebar />
+            <div className="recruitRead-container">
+                <h1 className="recruitRead-title">제목 : {recruit.title}</h1>
+                <div className="recruitRead-content">
+                    <p>내용 : {recruit.content}</p>
+                    <p>장소 : {recruit.address}</p>
+                    <p>장소 : {recruit.place}</p>
+                    <p>날짜 : {formatDate(recruit.date)}</p>
+                    <p>시간 : {formatTime(recruit.time)}</p>
+                    <p>모집인원 : {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>
+                    <p>게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}</p>
+                </div>
+                <button className="recruitRead-button" onClick={handleBackClick}>목록으로 가기</button>
 
                 {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
-                    <button onClick={() => handleModifyClick(rno)}>수정</button>
+                    <button className="recruitRead-button" onClick={() => handleModifyClick(rno)}>수정</button>
                 ) : null}
 
                 {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
-                    <button onClick={handleDeleteClick}>삭제</button>
+                    <button className="recruitRead-button" onClick={handleDeleteClick}>삭제</button>
                 ) : null}
 
 
@@ -246,34 +250,39 @@ const RecruitRead = () => {
                     currentUser.mid !== recruit.memberRecruit.mid &&
                     count !== recruit.max_number &&
                     !appliedList.some(applied => applied.memberApply.mid === currentUser.mid) && (
-                        <button onClick={handleApplyClick}>신청하기</button>
+                        <button className="recruitRead-button" onClick={handleApplyClick}>신청하기</button>
                     )}
             </div>
-            <div>
+            <div className="recruitRead-applied-list-container">
                 <h1>신청한 사람</h1>
+                <table className="recruitRead-applied-list">
 
-                <tbody>
-                    {appliedList.length > 0 ? ( // appliedList가 유효한 배열인지 확인
-                        appliedList.map(applied => (
-                            <tr key={applied.ano}>
-                                <td>{applied.memberApply.mid}</td>
+                    <tbody>
+                        {appliedList.length > 0 ? ( // appliedList가 유효한 배열인지 확인
+                            appliedList.map(applied => (
+                                <tr key={applied.ano}>
+                                    <td>{applied.memberApply.mid}</td>
 
-                                {currentUser.mid === applied.memberApply.mid &&
-                                    recruit.memberRecruit.mid !== applied.memberApply.mid && (
-                                        <td>
-                                            <button onClick={() => handleCancelApplication(applied.ano)}>신청 취소</button>
-                                        </td>
-                                    )}
+                                    {currentUser.mid === applied.memberApply.mid &&
+                                        recruit.memberRecruit.mid !== applied.memberApply.mid && (
+                                            <td>
+                                                <button className="recruitRead-cancel-button" onClick={() => handleCancelApplication(applied.ano)}>신청 취소</button>
+                                            </td>
+                                        )}
+                                </tr>
+                            ))
+                        ) : (
+                            <tr className="recruitRead-no-applicants">
+                                <td>신청자가 없습니다.</td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td>신청자가 없습니다.</td>
-                        </tr>
-                    )}
-                </tbody>
-                {location.x && location.y &&
-                    <KakaoMap x={location.x} y={location.y} />}
+                        )}
+                    </tbody>
+                </table>
+                {location.x && location.y && (
+                    <div className="recruitRead-kakao-map-container">
+                        <KakaoMap x={location.x} y={location.y} />
+                    </div>
+                )}
             </div>
         </>
     )

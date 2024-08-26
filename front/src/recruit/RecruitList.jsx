@@ -148,7 +148,7 @@ const RecruitList = () => {
             <table>
               <thead>
                 <tr>
-                  <th>모이는 장소</th>
+                  <th>장소</th>
                   <th>제목</th>
                   <th>날짜</th>
                   <th>시간</th>
