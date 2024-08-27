@@ -18,7 +18,7 @@ const Update = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     if (!token) {
       alert('로그인이 필요합니다.');
@@ -58,7 +58,7 @@ const Update = () => {
 
   const checkPassword = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     axios
       .post('http://localhost:8080/members/check-password', {
@@ -87,7 +87,7 @@ const Update = () => {
       alert('새 비밀번호와 비밀번호 확인이 일치하지 않습니다.');
       return;
     }
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     axios
       .post('http://localhost:8080/members/update', { ...member, newPassword }, {

@@ -14,28 +14,28 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const userInfo = localStorage.getItem('login');
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const userInfo = localStorage.getItem('login') || sessionStorage.getItem('login');
 
-        // 토큰과 사용자 정보가 모두 있는 경우에만 로그인 상태를 유지
         if (token && userInfo) {
             setIsLoggedIn(true);
             setUser(JSON.parse(userInfo));
-        } else {
-            // 토큰이나 사용자 정보가 없으면 로그아웃 상태로 유지
-            setIsLoggedIn(false);
-            setUser(null);
         }
-        
-    }, []); // 빈 배열로 설정하여 컴포넌트가 처음 마운트될 때만 실행
+    }, []);
 
-    
-
-    const login = async (credentials) => {
+    const login = async (credentials, autoLogin) => {
         try {
             const response = await axios.post('http://localhost:8080/members/login', credentials);
             const token = response.data.accessToken;
-            localStorage.setItem('token', token);
+
+            if (autoLogin) {
+                localStorage.setItem('token', token);
+                localStorage.setItem('login', JSON.stringify(credentials));
+            } else {
+                sessionStorage.setItem('token', token);
+                sessionStorage.setItem('login', JSON.stringify(credentials));
+            }
+
             const userInfoResponse = await axios.get('http://localhost:8080/members/me', {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -47,7 +47,13 @@ export const AuthProvider = ({ children }) => {
                 address: userInfoResponse.data.address,
                 role: userInfoResponse.data.role,
             };
-            localStorage.setItem('login', JSON.stringify(userInfo));
+
+            if (autoLogin) {
+                localStorage.setItem('login', JSON.stringify(userInfo));
+            } else {
+                sessionStorage.setItem('login', JSON.stringify(userInfo));
+            }
+
             setIsLoggedIn(true);
             setUser(userInfo);
             navigate('/');
@@ -59,8 +65,8 @@ export const AuthProvider = ({ children }) => {
 
     const loginWithToken = async (token) => {
         try {
-            localStorage.setItem('token', token);
-            const userInfo = JSON.parse(localStorage.getItem('login'));
+            sessionStorage.setItem('token', token);
+            const userInfo = JSON.parse(sessionStorage.getItem('login'));
             setIsLoggedIn(true);
             setUser(userInfo);
             navigate('/');
@@ -74,10 +80,11 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('login');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('login');
         setIsLoggedIn(false);
         setUser(null);
         navigate('/');
-        window.location.reload();
     };
 
     return (

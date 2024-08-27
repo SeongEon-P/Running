@@ -10,6 +10,7 @@ const Login = () => {
     mpw: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
+  const [autoLogin, setAutoLogin] = useState(false); // 자동 로그인 체크박스 상태
 
   const { login: loginUser } = useAuth(); // AuthContext의 login 함수 사용
   const navigate = useNavigate();
@@ -19,12 +20,16 @@ const Login = () => {
     setLogin({ ...login, [name]: value });
   };
 
+  const handleAutoLoginChange = (e) => {
+    setAutoLogin(e.target.checked);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
     try {
-      await loginUser(login); // AuthContext의 login 함수 호출
+      await loginUser(login, autoLogin); // AuthContext의 login 함수 호출, autoLogin 전달
       navigate('/'); // 로그인 성공 시 홈으로 이동
     } catch (error) {
       // 에러 처리
@@ -40,10 +45,7 @@ const Login = () => {
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
-}
-
-const code = new URL(window.location.href).searchParams.get("code");
-
+  }
 
   return (
     <div>
@@ -69,6 +71,15 @@ const code = new URL(window.location.href).searchParams.get("code");
             onChange={handleChange}
             required
           />
+        </label>
+        <br />
+        <label>
+          <input
+            type="checkbox"
+            checked={autoLogin}
+            onChange={handleAutoLoginChange}
+          />
+          자동 로그인
         </label>
         <br />
         <button type="submit">로그인</button>
