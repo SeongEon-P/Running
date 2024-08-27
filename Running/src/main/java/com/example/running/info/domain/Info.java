@@ -1,13 +1,15 @@
-package com.example.running.Notice.domain;
+package com.example.running.info.domain;
 
+import com.example.running.Notice.domain.NoticeResource;
 import com.example.running.member.domain.Member;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,32 +17,30 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Notice extends BaseEntity {
+public class Info extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long nno;
-    private String n_title;
-    private String n_content;
+    private Long ino;
+    private String i_title;
+    private String i_content;
     private String writer;
-    private String n_image;
+    private String i_image;
     private boolean important;
 
-    @OneToMany(mappedBy = "notice",
+    @OneToMany(mappedBy = "info",
             cascade = {CascadeType.ALL},
             fetch = FetchType.LAZY,
             orphanRemoval = true)
     @BatchSize(size = 20)
     @Builder.Default
-    private Set<NoticeResource> noticeResourceSet = new HashSet<>();
+    private Set<InfoResource> infoResourceSet = new HashSet<>();
 
-    public void changeNotice(String n_title, String n_content, String n_image, Member member) {
-        this.n_title = n_title;
-        this.n_content = n_content;
-        this.n_image = n_image;
+    public void changeInfo(String i_title, String i_content, String i_image, Member member) {
+        this.i_title = i_title;
+        this.i_content = i_content;
+        this.i_image = i_image;
         this.writer = member.getMid();
     }
-
-    // 중요 공지사항 설정 메서드 추가
     public void markAsImportant(boolean important) {
         this.important = important;
     }

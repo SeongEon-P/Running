@@ -5,6 +5,7 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -32,6 +33,10 @@ public class KakaoOAuthController {
     public ResponseEntity<?> kakaoCallback(@RequestBody Map<String, String> payload) {
         String code = payload.get("code"); // 프론트엔드에서 전달된 인가 코드
         System.out.println("인가코드 로그 출력: " + code);
+
+        if (code == null || code.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid authorization code.");
+        }
 
         // 인가 코드가 이미 사용된 경우 처리
         if (usedAuthorizationCodes.contains(code)) {
@@ -81,6 +86,9 @@ public class KakaoOAuthController {
                 System.err.println("카카오 응답 에러: " + response.getBody());
                 return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
             }
+        } catch (HttpClientErrorException e) {
+            // 카카오 API 요청 오류를 처리하는 부분
+            return ResponseEntity.status(e.getStatusCode()).body("Kakao API error: " + e.getResponseBodyAsString());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error: " + e.getMessage());

@@ -1,67 +1,68 @@
-import { type } from "@testing-library/user-event/dist/type";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
+const InfoModify = ({ ino, setShowModify, setShowDetail }) => {
     const [loading, setLoading] = useState(true);
-    const [review, setReview] = useState({
-        r_title: "",
-        r_content: "",
+    const [info, setInfo] = useState({
+        i_title: "",
+        i_content: "",
         writer: localStorage.getItem('mid') || "",
         is_important: false,
     });
-    const [reviewResource, setReviewResource] = useState([]);
+    const [infoResource, setInfoResource] = useState([]);
     const [files, setFiles] = useState([]);
 
     const onInputChange = (e) => {
-        const { name, value, files: selectedFiles, type, checked } = e.target;
+        const {  name, value, files: selectedFiles, type, checked } = e.target;
         if (name === "files") {
             setFiles(Array.from(selectedFiles));
-        } else if (type === "checkbox"){
-            setReview({
-                ...review,
+        } else if (type === "checkbox") {
+            setInfo({
+                ...info,
                 [name]: checked,
             });
         } else {
-            setReview({
-                ...review,
+            setInfo({
+                ...info,
                 [name]: value,
             });
         }
     };
-
+    
     useEffect(() => {
         const loginData = JSON.parse(localStorage.getItem('login'));
         if (loginData && loginData.name) {
-            setReview(prevData => ({
+            setInfo(prevData => ({
                 ...prevData,
                 writer: loginData.name
             }));
         }
     }, []);
 
-    const getReview = async () => {
+
+    const getInfo = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/review/read?rno=${rno}`);
-            console.log(response.data);
-
+            const response = await axios.get(`http://localhost:8080/info/read?ino=${ino}`);
+            console.log("Fetched info data:", response.data);
+            
+            // 만약 writer가 제대로 들어오지 않으면 디버깅 메시지 출력
             if (!response.data.writer) {
-                console.warn("Fetched review has no writer field!");
+                console.warn("Fetched info has no writer field!");
             }
-
-            setReview(response.data);
-            setReviewResource(response.data.review_resource);
+    
+            setInfo(response.data);
+            setInfoResource(response.data.info_resource);
             setLoading(false);
         } catch (error) {
-            console.error("Error fetching review:", error);
+            console.error("Error fetching info:", error);
         }
     };
 
-    const deleteSubmit = async (rrno) => {
+    const deleteSubmit = async (irno) => {
         if (window.confirm('삭제하시겠습니까?')) {
             try {
-                await axios.delete(`http://localhost:8080/review/files/${rrno}`);
-                setReviewResource(reviewResource.filter(rr => rr.rrno !== rrno));
+                await axios.delete(`http://localhost:8080/info/files/${irno}`);
+                setInfoResource(infoResource.filter(ir => ir.irno !== irno));
             } catch (error) {
                 console.error("파일을 삭제하는 중 오류가 발생했습니다.", error);
             }
@@ -69,31 +70,31 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
     };
 
     useEffect(() => {
-        getReview();
-    }, [rno]);
+        getInfo();
+    }, [ino]);
 
     const onSubmit = async (e) => {
         e.preventDefault();
 
         try {
             const formData = new FormData();
-            formData.append("r_title", review.r_title);
-            formData.append("r_content", review.r_content);
-            formData.append("writer", review.writer);
-            formData.append("is_important", review.is_important);
+            formData.append("i_title", info.i_title);
+            formData.append("i_content", info.i_content);
+            formData.append("writer", info.writer);
+            formData.append("is_important", info.is_important)
 
             files.forEach(file => {
                 formData.append("files", file);
             });
 
-            const response = await axios.put(`http://localhost:8080/review/${rno}`, formData, {
+            const response = await axios.put(`http://localhost:8080/info/${ino}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
 
             if (response.status === 200) {
-                alert("공지사항 수정이 성공적으로 완료되었습니다.");
+                alert("Info 수정이 성공적으로 완료되었습니다.");
                 setShowModify(false);
                 setShowDetail(true);
             }
@@ -105,31 +106,31 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
 
     return (
         <>
-            <h2 className="review">수정중</h2>
+            <h2 className="info">수정중</h2>
             <form onSubmit={onSubmit}>
                 <div className="container">
                     <div className="d-flex flex-wrap justify-content-between">
-                        <p className="d-flex review_title">제목:
+                        <p className="d-flex info_title">제목:
                             <input
                                 onChange={onInputChange}
                                 type="text"
-                                name="r_title"
+                                name="i_title"
                                 className="form-control"
-                                value={review.r_title}
+                                value={info.i_title}
                                 required
                                 placeholder="제목"
                             />
                         </p>
-                        <span>작성자 : {review.writer}</span>
+                        <span>작성자 : {info.writer}</span>
                     </div>
-                    <p className="review_content">내용
+                    <p className="info_content">내용
                         <textarea
                             onChange={onInputChange}
-                            id="r_content"
+                            id="i_content"
                             className="form-control"
                             placeholder="내용"
-                            name="r_content"
-                            value={review.r_content}
+                            name="i_content"
+                            value={info.i_content}
                             rows="20"
                         />
                     </p>
@@ -138,10 +139,10 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
                             <input
                                 type="checkbox"
                                 name="is_important"
-                                checked={review.is_important}
+                                checked={info.is_important}
                                 onChange={onInputChange}
                             />
-                            중요 공지사항
+                            중요사항
                         </label>
                     </p>
                     <p>첨부파일</p>
@@ -153,14 +154,14 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
                         name="files"
                         multiple // Allow multiple file selection
                     />
-                    {reviewResource.map((rr) => (
-                        <div key={rr.rrno}>
-                            <p>{rr.rr_name} <button type="button" onClick={() => deleteSubmit(rr.rrno)}>X</button></p>
+                    {infoResource.map((ir) => (
+                        <div key={ir.irno}>
+                            <p>{ir.ir_name} <button type="button" onClick={() => deleteSubmit(ir.irno)}>X</button></p>
                         </div>
                     ))}
                 </div>
                 <div className="d-flex flex-wrap justify-content-between btns">
-                    <button type="button" className="btn btn-outline-dark reviewListBtn" onClick={() => setShowModify(false)}>수정 취소</button>
+                    <button type="button" className="btn btn-outline-dark infoListBtn" onClick={() => setShowModify(false)}>수정 취소</button>
                     <div>
                         <button type="submit" className="btn btn-outline-primary px-3 mx-2">수정</button>
                     </div>
@@ -169,5 +170,4 @@ const ReviewModify = ({ rno, setShowModify, setShowDetail }) => {
         </>
     );
 };
-
-export default ReviewModify;
+export default InfoModify;

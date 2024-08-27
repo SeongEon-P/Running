@@ -1,27 +1,25 @@
 import axios from "axios";
+import InfoRegister from "./InfoRegister";
+import InfoDetail from "./InfoDetail";
 import { useEffect, useState } from "react";
-import ReviewDetail from "./ReviewDetail";
-import ReviewRegister from "./ReviewRegister";
-import './ReviewList.css';
 
-function ReviewList() {
-  const [reviewList, setReviewList] = useState([]);
+function InfoList(){
+  const [infoList, setInfoList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [currentItems, setCurrentItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("all");
   const [showRegister, setShowRegister] = useState(false);
-  const [selectedReview, setSelectedReview] = useState(null);
+  const [selectedInfo, setSelectedInfo] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
 
   const uploadRegister = async () => {
     try {
-      const result = await axios.get("http://localhost:8080/review/list");
-      console.log(result.data);
-      setReviewList(result.data);
+      const result = await axios.get("http://localhost:8080/info/list");
+      setInfoList(result.data);
     } catch (error) {
-      console.error("Error fetching review list:", error);
+      console.error("Error fetching info list:", error);
     }
   };
 
@@ -31,12 +29,12 @@ function ReviewList() {
 
   useEffect(() => {
     const lowerSearchTerm = searchTerm ? searchTerm.toLowerCase() : "";
-    const filteredList = reviewList
-      .filter(review => {
-        const title = review.r_title ? review.r_title.toLowerCase() : "";
-        const content = review.r_content ? review.r_content.toLowerCase() : "";
-        const writer = review.writer ? review.writer.toLowerCase() : "";
-
+    const filteredList = infoList
+      .filter(info => {
+        const title = info.i_title ? info.i_title.toLowerCase() : "";
+        const content = info.i_content ? info.i_content.toLowerCase() : "";
+        const writer = info.writer ? info.writer.toLowerCase() : "";
+  
         switch (searchType) {
           case "title":
             return title.includes(lowerSearchTerm);
@@ -53,22 +51,23 @@ function ReviewList() {
             );
         }
       });
-
-    const importantReviews = filteredList.filter(review => review.important === true);
-    const regularReviews = filteredList.filter(review => review.important !== true).reverse(); // 역순 정렬
-
-    const totalItems = importantReviews.length + regularReviews.length;
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const paginatedRegularReviews = regularReviews.slice(indexOfFirstItem, indexOfLastItem);
-
-    // 중요 공지사항을 맨 위에 표시
-    const currentItems = [...importantReviews, ...paginatedRegularReviews];
-
+  
+      const importantInfos = filteredList.filter(info => info.important === true);
+      const regularInfos = filteredList.filter(info => info.important !== true).reverse(); // 역순 정렬
+  
+      const totalItems = importantInfos.length + regularInfos.length;
+      const indexOfLastItem = currentPage * itemsPerPage;
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+      const paginatedRegularInfos = regularInfos.slice(indexOfFirstItem, indexOfLastItem);
+  
+      // 중요 공지사항을 맨 위에 표시
+      const currentItems = [...importantInfos, ...paginatedRegularInfos];
+  
+    // 현재 페이지 항목 설정 및 전체 페이지 수 설정
     setCurrentItems(currentItems);
     setTotalPages(Math.ceil(totalItems / itemsPerPage));
-  }, [currentPage, itemsPerPage, reviewList, searchTerm, searchType]);
-
+  }, [currentPage, itemsPerPage, infoList, searchTerm, searchType]);
+  
   const maxPageNumbers = 5;
 
   const handleClick = (pageNumber) => {
@@ -79,12 +78,12 @@ function ReviewList() {
     const pageNumbers = [];
     let startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
     let endPage = startPage + maxPageNumbers - 1;
-
+  
     if (endPage > totalPages) {
       endPage = totalPages;
       startPage = Math.max(1, endPage - maxPageNumbers + 1);
     }
-
+  
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
         <li
@@ -101,7 +100,7 @@ function ReviewList() {
         </li>
       );
     }
-
+  
     return (
       <ul className="pagination mb-0">
         {startPage > 1 && (
@@ -130,6 +129,7 @@ function ReviewList() {
       </ul>
     );
   };
+  
 
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);
@@ -143,20 +143,20 @@ function ReviewList() {
     setShowRegister(true);
   };
 
-  const handleReviewClick = (rno) => {
-    setSelectedReview(rno);
+  const handleInfoClick = (ino) => {
+    setSelectedInfo(ino);
   };
 
   return (
-    <div className="container review_con">
+    <div className="container info_con">
       {showRegister ? (
-        <ReviewRegister />
-      ) : selectedReview ? (
-        <ReviewDetail rno={selectedReview} />
+        <InfoRegister />
+      ) : selectedInfo ? (
+        <InfoDetail ino={selectedInfo} />
       ) : (
         <>
           <div className="d-flex justify-content-between mb-4">
-            <h2 className="review_title">리뷰</h2>
+            <h2 className="info_title" style={{ fontSize: "30px" }}>Info</h2>
             <div className="d-flex">
               <select className="form-select me-2" onChange={handleSearchTypeChange} value={searchType}>
                 <option value="all">전체</option>
@@ -170,7 +170,7 @@ function ReviewList() {
                 type="text"
                 placeholder="검색..."
               />
-              <button
+              <button 
                 className="btn btn-outline-dark"
                 type="button"
                 onClick={handleSearch}
@@ -189,18 +189,18 @@ function ReviewList() {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((review, index) => (
+              {currentItems.map((info, index) => (
                 <tr key={index}>
-                  <th scope="row">{review.rno}</th>
-                  <td
-                     onClick={() => handleReviewClick(review.rno)}
-                     style={{ cursor: 'pointer' }}
-                     >
-                      {review.important === true && <strong>[중요] </strong>}
-                      {review.r_title}
+                  <th scope="row">{info.ino}</th>
+                  <td 
+                    onClick={() => handleInfoClick(info.ino)} 
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {info.important === true && <strong>[중요]</strong>}
+                    {info.i_title}
                   </td>
-                  <td>
-                    {new Date(review.regDate[0], review.regDate[1] - 1, review.regDate[2], review.regDate[3], review.regDate[4], review.regDate[5]).toLocaleDateString()}
+                  <td className="InfoView_p">
+                    {new Date(info.regDate[0], info.regDate[1] - 1, info.regDate[2], info.regDate[3], info.regDate[4], info.regDate[5]).toLocaleDateString()}
                   </td>
                 </tr>
               ))}
@@ -214,7 +214,7 @@ function ReviewList() {
             <div className="text-end">
               <button
                 type="button"
-                className="btn btn-outline-dark reviewRegisterBtn"
+                className="btn btn-outline-dark infoRegisterBtn"
                 onClick={handleRegisterClick}
               >
                 등록
@@ -226,5 +226,4 @@ function ReviewList() {
     </div>
   );
 }
-
-export default ReviewList;
+export default InfoList;
