@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ReviewDetail from "./ReviewDetail";
 import ReviewRegister from "./ReviewRegister";
+import './ReviewList.css';
 
 function ReviewList() {
   const [reviewList, setReviewList] = useState([]);
@@ -9,15 +10,16 @@ function ReviewList() {
   const [itemsPerPage] = useState(10);
   const [currentItems, setCurrentItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("all");
   const [showRegister, setShowRegister] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
-
+  const [totalPages, setTotalPages] = useState(0);
 
   const uploadRegister = async () => {
     try {
-        const result = await axios.get("http://localhost:8080/review/list");
-        console.log(result.data);
-        setReviewList(result.data);
+      const result = await axios.get("http://localhost:8080/review/list");
+      console.log(result.data);
+      setReviewList(result.data);
     } catch (error) {
       console.error("Error fetching review list:", error);
     }
@@ -28,19 +30,44 @@ function ReviewList() {
   }, []);
 
   useEffect(() => {
-    const filteredList = reviewList.filter(review =>
-      review.r_title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const lowerSearchTerm = searchTerm ? searchTerm.toLowerCase() : "";
+    const filteredList = reviewList
+      .filter(review => {
+        const title = review.r_title ? review.r_title.toLowerCase() : "";
+        const content = review.r_content ? review.r_content.toLowerCase() : "";
+        const writer = review.writer ? review.writer.toLowerCase() : "";
+
+        switch (searchType) {
+          case "title":
+            return title.includes(lowerSearchTerm);
+          case "content":
+            return content.includes(lowerSearchTerm);
+          case "writer":
+            return writer.includes(lowerSearchTerm);
+          case "all":
+          default:
+            return (
+              title.includes(lowerSearchTerm) ||
+              content.includes(lowerSearchTerm) ||
+              writer.includes(lowerSearchTerm)
+            );
+        }
+      });
+
+    const importantReviews = filteredList.filter(review => review.important === true);
+    const regularReviews = filteredList.filter(review => review.important !== true).reverse(); // 역순 정렬
+
+    const totalItems = importantReviews.length + regularReviews.length;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    setCurrentItems(filteredList.slice(indexOfFirstItem, indexOfLastItem).reverse());
-  }, [currentPage, itemsPerPage, reviewList, searchTerm]);
+    const paginatedRegularReviews = regularReviews.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(
-    reviewList.filter(review =>
-      review.r_title.toLowerCase().includes(searchTerm.toLowerCase())
-    ).length / itemsPerPage
-  );
+    // 중요 공지사항을 맨 위에 표시
+    const currentItems = [...importantReviews, ...paginatedRegularReviews];
+
+    setCurrentItems(currentItems);
+    setTotalPages(Math.ceil(totalItems / itemsPerPage));
+  }, [currentPage, itemsPerPage, reviewList, searchTerm, searchType]);
 
   const maxPageNumbers = 5;
 
@@ -104,26 +131,12 @@ function ReviewList() {
     );
   };
 
-  const formatDate = (dateStr) => {
-    console.log(`Date String: ${dateStr}`);
-  
-    if (!dateStr) {
-      return 'Date not available';
-    }
-  
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) {
-      console.warn(`Invalid date: ${dateStr}`);
-      return 'Invalid Date';
-    }
-  
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);
+  };
+
+  const handleSearchTypeChange = (e) => {
+    setSearchType(e.target.value);
   };
 
   const handleRegisterClick = () => {
@@ -136,22 +149,28 @@ function ReviewList() {
 
   return (
     <div className="container review_con">
-      {showRegister ? ( 
+      {showRegister ? (
         <ReviewRegister />
-      ) : selectedReview ? ( 
+      ) : selectedReview ? (
         <ReviewDetail rno={selectedReview} />
       ) : (
         <>
           <div className="d-flex justify-content-between mb-4">
-            <h2 className="review_title" style={{ fontSize: "30px" }}>공지사항</h2>
+            <h2 className="review_title">리뷰</h2>
             <div className="d-flex">
+              <select className="form-select me-2" onChange={handleSearchTypeChange} value={searchType}>
+                <option value="all">전체</option>
+                <option value="title">제목</option>
+                <option value="content">내용</option>
+                <option value="writer">작성자</option>
+              </select>
               <input
                 id="searchInput"
                 className="form-control me-2"
                 type="text"
                 placeholder="검색..."
               />
-              <button 
+              <button
                 className="btn btn-outline-dark"
                 type="button"
                 onClick={handleSearch}
@@ -173,10 +192,16 @@ function ReviewList() {
               {currentItems.map((review, index) => (
                 <tr key={index}>
                   <th scope="row">{review.rno}</th>
-                  <td onClick={() => handleReviewClick(review.rno)} style={{ cursor: 'pointer' }}>
-                    {review.r_title}
+                  <td
+                     onClick={() => handleReviewClick(review.rno)}
+                     style={{ cursor: 'pointer' }}
+                     >
+                      {review.important === true && <strong>[중요] </strong>}
+                      {review.r_title}
                   </td>
-                  <td>{formatDate(review.regdate)}</td>
+                  <td>
+                    {new Date(review.regDate[0], review.regDate[1] - 1, review.regDate[2], review.regDate[3], review.regDate[4], review.regDate[5]).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -199,7 +224,6 @@ function ReviewList() {
         </>
       )}
     </div>
-
   );
 }
 

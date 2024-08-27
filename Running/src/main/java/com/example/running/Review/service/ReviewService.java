@@ -1,5 +1,6 @@
 package com.example.running.Review.service;
 
+import com.example.running.Notice.dto.NoticeDTO;
 import com.example.running.Review.domain.Review;
 import com.example.running.Review.dto.ReviewDTO;
 import org.springframework.stereotype.Service;
@@ -14,4 +15,5 @@ public interface ReviewService {
     void deleteReview(Long rno);
     Review modifyReview(ReviewDTO reviewDTO);
     List<ReviewDTO> findLatestReviews();
+    List<ReviewDTO> findImportantReview();
 }
