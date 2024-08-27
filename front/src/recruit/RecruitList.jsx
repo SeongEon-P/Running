@@ -7,6 +7,7 @@ import './RecruitList.css';
 
 const RecruitList = () => {
   const [recruits, setRecruits] = useState([]);
+  const [currentUser, setCurrentUser] = useState([]);
   const [counts, setCounts] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -20,6 +21,14 @@ const RecruitList = () => {
 
   useEffect(() => {
     fetchRecruits();
+    const userInfo = JSON.parse(localStorage.getItem('login'));
+    if (userInfo && userInfo.mid) {
+      setCurrentUser((prevState) => ({
+        ...prevState,
+        mid: userInfo.mid,
+        role: userInfo.role
+      }))
+    }
   }, [])
 
   const fetchRecruits = () => {
@@ -94,87 +103,102 @@ const RecruitList = () => {
   const currentRecruits = recruits.slice(offset, offset + recruitsPerPage);
 
   return (
-    <div className="recruit-page">
+    <div className="recruitList-page">
       <Sidebar />
-      <div className="recruit-content">
-        <h1>Recruit List</h1>
-        <div className="box-wrap">
-          <select value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)}>
-            <option value="title">제목</option>
-            <option value="content">내용</option>
-            <option value="memberRecruit.mid">작성자</option>
-          </select>
-          <input
-            type="text"
-            placeholder="검색어를 입력하세요"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
+      <div className="recruitList-content">
+        <div className="recruitList-list">
+          <div className="recruitList-list-title">
+            <h1>Recruit List</h1>
+            {currentUser.mid &&
+              <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
+            }
+          </div>
+          <div className="recruitList-search">
+            <div>
+              <select value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)}>
+                <option value="title">제목</option>
+                <option value="content">내용</option>
+                <option value="memberRecruit.mid">작성자</option>
+              </select>
+              <input
+                type="text"
+                placeholder="검색어를 입력하세요"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+              />
+
+            </div>
+            <div>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+              <input
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </div>
+            <button type="button" onClick={handleSearch}>검색</button>
+            <button type="button" onClick={handleReset}>검색어 초기화</button>
+          </div>
+          <div className="recruitList-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>장소</th>
+                  <th>제목</th>
+                  <th>날짜</th>
+                  <th>시간</th>
+                  <th>인원</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRecruits.map(recruit => (
+                  <tr key={recruit.rno} onClick={() => handleRowClick(recruit.rno)}>
+                    {/* <td>{recruit.rno}</td> */}
+                    <td>{recruit.place}</td>
+                    <td>{recruit.title}</td>
+                    <td>{formatDate(recruit.date)}</td>
+                    <td>{formatTime(recruit.time)}</td>
+                    <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.maxnumber}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <ReactPaginate
+            previousLabel={"이전"}
+            nextLabel={"다음"}
+            breakLabel={"..."}
+            breakClassName={"break-me"}
+            pageCount={Math.ceil(recruits.length / recruitsPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            containerClassName={"recruitList-pagination"}
+            subContainerClassName={"recruitList-pages-pagination"}
+            activeClassName={"recruitList-active"}
           />
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-          <input
-            type="time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-          />
-          <input
-            type="time"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-          />
-          <button type="button" onClick={handleSearch}>검색</button>
-          <button type="button" onClick={handleReset}>검색어 초기화</button>
         </div>
-        <button type="button" onClick={handleRecruitRegister}>게시글 등록</button>
-        <table>
-          <thead>
-            <tr>
-              <th>rno</th>
-              <th>Title</th>
-              <th>Content</th>
-              <th>Place</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Max Number</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentRecruits.map(recruit => (
-              <tr key={recruit.rno} onClick={() => handleRowClick(recruit.rno)}>
-                <td>{recruit.rno}</td>
-                <td>{recruit.title}</td>
-                <td>{recruit.content}</td>
-                <td>{recruit.place}</td>
-                <td>{formatDate(recruit.date)}</td>
-                <td>{formatTime(recruit.time)}</td>
-                <td>{counts[recruit.rno] !== undefined ? counts[recruit.rno] : 'Loading...'}/{recruit.maxnumber}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <ReactPaginate
-          previousLabel={"이전"}
-          nextLabel={"다음"}
-          breakLabel={"..."}
-          breakClassName={"break-me"}
-          pageCount={Math.ceil(recruits.length / recruitsPerPage)}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePageClick}
-          containerClassName={"pagination"}
-          subContainerClassName={"pages pagination"}
-          activeClassName={"active"}
-        />
+
+
       </div>
     </div>
+
   );
 }
 

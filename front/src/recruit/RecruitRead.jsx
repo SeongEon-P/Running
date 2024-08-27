@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
+import "./RecruitRead.css";
+import Sidebar from "../components/Sidebar/Sidebar";
 import Parking from './parking/Parking';
 
 const RecruitRead = () => {
@@ -50,52 +52,32 @@ const RecruitRead = () => {
       setCurrentUser((prevState) => ({
         ...prevState,
         mid: userInfo.mid,
-      }));
+        role: userInfo.role
+      }))
     }
-  }, [rno, ano]);
+  }, [rno, ano])
 
+  // 주소를 위도, 경도로 변환해주는거
   useEffect(() => {
     if (recruit.address) {
-      axios
-        .get('https://dapi.kakao.com/v2/local/search/address.json', {
-          params: { query: recruit.address },
-          headers: {
-            Authorization: process.env.REACT_APP_API_KEY, // 환경 변수에서 API 키를 가져옵니다.
-          },
-        })
-        //             .then(response => {
-        //                 const locationData = response.data.documents[0];
-        //                 setLocation({
-        //                     x: locationData.x,
-        //                     y: locationData.y
-        //                 });
-        //             })
-        //             .catch(error => {
-        //                 console.error('There was an error fetching the location data!', error)
-        //             })
-        //     }
-        //     // 좌표 설정 후 로그 출력
-        //     if (location.x && location.y) {
-        //         console.log("Location set:", location);
-        //     }
-        // }, [recruit.address])
-        .then((response) => {
+      axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
+        params: { query: recruit.address },
+        headers: {
+          Authorization: process.env.REACT_APP_API_KEY // 환경 변수에서 API 키를 가져옵니다.
+        }
+      })
+        .then(response => {
           const locationData = response.data.documents[0];
-          if (locationData) {
-            setLocation({
-              x: locationData.x,
-              y: locationData.y,
-            });
-            console.log('좌표 변환 성공:', locationData);
-          } else {
-            console.error('좌표 변환 실패: 주소가 유효하지 않음');
-          }
+          setLocation({
+            x: locationData.x,
+            y: locationData.y
+          });
         })
-        .catch((error) => {
-          console.error('좌표 변환 중 오류 발생:', error);
-        });
+        .catch(error => {
+          console.error('There was an error fetching the location data!', error)
+        })
     }
-  }, [recruit.address]);
+  }, [recruit.address])
 
   if (!recruit.rno) {
     return <div>Loading...</div>;
@@ -221,13 +203,13 @@ const RecruitRead = () => {
         // 인포윈도우의 위치
         const iwPosition = options.center;
         // iwRemoveable을 true로 설정하면 인포윈도우를 닫을 수 있는 x 표시 생성
-        const iwRemoveable = true;
+        const iwRemoveable = false;
 
         // 인포윈도우를 생성합니다
         const infowindow = new kakao.maps.InfoWindow({
           position: iwPosition,
           content: iwContent,
-          removable: iwRemoveable,
+          removable: iwRemoveable
         });
 
         // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
@@ -241,77 +223,100 @@ const RecruitRead = () => {
       }
     }, [x, y]);
 
-    return <div id="map" style={{ width: '500px', height: '400px' }}></div>;
+    return (
+      <div id="map" style={{ width: '800px', height: '600px' }}></div>
+    );
   };
+
+
 
   return (
     <>
-      <div>
-        <h1>제목 : {recruit.title}</h1>
-        <p>내용 : {recruit.content}</p>
-        <p>장소 : {recruit.address}</p>
-        <p>장소 : {recruit.place}</p>
-        <NavLink to="/parking">주차정보</NavLink>
-        <Parking location={location} />
+      <Sidebar />
+      <div className="recruitRead-container">
+        <div className="recruitRead-title-container">
+          <div className="recruitRead-title-detail">
+            <h1 className="recruitRead-title">{recruit.title}</h1>
+            <span>{recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'} / </span>
+            <span>{recruit.place}</span>
+          </div>
+          <button className="recruitRead-button" onClick={handleBackClick}>목록으로 가기</button>
+        </div>
 
-        <p>날짜 : {formatDate(recruit.date)}</p>
-        <p>시간 : {formatTime(recruit.time)}</p>
-        <p>
-          모집인원 :{' '}
-          {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}
-        </p>
-        <p>
-          게시자 : {recruit.memberRecruit ? recruit.memberRecruit.mid : 'N/A'}
-        </p>
+        <div className="recruitRead-content">
+          <p className="recruitRead-content-detail">{recruit.content}</p>
 
-        <button onClick={handleBackClick}>목록으로 가기</button>
+          <div>
+            <p>날짜 : {formatDate(recruit.date)}</p>
+            <p>시간 : {formatTime(recruit.time)}</p>
+          </div>
+
+
+
+        </div>
+
 
         {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
-          <button onClick={() => handleModifyClick(rno)}>수정</button>
+          <button className="recruitRead-button" onClick={() => handleModifyClick(rno)}>수정</button>
         ) : null}
 
-        {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
-          <button onClick={handleDeleteClick}>삭제</button>
+        {(currentUser && currentUser.mid === recruit.memberRecruit.mid) || (currentUser.role === 'ADMIN') ? (
+          <button className="recruitRead-button" onClick={handleDeleteClick}>삭제</button>
         ) : null}
+
 
         {currentUser.mid &&
           currentUser.mid !== recruit.memberRecruit.mid &&
           count !== recruit.max_number &&
-          !appliedList.some(
-            (applied) => applied.memberApply.mid === currentUser.mid
-          ) && <button onClick={handleApplyClick}>신청하기</button>}
-      </div>
-      <div>
-        <h1>신청한 사람</h1>
-
-        <tbody>
-          {appliedList.length > 0 ? ( // appliedList가 유효한 배열인지 확인
-            appliedList.map((applied) => (
-              <tr key={applied.ano}>
-                <td>{applied.memberApply.mid}</td>
-
-                {currentUser.mid === applied.memberApply.mid &&
-                  recruit.memberRecruit.mid !== applied.memberApply.mid && (
-                    <td>
-                      <button
-                        onClick={() => handleCancelApplication(applied.ano)}
-                      >
-                        신청 취소
-                      </button>
-                    </td>
-                  )}
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td>신청자가 없습니다.</td>
-            </tr>
+          !appliedList.some(applied => applied.memberApply.mid === currentUser.mid) && (
+            <button className="recruitRead-button" onClick={handleApplyClick}>신청하기</button>
           )}
-        </tbody>
-        {location.x && location.y && <KakaoMap x={location.x} y={location.y} />}
+      </div>
+      <div className="recruitRead-applied-list-container">
+        <div className="recruitRead-applied-header">
+          <h1>신청 목록</h1>
+          <p>모집인원 {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>
+        </div>
+        <div className="recruitRead-applied-list">
+
+          <tbody>
+            {appliedList.length > 0 ? ( // appliedList가 유효한 배열인지 확인
+              appliedList.map(applied => (
+                <tr key={applied.ano}>
+                  <td>{applied.memberApply.mid}</td>
+
+                  {currentUser.mid === applied.memberApply.mid &&
+                    recruit.memberRecruit.mid !== applied.memberApply.mid && (
+                      <td>
+                        <button className="recruitRead-cancel-button" onClick={() => handleCancelApplication(applied.ano)}>신청 취소</button>
+                      </td>
+                    )}
+                </tr>
+              ))
+            ) : (
+              <tr className="recruitRead-no-applicants">
+                <td>신청자가 없습니다.</td>
+              </tr>
+            )}
+          </tbody>
+        </div>
+
+      </div>
+      <div className="recruitRead-applied-list-container">
+        <div className="recruitRead-map">
+          <h1>상세 주소</h1>
+          <p>{recruit.address}</p>
+        </div>
+        {location.x && location.y && (
+          <div className="recruitRead-kakao-map-container">
+            <KakaoMap x={location.x} y={location.y} />
+          </div>
+        )}
+        <NavLink to="/parking">주차정보</NavLink>
+        <Parking location={location} />
       </div>
     </>
-  );
-};
+  )
+}
 
 export default RecruitRead;
