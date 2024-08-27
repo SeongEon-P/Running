@@ -7,7 +7,7 @@
 
 .recruitList-content {
     flex-grow: 1; /* 내용이 남은 공간을 채우도록 설정 */
-    margin-left: 350px;
+    margin-left: 350px; 
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -106,4 +106,66 @@
     justify-content: center;
     list-style: none;
     padding: 0;
+}
+
+.recruitList-pagination li {
+    margin: 0 5px;
+}
+
+.recruitList-pagination li a {
+    padding: 8px 12px;
+    background-color: white; /* 배경색 흰색 */
+    color: black; /* 폰트 색깔 검은색 */
+    border: 2px solid black; /* 아웃라인 검은색 */
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.recruitList-pagination li a:hover {
+    background-color: #f0f0f0;
+}
+
+.recruitList-pagination .recruitList-active a {
+    background-color: black; /* 활성화된 페이지는 배경이 검은색 */
+    color: white; /* 활성화된 페이지는 글자색이 흰색 */
+    border-color: black;
+}
+
+.recruitList-search {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    /* margin-bottom: 20px; */
+}
+
+.recruitList-search select,
+.recruitList-search input[type="text"],
+.recruitList-search input[type="date"],
+.recruitList-search input[type="time"],
+.recruitList-search button {
+    padding: 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: white;
+    color: black;
+}
+
+.recruitList-search button {
+    margin-bottom: 20px;
+    padding: 8px 16px;
+    background-color: white;
+    /* 배경색 흰색 */
+    color: black;
+    /* 폰트 색깔 검은색 */
+    border: 2px solid black;
+    /* 아웃라인 검은색 */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.recruitList-search button:hover {
+    background-color: #f0f0f0;
 }
