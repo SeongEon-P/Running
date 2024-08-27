@@ -26,7 +26,10 @@ export const AuthProvider = ({ children }) => {
             setIsLoggedIn(false);
             setUser(null);
         }
+        
     }, []); // 빈 배열로 설정하여 컴포넌트가 처음 마운트될 때만 실행
+
+    
 
     const login = async (credentials) => {
         try {
@@ -74,6 +77,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoggedIn(false);
         setUser(null);
         navigate('/');
+        window.location.reload();
     };
 
     return (
