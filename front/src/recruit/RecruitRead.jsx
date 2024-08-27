@@ -194,7 +194,7 @@ const RecruitRead = () => {
                 // 인포윈도우의 위치
                 const iwPosition = options.center;
                 // iwRemoveable을 true로 설정하면 인포윈도우를 닫을 수 있는 x 표시 생성
-                const iwRemoveable = true;
+                const iwRemoveable = false;
 
                 // 인포윈도우를 생성합니다
                 const infowindow = new kakao.maps.InfoWindow({
@@ -268,7 +268,7 @@ const RecruitRead = () => {
             <div className="recruitRead-applied-list-container">
                 <div className="recruitRead-applied-header">
                     <h1>신청 목록</h1>
-                    <p>모집인원 - {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>
+                    <p>모집인원 {count !== null ? `${count}/${recruit.maxnumber}` : 'Loading...'}</p>
                 </div>
                 <div className="recruitRead-applied-list">
 
