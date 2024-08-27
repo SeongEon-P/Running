@@ -157,3 +157,34 @@
 .TeamList_searchButton:hover {
     background-color: #555;
 }
+
+/* 버튼 스타일 */
+.TeamList_button {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #ffffff;
+    background-color: #111;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.TeamList_button:hover {
+    background-color: #555;
+}
+
+/* 리스트와 컨텐츠 영역 스타일 */
+.TeamList_content {
+    margin-left: 250px;
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* 전체 레이아웃 설정 */
+.TeamList_layout {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* 필요에 따라 높이 설정 */
+}

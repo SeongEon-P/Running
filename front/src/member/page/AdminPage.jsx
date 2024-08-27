@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './AdminPage.css'; // CSS 파일 import
 
 const AdminPage = () => {
     const [teamRequests, setTeamRequests] = useState([]);
@@ -9,7 +10,6 @@ const AdminPage = () => {
         const fetchTeamRequests = async () => {
             try {
                 const response = await axios.get('/admin/team-requests');
-                // Ensure that the data is an array
                 setTeamRequests(Array.isArray(response.data) ? response.data : []);
             } catch (err) {
                 setError('팀 생성 요청을 불러오는 중 오류가 발생했습니다.');
@@ -18,6 +18,14 @@ const AdminPage = () => {
         };
 
         fetchTeamRequests();
+
+        // adminPage_body 클래스를 body 태그에 추가
+        document.body.classList.add('adminPage_body');
+
+        // 컴포넌트 언마운트 시 adminPage_body 클래스를 제거
+        return () => {
+            document.body.classList.remove('adminPage_body');
+        };
     }, []);
 
     const handleApprove = async (teamId) => {
@@ -39,15 +47,17 @@ const AdminPage = () => {
     };
 
     return (
-        <div>
-            <h2>관리자 페이지 - 팀 생성 요청</h2>
-            {error && <p>{error}</p>}
-            <ul>
+        <div className="adminPage_container">
+            <h3>관리자 페이지 - 팀 생성 요청</h3>
+            {error && <p className="adminPage_error">{error}</p>}
+            <ul className="adminPage_teamRequests">
                 {Array.isArray(teamRequests) && teamRequests.map(request => (
                     <li key={request.trno}>
-                        {request.teamName} - {request.teamLeader}
-                        <button onClick={() => handleApprove(request.trno)}>승인</button>
-                        <button onClick={() => handleReject(request.trno)}>거절</button>
+                        <span className="adminPage_teamInfo">{request.teamName} - {request.teamLeader}</span>
+                        <div>
+                            <button onClick={() => handleApprove(request.trno)}>승인</button>
+                            <button onClick={() => handleReject(request.trno)}>거절</button>
+                        </div>
                     </li>
                 ))}
             </ul>

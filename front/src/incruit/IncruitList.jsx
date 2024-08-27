@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import './IncruitList.css';  // 수정된 스타일 파일 import
+import './IncruitList.css'; 
+import Sidebar from '../components/Sidebar/Sidebar';
 
 const IncruitList = () => {
     const [incruitList, setIncruitList] = useState([]);
@@ -102,84 +103,90 @@ const IncruitList = () => {
     const totalPages = Math.ceil(filteredIncruitList.length / itemsPerPage);
 
     return (
-        <div className="IncruitList_container">
-            <h2 className="IncruitList_h2">모집 리스트</h2>
-            {error && <p className="IncruitList_error">{error}</p>}
+        <div className="IncruitList_layout">
+            {/* 사이드바 추가 */}
+            <Sidebar />
 
-            {/* 검색 및 버튼 컨테이너 */}
-            <div className="IncruitList_actionsContainer">
-                <div className="IncruitList_searchContainer">
-                    {/* 검색 기준 선택 드롭다운 */}
-                    <select
-                        value={searchField}
-                        onChange={handleSearchFieldChange}
-                        className="IncruitList_searchSelect"
-                    >
-                        <option value="ititle">제목</option>
-                        <option value="iwriter">작성자</option>
-                    </select>
+            {/* 리스트 및 검색 부분 */}
+            <div className="IncruitList_content">
+                <h2 className="IncruitList_h2">모집 리스트</h2>
+                {error && <p className="IncruitList_error">{error}</p>}
 
-                    {/* 검색 입력 필드 */}
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        placeholder="검색어를 입력하세요"
-                        className="IncruitList_searchInput"
-                    />
+                {/* 검색 및 버튼 컨테이너 */}
+                <div className="IncruitList_actionsContainer">
+                    <div className="IncruitList_searchContainer">
+                        {/* 검색 기준 선택 드롭다운 */}
+                        <select
+                            value={searchField}
+                            onChange={handleSearchFieldChange}
+                            className="IncruitList_searchSelect"
+                        >
+                            <option value="ititle">제목</option>
+                            <option value="iwriter">작성자</option>
+                        </select>
 
-                    {/* 검색 버튼 */}
-                    <button onClick={handleSearchClick} className="IncruitList_searchButton">
-                        검색
-                    </button>
+                        {/* 검색 입력 필드 */}
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="검색어를 입력하세요"
+                            className="IncruitList_searchInput"
+                        />
+
+                        {/* 검색 버튼 */}
+                        <button onClick={handleSearchClick} className="IncruitList_searchButton">
+                            검색
+                        </button>
+                    </div>
+
+                    {!isAdmin && (
+                        <div className="IncruitList_buttons">
+                            {/* 로컬스토리지에 login 키가 있을 때만 팀 등록 버튼을 표시 */}
+                            {showTeamRegisterButton && !isLeader && (
+                                <button
+                                    className="IncruitList_button"
+                                    onClick={handleTeamRegisterClick}
+                                >
+                                    팀 등록
+                                </button>
+                            )}
+                            {/* isLeader가 true일 경우에만 모집글 작성 버튼을 표시 */}
+                            {isLeader && (
+                                <button
+                                    className="IncruitList_button"
+                                    onClick={handleCreateClick}
+                                >
+                                    모집글 작성
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
 
-                {!isAdmin && (
-                    <div className="IncruitList_buttons">
-                        {/* 로컬스토리지에 login 키가 있을 때만 팀 등록 버튼을 표시 */}
-                        {showTeamRegisterButton && !isLeader && (
-                            <button
-                                className="IncruitList_button"
-                                onClick={handleTeamRegisterClick}
-                            >
-                                팀 등록
-                            </button>
-                        )}
-                        {/* isLeader가 true일 경우에만 모집글 작성 버튼을 표시 */}
-                        {isLeader && (
-                            <button
-                                className="IncruitList_button"
-                                onClick={handleCreateClick}
-                            >
-                                모집글 작성
-                            </button>
-                        )}
-                    </div>
-                )}
-            </div>
+                <ul className="IncruitList_ul">
+                    {currentItems.map((incruit) => (
+                        <li key={incruit.ino} className="IncruitList_li">
+                            <Link to={`/incruit/${incruit.ino}`} className="IncruitList_link"
+                                onClick={() => handleViewClick(incruit.ino)}>
+                                {incruit.ititle} - {incruit.iwriter} (조회수: {incruit.iviews})
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
 
-            <ul className="IncruitList_ul">
-                {currentItems.map((incruit) => (
-                    <li key={incruit.ino} className="IncruitList_li">
-                        <Link to={`/incruit/${incruit.ino}`} className="IncruitList_link"
-                            onClick={() => handleViewClick(incruit.ino)}>
-                            {incruit.ititle} - {incruit.iwriter} (조회수: {incruit.iviews})
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-
-            {/* 페이지네이션 버튼 */}
-            <div className="IncruitList_pagination">
-                {[...Array(totalPages)].map((_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => handlePageChange(index + 1)}
-                        className={index + 1 === currentPage ? 'active' : ''}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
+                {/* 페이지네이션 버튼 */}
+                <div className="IncruitList_pagination">
+                    {[...Array(totalPages)].map((_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => handlePageChange(index + 1)}
+                            className={index + 1 === currentPage ? 'active' : ''}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                </div>
             </div>
         </div>
     );

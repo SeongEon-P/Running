@@ -239,7 +239,7 @@ public class TeamManageController {
 
         TeamManage teamManage = teamMemberRequest.getTeamManage();
         teamManage.setTeamMemberCount(teamManage.getTeamMemberCount() + 1);
-        teamManage.setTeamMembers(teamManage.getTeamMembers() + ", " + teamMemberRequest.getUserName());
+        teamManage.setTeamMembers(teamManage.getTeamMembers() + teamMemberRequest.getUserName() + ", ");
 
         teamManageRepository.save(teamManage);
         teamMemberRequestRepository.delete(teamMemberRequest); // 요청 삭제

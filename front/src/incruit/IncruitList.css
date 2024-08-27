@@ -159,3 +159,18 @@
     color: #fff;
     border-color: #111;
 }
+
+/* 전체 레이아웃 설정 */
+.IncruitList_layout {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* 필요에 따라 높이 설정 */
+}
+
+/* 리스트와 컨텐츠 영역 스타일 */
+.IncruitList_content {
+    margin-left: 250px;
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}

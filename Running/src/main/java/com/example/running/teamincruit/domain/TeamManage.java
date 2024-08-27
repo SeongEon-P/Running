@@ -35,7 +35,7 @@ public class TeamManage extends BaseEntity{
     @Column(name = "team_member_count", nullable = false, columnDefinition = "INT(11) DEFAULT 1")
     private int teamMemberCount;
 
-    @Column(name = "team_members", nullable = false, columnDefinition = "LONGTEXT")
+    @Column(name = "team_members", columnDefinition = "LONGTEXT")
     private String teamMembers;
 
     @Column(name = "team_startdate")

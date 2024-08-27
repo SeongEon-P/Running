@@ -39,6 +39,7 @@ import FreeBoard from './pages/FreeBoard/FreeBoard';
 import './App.css';
 
 import KakaoMap from './recruit/sample/KakaoMap';
+import SportsCenter from './recruit/sportscenter/SportsCenter';
 
 
 const App = () => {
@@ -85,7 +86,9 @@ const App = () => {
            <Route path='/recruit/list' element={<RecruitList/>}/>
            <Route path='/recruit/read/:rno' element={<RecruitRead />} />
           <Route path='/recruit/modify/:rno' element={<RecruitModify />} />
-          <Route path='/map' element={<KakaoMap />} />
+          <Route path='/sportscenter' element={<SportsCenter />} />
+
+
 
         </Routes>
       </AuthProvider>

@@ -121,7 +121,6 @@ const TeamRegister = () => {
             name="teamMembers"
             value={teamData.teamMembers}
             onChange={handleInputChange}
-            required
           />
         </div>
         <div>
