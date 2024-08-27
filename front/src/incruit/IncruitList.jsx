@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import './IncruitList.css'; 
+import './IncruitList.css';
 import Sidebar from '../components/Sidebar/Sidebar';
 
 const IncruitList = () => {
@@ -11,7 +11,6 @@ const IncruitList = () => {
     const [searchField, setSearchField] = useState('ititle'); // 검색 기준 상태 (기본값은 ititle)
     const [error, setError] = useState(null);
     const [isLeader, setIsLeader] = useState(false); // LEADER인지 확인하는 상태
-    const [showTeamRegisterButton, setShowTeamRegisterButton] = useState(true); // 팀 등록 버튼 표시 여부 상태
     const [isAdmin, setIsAdmin] = useState(false); // ADMIN 여부 확인 상태
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
     const [itemsPerPage] = useState(10); // 페이지당 항목 수
@@ -28,8 +27,6 @@ const IncruitList = () => {
             } else {
                 setIsLeader(false);
             }
-        } else {
-            setShowTeamRegisterButton(false); // 로컬스토리지에 login 키가 없으면 버튼 숨기기
         }
 
         const fetchIncruitList = async () => {
@@ -82,11 +79,6 @@ const IncruitList = () => {
     // 모집글 작성 페이지로 이동하는 함수
     const handleCreateClick = () => {
         navigate('/incruit/register');
-    };
-
-    // 팀 등록 페이지로 이동하는 함수
-    const handleTeamRegisterClick = () => {
-        navigate('/team/register');
     };
 
     // 현재 페이지에 따른 항목 계산
@@ -142,15 +134,6 @@ const IncruitList = () => {
 
                     {!isAdmin && (
                         <div className="IncruitList_buttons">
-                            {/* 로컬스토리지에 login 키가 있을 때만 팀 등록 버튼을 표시 */}
-                            {showTeamRegisterButton && !isLeader && (
-                                <button
-                                    className="IncruitList_button"
-                                    onClick={handleTeamRegisterClick}
-                                >
-                                    팀 등록
-                                </button>
-                            )}
                             {/* isLeader가 true일 경우에만 모집글 작성 버튼을 표시 */}
                             {isLeader && (
                                 <button
