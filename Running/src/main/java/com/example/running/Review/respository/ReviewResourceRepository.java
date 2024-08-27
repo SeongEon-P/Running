@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ReviewResourceRepository extends JpaRepository<ReviewResource, Long> {
     @Query("DELETE FROM ReviewResource n WHERE n.review.rno = :rno")
-    public void deleteByNno(Long rno);
+    public void deleteByRno(Long rno);
     @Query("SELECT MAX(rr.rr_ord) FROM ReviewResource rr WHERE rr.review.rno = :rno")
     int getMaxOrd(Long rno);
 

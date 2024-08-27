@@ -74,6 +74,9 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+    implementation 'org.springframework:spring-web'
+    implementation 'org.springframework:spring-core'
+
 }
 
 tasks.named('test') {
