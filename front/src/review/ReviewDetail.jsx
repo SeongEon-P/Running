@@ -1,36 +1,23 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import ReviewList from "./ReviewList";
-import ReviewModify from "./ReviewModify";
+import { useNavigate } from "react-router-dom"
+import Reviewlist from "./ReviewList";
+import Reviewmodify from "./ReviewModify";
 
 const ReviewDetail = ({ rno }) => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [review, setReview] = useState({});
     const [reviewResource, setReviewResource] = useState([]);
     const [showModify, setShowModify] = useState(false);
     const [showList, setShowList] = useState(false);
-    const [currentUser, setCurrentUser] = useState("");
-    
 
     const getReview = async () => {
-        try{
         const response = await (await axios.get(`http://localhost:8080/review/read?rno=${rno}`)).data;
         setReview(response);
         setReviewResource(response.review_resource);
         setLoading(false);
-        }catch(error){
-            console.error("Error fetching review details", error);
-        }
     };
-
-    useEffect(() => {
-        // Fetch current user info from localStorage
-        const user = JSON.parse(localStorage.getItem('login'));
-        if (user) {
-            setCurrentUser(user.name); // Set current user
-        }
-    }, []);
-
     const handleModify = () => {
         setShowModify(true);
     }
@@ -50,78 +37,64 @@ const ReviewDetail = ({ rno }) => {
         getReview();
     }, [rno, showModify]);
 
-    const canModifyOrDelete = review.writer === currentUser;
+    const formatDate = (dateStr) => {
+        if (!dateStr) {
+            return 'Date Not available';
+        }
+        const data = new Date(dateStr);
+        if (isNaN(data.getTime())) {
+            console.warn(`Invalid date: ${dateStr}`);
+            return 'Invalid Date';
+        }
+        const year = data.getFullYear();
+        const month = String(data.getMonth() + 1).padStart(2, '0');
+        const day = String(data.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     return (
         <>
             {loading ? (
                 <p>Loading...</p>
             ) : showList ? (
-                <ReviewList />
+                <Reviewlist />
             ) : showModify ? (
-                <ReviewModify rno={rno} setShowModify={setShowModify} setShowDetail={() => setShowList(false)} />
+                <Reviewmodify rno={rno} setShowModify={setShowModify} setShowDetail={() => setShowList(false)} />
             ) : (
                 <>
                     <h2 className="review">리뷰</h2>
                     <div className="container">
                         <div className="form-control">
                             <div className="d-flex flex-wrap justify-content-between">
-                                <p className="review_title">
-                                    {review.r_title}
-                                    {review.is_important && <span className="important-tag">[중요]</span>}
-                                </p>
+                                <span className="review_title">{review.r_title}</span>
                                 <span>작성자 : {review.writer}</span>
                             </div>
                         </div>
                         <div className="form-control">
-                            <p className="form-control">
-                            <span> 등록일 : {new Date(review.regDate[0], review.regDate[1] - 1, review.regDate[2], review.regDate[3], review.regDate[4], review.regDate[5]).toLocaleDateString()}</span>
-                            </p>
+                            <span> 등록일 : {formatDate(review.regDate)} </span>
+                            
                         </div>
                         <div className="form-control">
-                            <p className="review_content">내용: {review.r_content}</p>
-                            {reviewResource.length > 0 ? (
-                                reviewResource.map((resource, index) => (
-                                    <div key={index} style={{ marginBottom: '15px' }}>
-                                        {resource.rr_type.startsWith("image") ? (
-                                            <img
-                                                src={`http://localhost:8080/review/files/${resource.rr_name}`}
-                                                alt={resource.rr_name}
-                                                style={{ width: '100%', maxWidth: '600px', height: 'auto' }}
-                                            />
-                                        ) : (
-                                            <p>
-                                                <a href={`http://localhost:8080/review/files/${resource.rr_name}`}>
-                                                    {resource.rr_name}
-                                                </a>
-                                            </p>
-                                        )}
-                                    </div>
-                                ))
-                            ) : (
-                                <p>첨부 파일이 없습니다.</p>
-                            )}
+                            <pre className="review_content">{review.r_content}</pre>
+                        </div>
+                        <div className="form-control">
+                            {reviewResource.map((rr, index) => (
+                                <p key={index}>
+                                    <a href={'http://localhost:8080/file/' + rr.rr_name}>{rr.rr_name}</a>
+                                </p>
+                            ))}
                         </div>
                     </div>
 
                     <div className="d-flex flex-wrap justify-content-between btns">
                         <button
-                            className="btn btn-outline-dark noticeListBtn"
-                            onClick={() => setShowList(true)}
-                        >
+                          className="btn btn-outline-dark reviewListBtn"
+                          onClick={() =>setShowList(true)}>
                             목록으로 가기
-                        </button>
-                        <div className="">
-                            {canModifyOrDelete && (
-                                <>
-                                    <button className="btn btn-outline-primary reviewModifyBtn" onClick={handleModify}>
-                                        수정
-                                    </button>
-                                    <button className="btn btn-outline-danger reviewRemoveBtn" onClick={handleDelete}>
-                                        삭제
-                                    </button>
-                                </>
-                            )}
+                          </button>
+                          <div className="">
+                            <button className="btn btn-outline-primary reviewModifyBtn" onClick={handleModify}>수정</button>
+                            <button className="btn btn-outline-danger reviewRemoveBtn" onClick={handleDelete}>삭제</button>
                           </div>
                     </div>
                 </>

@@ -1,5 +1,7 @@
 package com.example.running.Review.service;
 
+import com.example.running.Notice.domain.Notice;
+import com.example.running.Notice.dto.NoticeDTO;
 import com.example.running.Review.domain.Review;
 import com.example.running.Review.domain.ReviewResource;
 import com.example.running.Review.dto.ReviewDTO;
@@ -40,7 +42,6 @@ public class ReviewServiceImpl implements ReviewService {
                 .r_content(reviewDTO.getR_content())
                 .r_image(reviewDTO.getR_image())
                 .writer(reviewDTO.getWriter())
-                .important(reviewDTO.isImportant())
                 .build();
         Review savedReview = reviewRepository.save(review);
         return modelMapper.map(savedReview, ReviewDTO.class);
@@ -89,13 +90,12 @@ public class ReviewServiceImpl implements ReviewService {
             throw new NoSuchElementException("Notice Not Found with ID: " + reviewDTO.getRno());
         }
         Review review = result.get();
-        review.changeReview(
+        review.changeNotice(
                 reviewDTO.getR_title(),
                 reviewDTO.getR_content(),
                 reviewDTO.getR_image(),
                 Member.builder().mid(reviewDTO.getWriter()).build()
         );
-        review.markAsImportant(reviewDTO.isImportant());
         Review savedReview = reviewRepository.save(review);
         return savedReview;
     }
@@ -104,14 +104,6 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewDTO> findLatestReviews() {
         List<Review> reviews = reviewRepository.findTop5ByOrderByRegDateDesc();
         return reviews.stream()
-                .map(review -> modelMapper.map(review, ReviewDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ReviewDTO> findImportantReview() {
-        List<Review> importantReviews = reviewRepository.findByImportantTrueOrderByRegDateDesc();
-        return importantReviews.stream()
                 .map(review -> modelMapper.map(review, ReviewDTO.class))
                 .collect(Collectors.toList());
     }

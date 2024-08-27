@@ -23,8 +23,9 @@ public class ReviewResourceDTO {
         this.rr_name = rr.getRr_name();
         this.rr_path = rr.getRr_path();
         this.rr_type = rr.getRr_type();
-        this.rno = rr.getReview().getRno();
         this.file_size = rr.getFile_size();
         this.rr_ord = rr.getRr_ord();
+        this.rno = rr.getReview().getRno();
+
     }
 }
