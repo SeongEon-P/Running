@@ -53,6 +53,7 @@ const RecruitRead = () => {
         }
     }, [rno, ano])
 
+    // 주소를 위도, 경도로 변환해주는거
     useEffect(() => {
         if (recruit.address) {
             axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
