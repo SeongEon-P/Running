@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // AuthContext 가져오기
 import { KAKAO_AUTH_URL } from './Kakao';
 import axios from 'axios';
+import './Login.css'
 
 const Login = () => {
   const [login, setLogin] = useState({

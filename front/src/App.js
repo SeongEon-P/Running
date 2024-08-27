@@ -47,7 +47,7 @@ const App = () => {
           <Route path="/notice/:nno" element={<NoticeDetail />} />
           <Route
             path="/login/oauth2/code/kakao" //redirect_url
-            element={<KakaoCallback />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
+            element={<KakaoCallback />} //redirect_url에 맞춰 꾸밀 컴포넌트
           />
           <Route path="/free/*" element={<FreeBoard />} />
 

@@ -15,8 +15,7 @@ const Parking = ({ location }) => {
 
             while (true) {
                 try {
-                    // const endpoint = `${API_URL}?serviceKey=${API_KEY}&pageNo=${pageNo}&numOfRows=${pageSize}&resultType=json`;
-                    const endpoint = `${API_URL}?serviceKey=${API_KEY}&pageNo=1&numOfRows=12806&resultType=json`; // 모든 데이터를 한 번에 요청
+                    const endpoint = `${API_URL}?serviceKey=${API_KEY}&pageNo=${pageNo}&numOfRows=${pageSize}&resultType=json`;
                     const response = await fetch(endpoint);
                     const responseData = await response.json();
 
