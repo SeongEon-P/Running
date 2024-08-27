@@ -16,11 +16,17 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         const userInfo = localStorage.getItem('login');
+
+        // 토큰과 사용자 정보가 모두 있는 경우에만 로그인 상태를 유지
         if (token && userInfo) {
             setIsLoggedIn(true);
             setUser(JSON.parse(userInfo));
+        } else {
+            // 토큰이나 사용자 정보가 없으면 로그아웃 상태로 유지
+            setIsLoggedIn(false);
+            setUser(null);
         }
-    }, []);
+    }, []); // 빈 배열로 설정하여 컴포넌트가 처음 마운트될 때만 실행
 
     const login = async (credentials) => {
         try {
@@ -51,9 +57,10 @@ export const AuthProvider = ({ children }) => {
     const loginWithToken = async (token) => {
         try {
             localStorage.setItem('token', token);
+            const userInfo = JSON.parse(localStorage.getItem('login'));
             setIsLoggedIn(true);
+            setUser(userInfo);
             navigate('/');
-
         } catch (error) {
             console.error('토큰으로 로그인 실패:', error);
             setIsLoggedIn(false);
