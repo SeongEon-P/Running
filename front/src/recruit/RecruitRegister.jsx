@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import DaumPostcode from 'react-daum-postcode';
-import './RecruitRegister.css';
 
 const RecruitRegister = () => {
     const [recruit, setRecruit] = useState({
@@ -70,119 +69,102 @@ const RecruitRegister = () => {
     
 
 
-      return (
-        <div className="recruitRegister-container">
-            <h1 className="recruitRegister-title">Register Recruit</h1>
-    
-            <form onSubmit={handleSubmit} className="recruitRegister-form">
-                <div className="recruitRegister-form-group">
-                    <label className="recruitRegister-form-label">제목: </label>
+    return (
+        <div>
+            <h1>Register Recruit</h1>
+
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>제목: </label>
                     <input
                         type="text"
                         name="title"
                         value={recruit.title}
                         onChange={handleChange}
                         required
-                        className="recruitRegister-form-input"
                     />
                 </div>
-                <div className="recruitRegister-form-group">
-                    <label className="form-label">내용: </label>
+                <div>
+                    <label>내용: </label>
                     <textarea
                         name="content"
                         value={recruit.content}
                         onChange={handleChange}
                         required
-                        className="recruitRegister-form-textarea"
                     />
                 </div>
-                <div className="recruitRegister-form-group">
-                    <label className="recruitRegister-form-label">모이는 장소: </label>
-                    <input
-                        type="text"
-                        name="place"
-                        value={recruit.place}
-                        onChange={handleChange}
-                        required
-                        className="recruitRegister-form-input"
-                    />
-                    <p className="recruitRegister-form-hint">러너들이 찾기 쉽도록 특정 건물이나 건축물을 명시해주시면 더 좋아요!</p>
-                </div>
-                <div className="recruitRegister-form-group">
-                    <label className="recruitRegister-form-label">상세 주소: </label>
-                    <input
-                        type="text"
-                        name="address"
-                        value={recruit.address}
-                        onChange={handleChange}
-                        readOnly
-                        className="recruitRegister-form-input"
-                    />
-                    <button 
-                        type="button" 
-                        onClick={() => setOpenPostcode(true)} 
-                        className="recruitRegister-address-search-button"
-                    >
-                        주소 검색
-                    </button>
-                </div>
-                <div className="recruitRegister-form-group">
-                    <label className="recruitRegister-form-label">모이는 날짜: </label>
+                <div>
+                    <label>모이는 날짜: </label>
                     <input
                         type="date"
                         name="date"
                         value={recruit.date}
                         onChange={handleChange}
                         required
-                        className="recruitRegister-form-input"
                     />
                 </div>
-                <div className="recruitRegister-form-group">
-                    <label className="recruitRegister-form-label">모이는 시간: </label>
+                <div>
+                    {/* 다음 주소 api 넣을거임 */}
+                    <label>상세 주소: </label>
+                    <input
+                        type="text"
+                        name="address"
+                        value={recruit.address}
+                        onChange={handleChange}
+                        readOnly
+                    />
+                    <button type="button" onClick={() => setOpenPostcode(true)}>주소 검색</button>
+                </div>
+                <div>
+                    <label>모이는 장소: </label>
+                    <input
+                        type="text"
+                        name="place"
+                        value={recruit.place}
+                        onChange={handleChange}
+                        required
+                    />
+                    <p>러너들이 찾기 쉽도록 특정 건물이나 건축물을 명시해주시면 더 좋아요!</p>
+                </div>
+                
+                <div>
+                    <label>모이는 시간: </label>
                     <input
                         type="time"
                         name="time"
                         value={recruit.time}
                         onChange={handleChange}
                         required
-                        className="recruitRegister-form-input"
                     />
                 </div>
-                <div className="recruitRegister-form-group">
-                    <label className="recruitRegister-form-label">모집 인원: </label>
+                <div>
+                    <label>모집 인원: </label>
                     <input
                         type="number"
                         name="maxnumber"
                         value={recruit.maxnumber}
                         onChange={handleChange}
                         required
-                        className="recruitRegister-form-input"
                     />
                 </div>
-                <div className="recruitRegister-form-group">
-                    <label className="recruitRegister-form-label">Member ID: </label>
+                {/* mid 필드는 read-only로 설정 */}
+                <div>
+                    <label>Member ID: </label>
                     <input
                         type="text"
                         name="mid"
                         value={recruit.mid}
                         readOnly
-                        className="recruitRegister-form-input"
                     />
                 </div>
-                <button 
-                    type="button" 
-                    onClick={handleSubmit} 
-                    className="recruitRegister-submit-button"
-                >
-                    Register
-                </button>
+                <button type="button" onClick={handleSubmit}>Register</button>
             </form>
-    
+
             {openPostcode && (
-                <div className="recruitRegister-modal">
-                    <div className="recruitRegister-modal-content">
+                <div className="modal">
+                    <div className="modal-content">
                         <span
-                            className="recruitRegister-modal-close"
+                            className="modal-close"
                             onClick={() => setOpenPostcode(false)}
                         >
                             &times;
@@ -191,9 +173,9 @@ const RecruitRegister = () => {
                     </div>
                 </div>
             )}
+
         </div>
     )
-    
 }
 
 export default RecruitRegister;

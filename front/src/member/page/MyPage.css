@@ -1,0 +1,53 @@
+.mypage-container {
+    padding: 20px;
+  }
+  
+  .mypage-title {
+    color: pink;
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .mypage-nav ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    justify-content: center;
+  }
+  
+  .mypage-nav li {
+    margin-right: 20px;
+  }
+  
+  .mypage-nav li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+  }
+  
+  .mypage-about-title {
+    color: pink;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+  
+  .mypage-table {
+    width: 50%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  .mypage-table-label {
+    background-color: #FFE4E1;
+    padding: 10px;
+    text-align: left;
+    width: 30%;
+  }
+  
+  .mypage-table-value {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  

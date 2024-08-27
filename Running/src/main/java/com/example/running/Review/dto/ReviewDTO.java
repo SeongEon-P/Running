@@ -24,5 +24,4 @@ public class ReviewDTO {
     private LocalDateTime regDate;
     private List<ReviewResourceDTO> review_resource;
     private List<MultipartFile> files;
-    private boolean important;
 }

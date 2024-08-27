@@ -1,0 +1,54 @@
+.member-update-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+  }
+  
+  .member-update-title {
+    text-align: center;
+  color: pink;
+  font-size: 2em;
+  margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+    color: pink;
+  }
+  
+  .form-group input {
+    width: calc(100% - 160px);
+  padding: 8px;
+  border: 1px solid #FFB6C1;
+  border-radius: 5px;
+  background-color: #FFF0F5;
+  }
+  
+  .check-button,
+  .submit-button {
+    display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: pink;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  }
+  
+  .check-button:hover,
+  .submit-button:hover {
+    background-color: #FF1493;
+  }
+  

@@ -1,7 +1,5 @@
 package com.example.running.Review.controller;
 
-import com.example.running.Notice.dto.NoticeDTO;
-import com.example.running.Notice.dto.NoticeResourceDTO;
 import com.example.running.Review.domain.Review;
 import com.example.running.Review.dto.ReviewDTO;
 import com.example.running.Review.dto.ReviewResourceDTO;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,45 +33,30 @@ public class ReviewController {
     public List<ReviewDTO> getReviewList(){
         return reviewService.findAllReview();
     }
-
-    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ReviewDTO> addReview(
-            @RequestParam("r_title") String rTitle,
-            @RequestParam("r_content") String rContent,
-            @RequestParam("writer") String writer,
-            @RequestParam("is_important") boolean isImportant,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setR_title(rTitle);
-        reviewDTO.setR_content(rContent);
-        reviewDTO.setWriter(writer);
-        reviewDTO.setImportant(isImportant);
-
+    @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Object> addReview(@ModelAttribute ReviewDTO reviewDTO) {
+        List<ReviewResourceDTO> resourceDtoList = new ArrayList<>();
         ReviewDTO savedReview = reviewService.addReview(reviewDTO);
-
-        if (files != null) {
-            List<ReviewResourceDTO> resourceDtoList = new ArrayList<>();
+        if (reviewDTO.getFiles() != null) {
             int ord = 0;
-            for (MultipartFile file : files) {
-                Path savePath = Paths.get("C:\\upload",file.getOriginalFilename());
+            for (MultipartFile file : reviewDTO.getFiles()) {
+                Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
                 try {
-                    file.transferTo(savePath.toFile());
-                    ReviewResourceDTO dto = ReviewResourceDTO.builder()
-                            .rr_name(file.getOriginalFilename())
-                            .rr_ord(ord++)
-                            .rr_type(file.getContentType())
-                            .rno(savedReview.getRno())
-                            .build();
-                    resourceDtoList.add(dto);
-                } catch (IOException e) {
-                    log.error("파일 저장 중 오류 발생", e);
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                    file.transferTo(savePath);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                ReviewResourceDTO dto = ReviewResourceDTO.builder()
+                        .rr_name(file.getOriginalFilename())
+                        .rr_ord(ord)
+                        .rr_type(file.getContentType())
+                        .rno(savedReview.getRno())
+                        .build();
+                resourceDtoList.add(dto);
+                ord++;
             }
             reviewResourceService.saveReview(resourceDtoList);
         }
-
         return new ResponseEntity<>(savedReview, HttpStatus.CREATED);
     }
 
@@ -101,12 +83,14 @@ public class ReviewController {
                     }
                 }
             }
+
             log.info("자원 관리 시작.");
             // 기존 자원 삭제
             reviewResourceService.deleteReview(rno);
             // 새로운 자원 저장
             reviewResourceService.saveReview(resourceDtoList);
             log.info("자원 관리 완료.");
+
             Review modifiedReview = reviewService.modifyReview(reviewDTO);
             return new ResponseEntity<>(modifiedReview, HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -131,10 +115,5 @@ public class ReviewController {
         public ResponseEntity<Object> deleteReview(@PathVariable Long rno) {
         reviewService.deleteReview(rno);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-    @GetMapping("/important")
-    public ResponseEntity<List<ReviewDTO>> getImportantNotices() {
-        List<ReviewDTO> importantReview = reviewService.findImportantReview();
-        return new ResponseEntity<>(importantReview, HttpStatus.OK);
     }
 }
