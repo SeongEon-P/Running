@@ -7,6 +7,7 @@ import com.example.running.Notice.dto.NoticeResourceDTO;
 import com.example.running.Notice.repository.NoticeRepository;
 import com.example.running.Notice.repository.NoticeResourceRepository;
 import com.example.running.member.domain.Member;
+import com.example.running.member.dto.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -45,6 +46,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .n_content(noticeDTO.getN_content())
                 .n_image(noticeDTO.getN_image())
                 .writer(noticeDTO.getWriter())
+                .important(noticeDTO.isImportant())
                 .build();
         Notice savedNotice = noticeRepository.save(notice);
         return modelMapper.map(savedNotice, NoticeDTO.class);
@@ -72,6 +74,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .n_title(notice.getN_title())
                 .n_content(notice.getN_content())
                 .n_image(notice.getN_image())
+                .important(notice.isImportant())
                 .writer(notice.getWriter())
                 .regDate(notice.getRegDate())
                 .notice_resource(nrDtoList)
@@ -98,6 +101,7 @@ public class NoticeServiceImpl implements NoticeService {
                 noticeDTO.getN_image(),
                 Member.builder().mid(noticeDTO.getWriter()).build()
         );
+        notice.markAsImportant(noticeDTO.isImportant());
         Notice savedNotice = noticeRepository.save(notice);
         return savedNotice;
     }
@@ -106,6 +110,14 @@ public class NoticeServiceImpl implements NoticeService {
     public List<NoticeDTO> findLatestNotices() {
         List<Notice> notices = noticeRepository.findTop5ByOrderByRegDateDesc();
         return notices.stream()
+                .map(notice -> modelMapper.map(notice, NoticeDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<NoticeDTO> findImportantNotices() {
+        List<Notice> importantNotices = noticeRepository.findByImportantTrueOrderByRegDateDesc();
+        return importantNotices.stream()
                 .map(notice -> modelMapper.map(notice, NoticeDTO.class))
                 .collect(Collectors.toList());
     }

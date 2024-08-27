@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import NoticeDetail from "./NoticeDetail";
 import NoticeRegister from "./NoticeRegister";
+import './Noticelist.css';
+import Sidebar from "../components/Sidebar/Sidebar";
 
 function Noticelist() {
   const [noticeList, setNoticeList] = useState([]);
@@ -9,38 +11,68 @@ function Noticelist() {
   const [itemsPerPage] = useState(10);
   const [currentItems, setCurrentItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("all");
   const [showRegister, setShowRegister] = useState(false);
   const [selectedNotice, setSelectedNotice] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-
-  const uploadRegister = async () => {
+  const fetchNotices = async () => {
     try {
-        const result = await axios.get("http://localhost:8080/notice/list");
-        console.log(result.data);
-        setNoticeList(result.data);
+      const result = await axios.get("http://localhost:8080/notice/list");
+      setNoticeList(result.data);
     } catch (error) {
       console.error("Error fetching notice list:", error);
     }
   };
 
   useEffect(() => {
-    uploadRegister();
+    fetchNotices();
   }, []);
 
   useEffect(() => {
-    const filteredList = noticeList.filter(notice =>
-      notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const loginData = JSON.parse(localStorage.getItem('login'));
+    setIsAdmin(loginData && loginData.mid === "admin");
+  }, []);
+
+  useEffect(() => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    const filteredList = noticeList
+      .filter(notice => {
+        const title = notice.n_title.toLowerCase();
+        const content = notice.n_content.toLowerCase();
+        const writer = notice.writer.toLowerCase();
+
+        switch (searchType) {
+          case "title":
+            return title.includes(lowerSearchTerm);
+          case "content":
+            return content.includes(lowerSearchTerm);
+          case "writer":
+            return writer.includes(lowerSearchTerm);
+          case "all":
+          default:
+            return (
+              title.includes(lowerSearchTerm) ||
+              content.includes(lowerSearchTerm) ||
+              writer.includes(lowerSearchTerm)
+            );
+        }
+      });
+
+    const importantNotices = filteredList.filter(notice => notice.important);
+    const regularNotices = filteredList.filter(notice => !notice.important).reverse();
+
+    const totalItems = importantNotices.length + regularNotices.length;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    setCurrentItems(filteredList.slice(indexOfFirstItem, indexOfLastItem).reverse());
-  }, [currentPage, itemsPerPage, noticeList, searchTerm]);
+    const paginatedRegularNotices = regularNotices.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(
-    noticeList.filter(notice =>
-      notice.n_title.toLowerCase().includes(searchTerm.toLowerCase())
-    ).length / itemsPerPage
-  );
+    const currentItems = [...importantNotices, ...paginatedRegularNotices];
+
+    setCurrentItems(currentItems);
+    setTotalPages(Math.ceil(totalItems / itemsPerPage));
+  }, [currentPage, itemsPerPage, noticeList, searchTerm, searchType]);
 
   const maxPageNumbers = 5;
 
@@ -104,26 +136,13 @@ function Noticelist() {
     );
   };
 
-  const formatDate = (dateStr) => {
-    console.log(`Date String: ${dateStr}`); // 날짜 문자열 확인
-  
-    if (!dateStr) {
-      return 'Date not available';
-    }
-  
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) {
-      console.warn(`Invalid date: ${dateStr}`);
-      return 'Invalid Date';
-    }
-  
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);
+    setCurrentPage(1); // 검색 시 페이지를 1로 초기화
+  };
+
+  const handleSearchTypeChange = (e) => {
+    setSearchType(e.target.value);
   };
 
   const handleRegisterClick = () => {
@@ -135,71 +154,83 @@ function Noticelist() {
   };
 
   return (
-    <div className="container notice_con">
-      {showRegister ? ( 
-        <NoticeRegister />
-      ) : selectedNotice ? ( 
-        <NoticeDetail nno={selectedNotice} />
-      ) : (
-        <>
-          <div className="d-flex justify-content-between mb-4">
-            <h2 className="notice_title" style={{ fontSize: "30px" }}>공지사항</h2>
-            <div className="d-flex">
-              <input
-                id="searchInput"
-                className="form-control me-2"
-                type="text"
-                placeholder="검색..."
-              />
-              <button 
-                className="btn btn-outline-dark"
-                type="button"
-                onClick={handleSearch} // 검색 버튼 클릭 시 handleSearch 호출
-              >
-                Search
-              </button>
+    <div className="d-flex">
+      <Sidebar />
+      <div className="container notice_con flex-grow-1">
+        {showRegister ? (
+          <NoticeRegister />
+        ) : selectedNotice ? (
+          <NoticeDetail nno={selectedNotice} />
+        ) : (
+          <>
+            <div className="d-flex justify-content-between mb-4">
+              <h2 className="notice_title">공지사항</h2>
+              <div className="search-container d-flex align-items-center">
+                <select className="form-select me-2" onChange={handleSearchTypeChange} value={searchType}>
+                  <option value="all">전체</option>
+                  <option value="title">제목</option>
+                  <option value="content">내용</option>
+                  <option value="writer">작성자</option>
+                </select>
+                <input
+                  id="searchInput"
+                  className="form-control"
+                  type="text"
+                  placeholder="검색..."
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                />
+                <button
+                  className="btn btn-outline-dark"
+                  type="button"
+                  onClick={handleSearch}
+                >
+                  검색
+                </button>
+                {isAdmin && (
+                  <button
+                    type="button"
+                    className="btn btn-outline-dark noticeRegisterBtn"
+                    onClick={handleRegisterClick}
+                  >
+                    등록
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
 
-          <table className="table table-hover border shadow-sm mb-4">
-            <thead>
-              <tr>
-                <th scope="col">번호</th>
-                <th scope="col">제목</th>
-                <th scope="col">등록일</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((notice, index) => (
-                <tr key={index}>
-                  <th scope="row">{notice.nno}</th>
-                  <td onClick={() => handleNoticeClick(notice.nno)} style={{ cursor: 'pointer' }}>
-                    {notice.n_title}
-                  </td>
-                  <td>{formatDate(notice.regdate)}</td>
+            <table className="table table-hover mb-4">
+              <thead>
+                <tr>
+                  <th scope="col">번호</th>
+                  <th scope="col">제목</th>
+                  <th scope="col">등록일</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentItems.map((notice, index) => (
+                  <tr key={index} onClick={() => handleNoticeClick(notice.nno)}>
+                    <th scope="row">{notice.nno}</th>
+                    <td>
+                      {notice.important && <span className="important-notice">[중요] </span>}
+                      {notice.n_title}
+                    </td>
+                    <td>
+                      {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <div className="mx-auto"> {/* 페이지 번호를 가운데로 정렬 */}
-              {renderPageNumbers()}
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <div className="mx-auto">
+                {renderPageNumbers()}
+              </div>
             </div>
-            <div className="text-end">
-              <button
-                type="button"
-                className="btn btn-outline-dark noticeRegisterBtn"
-                onClick={handleRegisterClick} // 등록 버튼 클릭 시 handleRegisterClick 호출
-              >
-                등록
-              </button>
-            </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </div>
-
   );
 }
 

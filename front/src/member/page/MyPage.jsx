@@ -13,9 +13,7 @@ const MyPage = () => {
 
   useEffect(() => {
     // 회원 정보를 불러오는 API 호출
-    axios.get('http://localhost:8080/members/me', { // 'me' 엔드포인트를 사용하여 회원 정보를 불러옴
-      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } // 토큰을 헤더에 포함
-    })
+    axios.get('http://localhost:8080/members/login')
       .then(response => {
         setMember(response.data);
       })

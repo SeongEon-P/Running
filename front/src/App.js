@@ -18,6 +18,12 @@ import FindId from './member/page/FindId';
 import FindPassword from './member/page/FindPassword';
 import ResetPassword from './member/page/ResetPassword';
 import { AuthProvider } from './context/AuthContext';
+import ReviewList from './review/ReviewList';
+import ReviewDetail from './review/ReviewDetail';
+import ReviewRegister from './review/ReviewRegister';
+import InfoList from './info/InfoList';
+import InfoRegister from './info/InfoRegister';
+import InfoDetail from './info/InfoDetail';
 
 import KakaoCallback from './member/member/KakaoCallback ';
 import FreeBoard from './pages/FreeBoard/FreeBoard';
@@ -29,6 +35,7 @@ import Parking from './recruit/parking/Parking';
 
 const App = () => {
   return (
+    
     <Router>
       <AuthProvider>
 
@@ -44,7 +51,14 @@ const App = () => {
           <Route path="/update" element={<Update />} />
           <Route path="/notice/list" element={<Noticelist />} />
           <Route path="/notice/register" element={<NoticeRegister />} />
+          <Route path="/notice/detail/:nno" element={<NoticeDetail/>}/>
           <Route path="/notice/:nno" element={<NoticeDetail />} />
+          <Route path="/review/:rno" element={<ReviewDetail/>}/>
+          <Route path="/review/list" element={<ReviewList/>}/>
+          <Route path="/review/register" element={<ReviewRegister/>}/>
+          <Route path="/info/:ino" element={<InfoDetail/>}/>
+          <Route path="/info/list" element={<InfoList/>}/>
+          <Route path="/info/register" element={<InfoRegister/>}/>
           <Route
             path="/login/oauth2/code/kakao" //redirect_url
             element={<KakaoCallback />} //redirect_url에 맞춰 꾸밀 컴포넌트
@@ -61,6 +75,7 @@ const App = () => {
         </Routes>
       </AuthProvider>
     </Router>
+    
   );
 };
 
