@@ -19,7 +19,7 @@ const KakaoCallback = () => {
 
           if (token) {
             // 로컬 스토리지에 토큰 저장
-            localStorage.setItem('token', token);
+            sessionStorage.setItem('token', token);
 
             console.log("토큰을 성공적으로 받았습니다:", token);
 

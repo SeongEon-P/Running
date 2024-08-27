@@ -30,6 +30,7 @@ import FreeBoard from './pages/FreeBoard/FreeBoard';
 import './App.css';
 
 import KakaoMap from './recruit/sample/KakaoMap';
+import Parking from './recruit/parking/Parking';
 
 
 const App = () => {
@@ -60,7 +61,7 @@ const App = () => {
           <Route path="/info/register" element={<InfoRegister/>}/>
           <Route
             path="/login/oauth2/code/kakao" //redirect_url
-            element={<KakaoCallback />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
+            element={<KakaoCallback />} //redirect_url에 맞춰 꾸밀 컴포넌트
           />
           <Route path="/free/*" element={<FreeBoard />} />
 
@@ -69,6 +70,7 @@ const App = () => {
            <Route path='/recruit/read/:rno' element={<RecruitRead />} />
           <Route path='/recruit/modify/:rno' element={<RecruitModify />} />
           <Route path='/map' element={<KakaoMap />} />
+          <Route path='/parking' element={<Parking />} />
 
         </Routes>
       </AuthProvider>

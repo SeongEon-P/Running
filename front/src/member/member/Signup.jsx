@@ -12,7 +12,7 @@ const Signup = () => {
     name: '',
     email: '',
     phone: '',
-    address: '',
+    address: '', // 주소 필드
     role: 'USER',
   });
 
@@ -100,6 +100,11 @@ const Signup = () => {
     }
     if (isPasswordMatch === false) {
       alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    if (!formData.address) {
+      alert('주소를 입력해주세요.'); // 주소가 비어있으면 경고 메시지 출력
       return;
     }
 
@@ -237,7 +242,6 @@ const Signup = () => {
           )}
         </label>
 
-
         <label>주소:</label>
         <div className="postcode-container">
           <input
@@ -246,6 +250,7 @@ const Signup = () => {
             value={formData.address}
             placeholder="주소를 검색하세요"
             readOnly
+            required // 주소 필드도 필수로 지정
           />
           <button type="button" onClick={() => setOpenPostcode(true)}>
             주소검색

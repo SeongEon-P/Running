@@ -26,7 +26,7 @@ const Navbar = () => {
                 <Link to="/info/list">INFO</Link>
                 <Link to="/free/list">FREE</Link>
                 <Link to="/review/list">REVIEW</Link>
-                <Link to="/mypage">MyPage</Link>
+                {isLoggedIn && <Link to="/mypage">MyPage</Link>} {/* 로그인 상태일 때만 MyPage 보임 */}
             </div>
             <div className="auth-links">
                 {isLoggedIn ? (
