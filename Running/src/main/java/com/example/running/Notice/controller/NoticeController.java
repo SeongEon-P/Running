@@ -121,4 +121,10 @@ public class NoticeController {
         noticeService.deleteNotice(nno);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/has-new")
+    public ResponseEntity<Boolean> hasNewNotices() {
+        boolean hasNew = noticeService.hasRecentNotices();
+        return new ResponseEntity<>(hasNew, HttpStatus.OK);
+    }
 }

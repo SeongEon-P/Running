@@ -10,6 +10,8 @@ import com.example.running.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -109,4 +111,13 @@ public class NoticeServiceImpl implements NoticeService {
                 .map(notice -> modelMapper.map(notice, NoticeDTO.class))
                 .collect(Collectors.toList());
     }
+
+
+    @Override
+    public boolean hasRecentNotices() {
+        long count = noticeRepository.countNoticesWithinThreeDays();
+        return count > 0;
+    }
+
+
 }

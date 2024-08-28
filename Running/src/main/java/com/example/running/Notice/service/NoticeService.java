@@ -15,4 +15,5 @@ public interface NoticeService {
     void deleteNotice(Long nno);
     Notice modifyNotice(NoticeDTO noticeDTO);
     List<NoticeDTO> findLatestNotices();
+    boolean hasRecentNotices();
 }
