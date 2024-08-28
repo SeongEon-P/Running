@@ -24,6 +24,9 @@ public class Notice extends BaseEntity {
     private String writer;
     private String n_image;
 
+    @Column(name = "view_count", nullable = false)
+    private int viewCount = 0;
+
     @OneToMany(mappedBy = "notice",
             cascade = {CascadeType.ALL},
             fetch = FetchType.LAZY,
@@ -36,5 +39,9 @@ public class Notice extends BaseEntity {
         this.n_title = n_title;
         this.n_content = n_content;
         this.n_image = n_image;
+    }
+
+    public void incrementViewCount() {
+        this.viewCount++;
     }
 }

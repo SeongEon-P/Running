@@ -112,7 +112,12 @@ table td:nth-child(2) { /* '제목' column의 내용은 왼쪽 정렬 */
   text-align: left;
 }
 
-table th:nth-child(3), table td:nth-child(3) { /* '등록일' column */
+table th:nth-child(3), table td:nth-child(3) { /* '조회수' column */
+  width: 10%; /* 원하는 폭으로 조정 */
+  text-align: center;
+}
+
+table th:nth-child(4), table td:nth-child(4) { /* '등록일' column */
   width: 15%; /* 원하는 폭으로 조정 */
   text-align: center;
 }

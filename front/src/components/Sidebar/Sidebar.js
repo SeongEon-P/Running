@@ -26,32 +26,50 @@ const Sidebar = () => {
             <nav>
                 <ul>
                     <li>
-                        <NavLink to="/recruit/list" activeClassName="active">
+                        <NavLink
+                            to="/recruit/list"
+                            className={({ isActive }) => isActive ? "active" : ""}
+                        >
                             LIGHTNING
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/incruit/list" activeClassName="active">
+                        <NavLink
+                            to="/incruit/list"
+                            className={({ isActive }) => isActive ? "active" : ""}
+                        >
                             CREW
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/notice/list" activeClassName="active">
+                        <NavLink
+                            to="/notice/list"
+                            className={({ isActive }) => isActive ? "active" : ""}
+                        >
                             NOTICE {hasNewNotice && <img src={newIcon} alt="New" className="new-icon" />}
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/info/list" activeClassName="active">
+                        <NavLink
+                            to="/info/list"
+                            className={({ isActive }) => isActive ? "active" : ""}
+                        >
                             INFO
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/free/list" activeClassName="active">
+                        <NavLink
+                            to="/free/list"
+                            className={({ isActive }) => isActive ? "active" : ""}
+                        >
                             FREE
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/review/list" activeClassName="active">
+                        <NavLink
+                            to="/review/list"
+                            className={({ isActive }) => isActive ? "active" : ""}
+                        >
                             REVIEW
                         </NavLink>
                     </li>

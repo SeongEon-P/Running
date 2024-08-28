@@ -210,12 +210,12 @@ function Noticelist() {
               </div>
             </div>
 
-
             <table className="table table-hover mb-4">
               <thead>
                 <tr>
                   <th scope="col">번호</th>
                   <th scope="col">제목</th>
+                  <th scope="col">조회수</th> {/* 조회수 컬럼 추가 */}
                   <th scope="col">등록일</th>
                 </tr>
               </thead>
@@ -227,6 +227,7 @@ function Noticelist() {
                       {notice.important && <span className="important-notice">[중요] </span>}
                       {notice.n_title}
                     </td>
+                    <td>{notice.viewCount}</td> {/* 조회수 표시 */}
                     <td>
                       {notice.regDate ?
                         new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString() :

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,6 +57,10 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeDTO findOneNoticeById(Long nno) {
         Optional<Notice> result=noticeRepository.findById(nno);
         Notice notice = result.orElseThrow();
+
+        notice.incrementViewCount();
+        noticeRepository.save(notice);
+
         Set<NoticeResource> nrList = notice.getNoticeResourceSet();
         List<NoticeResourceDTO> nrDtoList = new ArrayList<>();
         for(NoticeResource noticeResource : nrList) {
@@ -76,6 +81,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .n_image(notice.getN_image())
                 .writer(notice.getWriter())
                 .regDate(notice.getRegDate())
+                .viewCount(notice.getViewCount())
                 .notice_resource(nrDtoList)
                 .build();
         return noticeListDTO;
@@ -115,9 +121,16 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public boolean hasRecentNotices() {
-        long count = noticeRepository.countNoticesWithinThreeDays();
-        return count > 0;
+        try {
+            LocalDate threeDaysAgo = LocalDate.now().minusDays(3);
+            long count = noticeRepository.countNoticesWithinThreeDays(threeDaysAgo);
+            return count > 0;
+        } catch (Exception e) {
+            log.error("Error checking for recent notices", e);
+            return false; // 오류 발생 시 기본값 반환
+        }
     }
+
 
 
 }

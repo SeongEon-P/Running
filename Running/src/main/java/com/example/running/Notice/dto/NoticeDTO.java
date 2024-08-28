@@ -25,5 +25,5 @@ public class NoticeDTO {
     private String n_image;
     private List<NoticeResourceDTO> notice_resource;
     private List<MultipartFile> files;
-
+    private int viewCount;
 }

@@ -79,6 +79,7 @@ const NoticeDetail = ({ nno }) => {
                         <p className="IncruitView_p">
                             등록일: {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
                         </p>
+                        <p>조회수: {notice.viewCount}</p>
                     </div>
                     <div className="form-control">
                         <p className="notice_content">내용: {notice.n_content}</p>
