@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './MyPage.css'; // 분리된 CSS 파일을 가져옵니다
 
