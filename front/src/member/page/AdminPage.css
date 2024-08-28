@@ -1,0 +1,84 @@
+/* AdminPage.css */
+
+/* 전체 배경과 폰트 설정 */
+.adminPage_body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* 메인 컨테이너 스타일 */
+.adminPage_container {
+    width: 80%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* 제목 스타일 */
+.adminPage_container h2 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* 에러 메시지 스타일 */
+.adminPage_error {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* 팀 생성 요청 목록 스타일 */
+.adminPage_teamRequests {
+    list-style: none;
+    padding: 0;
+}
+
+.adminPage_teamRequests li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.adminPage_teamRequests li:hover {
+    background-color: #eaeaea;
+}
+
+/* 팀 정보 텍스트 스타일 */
+.adminPage_teamInfo {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 버튼 스타일 */
+.adminPage_teamRequests button {
+    background-color: #111;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.adminPage_teamRequests button:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+}
+
+.adminPage_teamRequests button:active {
+    background-color: #000;
+    transform: translateY(0);
+}

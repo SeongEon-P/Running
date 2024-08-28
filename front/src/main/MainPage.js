@@ -21,7 +21,7 @@ const MainPage = () => {
                 <ImageSlider />
                 <div className="main-buttons">
                     <Link to="/recruit/list" className="main-button">Find Running Buddies</Link>
-                    <Link to="/crew/incruit" className="main-button">Join a Running Club</Link>
+                    <Link to="/incruit/list" className="main-button">Join a Running Club</Link>
                     <Link to="/signup" className="main-button">Sign Up Now</Link>
                 </div>
             </div>

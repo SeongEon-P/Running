@@ -187,6 +187,20 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    //롤 업데이트
+    public void updateRole(String mid, Role newRole) {
+        Optional<Member> optionalMember = memberRepository.findByMid(mid);
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            member.setRole(newRole);
+            memberRepository.save(member);
+        } else {
+            throw new IllegalArgumentException("해당 ID를 가진 회원을 찾을 수 없습니다.");
+        }
+    }
+
+
 //    // 카카오 로그인
 //    @Override
 //    public String processKakaoLogin(KakaoTokenResponse kakaoToken) {

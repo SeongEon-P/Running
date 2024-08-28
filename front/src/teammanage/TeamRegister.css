@@ -1,0 +1,154 @@
+/* TeamRegister.css */
+
+/* 전체 배경과 기본 스타일 설정 */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* 메인 컨테이너 스타일 */
+.team-register-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 스타일 */
+.team-register-container h2 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 폼 필드 스타일 */
+.team-register-container label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.team-register-container input[type="text"],
+.team-register-container input[type="number"],
+.team-register-container input[type="date"],
+.team-register-container textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+}
+
+.team-register-container input[type="text"]:focus,
+.team-register-container input[type="number"]:focus,
+.team-register-container input[type="date"]:focus,
+.team-register-container textarea:focus {
+    border-color: #555;
+}
+
+/* 이미지 미리보기 컨테이너 */
+.image-preview-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.image-preview-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.image-preview-container img:hover {
+    transform: scale(1.05);
+}
+
+/* 이미지 삭제 버튼 스타일 */
+.image-preview-container button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* 팀 설명 텍스트 박스 스타일 */
+.team-register-container textarea {
+    height: 150px;
+    resize: none;
+}
+
+/* 버튼 스타일 */
+.team-register-container button {
+    background-color: #111;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.team-register-container button[type="submit"]:hover {
+    background-color: #555;
+}
+
+/* 오류 및 성공 메시지 스타일 */
+.team-register-container p {
+    font-size: 16px;
+    margin-top: -10px;
+}
+
+.team-register-container p[style*="color: red"] {
+    color: #e74c3c;
+}
+
+.team-register-container p[style*="color: green"] {
+    color: #2ecc71;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .team-register-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .team-register-container form {
+        gap: 10px;
+    }
+
+    .team-register-container label {
+        font-size: 16px;
+    }
+
+    .image-preview-container {
+        grid-template-columns: 1fr;
+    }
+
+    .image-preview-container img {
+        width: 100%;
+    }
+}

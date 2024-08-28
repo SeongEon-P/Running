@@ -18,4 +18,5 @@ public class RootConfig {
 
         return modelMapper;
     }
+
 }
