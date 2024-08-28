@@ -1,28 +1,30 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import NoticeDetail from "./NoticeDetail";
+import { useEffect, useState } from "react";
 import Noticelist from "./Noticelist";
-
+import NoticeDetail from "./NoticeDetail";
+import './NoticeRegister.css'
 
 const NoticeRegister = () => {
-    const navigate = useNavigate();
     const [notice, setNotice] = useState({
         n_title: "",
         n_content: "",
-        writer: localStorage.getItem('mid') || "",
+        writer: "",
+        is_important: false,
     });
-    const [nr_name, setNrName] = useState(null);
-
+    const [nr_files, setNrFiles] = useState([]);
     const [showNoticeList, setShowNoticeList] = useState(false);
     const [showNoticeDetail, setShowNoticeDetail] = useState(false);
-    const [registeredNno, setRegisteredNno] = useState(null); 
-
+    const [registeredNno, setRegisteredNno] = useState(null);
 
     const onInputChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === "nr_name") {
-            setNrName(files[0]);
+        const { name, value, files, type, checked } = e.target;
+        if (name === "nr_files") {
+            setNrFiles([...files]); // 여러 파일을 배열로 저장
+        } else if (type === "checkbox") {
+            setNotice({
+                ...notice,
+                [name]: checked,
+            });
         } else {
             setNotice({
                 ...notice,
@@ -31,41 +33,57 @@ const NoticeRegister = () => {
         }
     };
 
+    useEffect(() => {
+        const loginData = JSON.parse(localStorage.getItem('login'));
+        if (loginData && loginData.name) {
+            setNotice(prevData => ({
+                ...prevData,
+                writer: loginData.name
+            }));
+        }
+    }, []);
+
     const onSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const formData = new FormData();
             formData.append("n_title", notice.n_title);
             formData.append("n_content", notice.n_content);
             formData.append("writer", notice.writer);
-            console.log(formData)
-
-            if (nr_name) {
-                formData.append("files", nr_name);
+            formData.append("is_important", notice.is_important); // boolean 값 처리
+    
+            if (nr_files.length > 0) {
+                nr_files.forEach((file) => {
+                    formData.append("files", file);
+                });
             }
-
+    
+            // FormData의 내용을 콘솔에 출력
+            for (let pair of formData.entries()) {
+                console.log(`${pair[0]}: ${pair[1]}`);
+            }
+    
             const response = await axios.post("http://localhost:8080/notice/register", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-
+    
             if (response.status === 201) {
                 alert("공지사항 등록이 성공적으로 완료되었습니다.");
-                setRegisteredNno(response.data.nno); 
-                setShowNoticeDetail(true); 
+                setRegisteredNno(response.data.nno);
+                setShowNoticeDetail(true);
             }
         } catch (error) {
-
             console.error("등록 중 오류가 발생했습니다.", error);
             alert("등록 중 오류가 발생했습니다.");
         }
     };
-
+    
     const handleListClick = () => {
         setShowNoticeList(true);
-    }
+    };
 
     return (
         <>
@@ -75,10 +93,10 @@ const NoticeRegister = () => {
                 <NoticeDetail nno={registeredNno} />
             ) : (
                 <>
-                    <h2 class="notice">공지사항</h2>
+                    <h2 className="notice">공지사항 등록</h2>
                     <form onSubmit={onSubmit}>
-                        <div class="container">
-                            <div class="d-flex flex-wrap justify-content-between">
+                        <div className="container">
+                            <div className="d-flex flex-wrap justify-content-between">
                                 <p className="d-flex notice_title">제목:
                                     <input
                                         onChange={onInputChange}
@@ -92,7 +110,7 @@ const NoticeRegister = () => {
                                 </p>
                                 <span>작성자 : {notice.writer}</span>
                             </div>
-                            <p class="notice_content">내용
+                            <p className="notice_content">내용
                                 <textarea
                                     onChange={onInputChange}
                                     id="n_content"
@@ -103,22 +121,33 @@ const NoticeRegister = () => {
                                     rows="20"
                                 />
                             </p>
-                            <a>첨부파일</a>
+                            <p>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="is_important"
+                                        checked={notice.is_important}
+                                        onChange={onInputChange}
+                                    />
+                                    중요 공지사항
+                                </label>
+                            </p>
+                            <p>첨부파일</p>
                             <input
                                 onChange={onInputChange}
                                 type="file"
-                                id="nr_name"
+                                id="nr_files"
                                 className="form-control"
-                                name="nr_name"
+                                name="nr_files"
+                                multiple // 다중 파일 업로드를 허용
                             />
                         </div>
-                        <div class="d-flex flex-wrap justify-content-between btns">
-                            <button class="btn btn-outline-dark noticeListBtn" onClick={handleListClick}>목록으로 돌아가기</button>
-                            <div class="">
-                                <button type="button" className="btn btn-outline-primary px-3 mx-2" onClick={onSubmit}>
+                        
+                        <div className="d-flex flex-wrap justify-content-between btns">
+                            <button className="btn btn-outline-dark noticeListBtn" onClick={handleListClick}>목록으로 돌아가기</button>
+                                <button type="submit" className="btn btn-outline-primary px-3 mx-2">
                                     등록
                                 </button>
-                            </div>
                         </div>
                     </form>
                 </>
