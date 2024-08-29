@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Noticelist from "./Noticelist";
 import NoticeDetail from "./NoticeDetail";
+import './NoticeRegister.css'
 
 const NoticeRegister = () => {
     const [notice, setNotice] = useState({

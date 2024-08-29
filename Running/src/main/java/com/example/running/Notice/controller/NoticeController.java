@@ -30,6 +30,7 @@ public class NoticeController {
     private final NoticeService noticeService;
     private final NoticeResourceService noticeResourceService;
     private final Path fileStorageLocation = Paths.get("file-storage").toAbsolutePath().normalize();
+    private NoticeDTO noticeDTO;
 
     @GetMapping("/list")
     public List<NoticeDTO> getNoticeList() {
@@ -37,47 +38,32 @@ public class NoticeController {
     }
 
     // Multipart file data 처리
-    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<NoticeDTO> addNotice(
-            @RequestParam("n_title") String nTitle,
-            @RequestParam("n_content") String nContent,
-            @RequestParam("writer") String writer,
-            @RequestParam("is_important") boolean isImportant,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-
-        NoticeDTO noticeDTO = new NoticeDTO();
-        noticeDTO.setN_title(nTitle);
-        noticeDTO.setN_content(nContent);
-        noticeDTO.setWriter(writer);
-        noticeDTO.setImportant(isImportant);
-
+    @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Object> addNotice(@ModelAttribute NoticeDTO noticeDTO) {
+        List<NoticeResourceDTO> resourceDtoList = new ArrayList<>();
         NoticeDTO savedNotice = noticeService.addNotice(noticeDTO);
-
-        if (files != null) {
-            List<NoticeResourceDTO> resourceDtoList = new ArrayList<>();
+        if (noticeDTO.getFiles() != null) {
             int ord = 0;
-            for (MultipartFile file : files) {
-                Path savePath = Paths.get("C:\\upload",file.getOriginalFilename());
+            for (MultipartFile file : noticeDTO.getFiles()) {
+                Path savePath = Paths.get("C:\\upload", file.getOriginalFilename());
                 try {
-                    file.transferTo(savePath.toFile());
-                    NoticeResourceDTO dto = NoticeResourceDTO.builder()
-                            .nr_name(file.getOriginalFilename())
-                            .nr_ord(ord++)
-                            .nr_type(file.getContentType())
-                            .nno(savedNotice.getNno())
-                            .build();
-                    resourceDtoList.add(dto);
-                } catch (IOException e) {
-                    log.error("파일 저장 중 오류 발생", e);
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                    file.transferTo(savePath);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                NoticeResourceDTO dto = NoticeResourceDTO.builder()
+                        .nr_name(file.getOriginalFilename())
+                        .nr_ord(ord)
+                        .nr_type(file.getContentType())
+                        .nno(savedNotice.getNno())
+                        .build();
+                resourceDtoList.add(dto);
+                ord++;
             }
             noticeResourceService.saveAll(resourceDtoList);
         }
-
         return new ResponseEntity<>(savedNotice, HttpStatus.CREATED);
     }
-
 
     @PutMapping("/{nno}")
     public ResponseEntity<Object> modifyNotice(@PathVariable("nno") Long nno, @ModelAttribute NoticeDTO noticeDTO) {
@@ -102,12 +88,14 @@ public class NoticeController {
                     }
                 }
             }
+
             log.info("자원 관리 시작.");
             // 기존 자원 삭제
             noticeResourceService.deleteNoticeResource(nno);
             // 새로운 자원 저장
             noticeResourceService.saveAll(resourceDtoList);
             log.info("자원 관리 완료.");
+
             Notice modifiedNotice = noticeService.modifyNotice(noticeDTO);
             return new ResponseEntity<>(modifiedNotice, HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -133,10 +121,10 @@ public class NoticeController {
         noticeService.deleteNotice(nno);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @GetMapping("/important")
-    public ResponseEntity<List<NoticeDTO>> getImportantNotices() {
-        List<NoticeDTO> importantNotices = noticeService.findImportantNotices();
-        return new ResponseEntity<>(importantNotices, HttpStatus.OK);
-    }
 
+    @GetMapping("/has-new")
+    public ResponseEntity<Boolean> hasNewNotices() {
+        boolean hasNew = noticeService.hasRecentNotices();
+        return new ResponseEntity<>(hasNew, HttpStatus.OK);
+    }
 }

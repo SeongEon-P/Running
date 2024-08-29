@@ -4,18 +4,23 @@
     align-items: center;
     text-align: center;
     padding: 20px;
+    width: 100%; /* 페이지 전체의 너비를 100%로 설정 */
+    max-width: 100vw; /* 최대 너비를 뷰포트 너비로 설정 */
+    box-sizing: border-box; /* 패딩과 보더를 포함한 전체 너비를 설정 */
 }
 
 .main-image-container {
     width: 100%;
     overflow: hidden;
     margin-bottom: 20px;
+    box-sizing: border-box; /* 패딩과 보더를 포함한 전체 너비를 설정 */
 }
 
 .main-image {
-    width: 100%;
-    max-height: 600px;
-    object-fit: cover; /* 이미지를 화면에 맞게 조정 */
+    width: 100%;  /* 가로 크기를 화면에 꽉 채우기 */
+    height: auto; /* 이미지의 비율을 유지하면서 높이를 자동으로 설정 */
+    max-height: none; /* 최대 높이를 없애고 이미지가 더 크게 표시되도록 설정 */
+    object-fit: cover; /* 이미지 비율을 유지하면서 화면에 맞게 조정 */
 }
 
 .main-content h1 {

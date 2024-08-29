@@ -1,9 +1,11 @@
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import NoticeDetail from "./NoticeDetail";
 import NoticeRegister from "./NoticeRegister";
 import './Noticelist.css';
 import Sidebar from "../components/Sidebar/Sidebar";
+import searchBl from '../assets/img_src/search_bl.png';
+import searchWh from '../assets/img_src/search_wh.png';
 
 function Noticelist() {
   const [noticeList, setNoticeList] = useState([]);
@@ -16,6 +18,7 @@ function Noticelist() {
   const [selectedNotice, setSelectedNotice] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [searchIcon, setSearchIcon] = useState(searchBl);  // 상태로 이미지 관리
 
   const fetchNotices = async () => {
     try {
@@ -136,6 +139,16 @@ function Noticelist() {
     );
   };
 
+  // handleRegisterClick 함수 정의
+  const handleRegisterClick = () => {
+    setShowRegister(true);
+  };
+
+  // handleNoticeClick 함수 정의
+  const handleNoticeClick = (nno) => {
+    setSelectedNotice(nno);
+  };
+
   const handleSearch = () => {
     setSearchTerm(document.getElementById('searchInput').value);
     setCurrentPage(1); // 검색 시 페이지를 1로 초기화
@@ -143,14 +156,6 @@ function Noticelist() {
 
   const handleSearchTypeChange = (e) => {
     setSearchType(e.target.value);
-  };
-
-  const handleRegisterClick = () => {
-    setShowRegister(true);
-  };
-
-  const handleNoticeClick = (nno) => {
-    setSelectedNotice(nno);
   };
 
   return (
@@ -163,7 +168,7 @@ function Noticelist() {
           <NoticeDetail nno={selectedNotice} />
         ) : (
           <>
-            <div className="d-flex justify-content-between mb-4">
+            <div className="d-flex justify-content-between align-items-center mb-4">
               <h2 className="notice_title">공지사항</h2>
               <div className="search-container d-flex align-items-center">
                 <select className="form-select me-2" onChange={handleSearchTypeChange} value={searchType}>
@@ -180,11 +185,18 @@ function Noticelist() {
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 />
                 <button
-                  className="btn btn-outline-dark"
+                  className="custom-search-btn"
                   type="button"
                   onClick={handleSearch}
+                  onMouseEnter={() => setSearchIcon(searchWh)}  // 마우스 오버 시 이미지 변경
+                  onMouseLeave={() => setSearchIcon(searchBl)}  // 마우스가 버튼을 벗어나면 원래 이미지로 변경
+                  style={{
+                    backgroundImage: `url(${searchIcon})`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    backgroundSize: '50%', // 이미지 크기를 줄임
+                  }}
                 >
-                  검색
                 </button>
                 {isAdmin && (
                   <button
@@ -203,6 +215,7 @@ function Noticelist() {
                 <tr>
                   <th scope="col">번호</th>
                   <th scope="col">제목</th>
+                  <th scope="col">조회수</th> {/* 조회수 컬럼 추가 */}
                   <th scope="col">등록일</th>
                 </tr>
               </thead>
@@ -214,12 +227,16 @@ function Noticelist() {
                       {notice.important && <span className="important-notice">[중요] </span>}
                       {notice.n_title}
                     </td>
+                    <td>{notice.viewCount}</td> {/* 조회수 표시 */}
                     <td>
-                      {new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString()}
+                      {notice.regDate ?
+                        new Date(notice.regDate[0], notice.regDate[1] - 1, notice.regDate[2], notice.regDate[3], notice.regDate[4], notice.regDate[5]).toLocaleDateString() :
+                        "날짜 정보 없음"}
                     </td>
                   </tr>
                 ))}
               </tbody>
+
             </table>
 
             <div className="d-flex justify-content-between align-items-center mb-4">

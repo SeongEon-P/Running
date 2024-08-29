@@ -12,14 +12,25 @@ const Parking = ({ location }) => {
             let pageNo = 1;
             const pageSize = 100;
             const filteredData = [];
+            let lastPageData = null;
 
             while (true) {
                 try {
-                    const endpoint = `${API_URL}?serviceKey=${API_KEY}&pageNo=${pageNo}&numOfRows=${pageSize}&resultType=json`;
+                    // const endpoint = `${API_URL}?serviceKey=${API_KEY}&pageNo=${pageNo}&numOfRows=${pageSize}&resultType=json`;
+                    const endpoint = `${API_URL}?page=${pageNo}&perPage=${pageSize}&serviceKey=${API_KEY}`;
                     const response = await fetch(endpoint);
                     const responseData = await response.json();
 
+                    console.log(`페이지 ${pageNo}에서 ${responseData.data.length}개의 데이터를 가져왔습니다.`);
+
                     if (responseData.data && Array.isArray(responseData.data)) {
+                        if (lastPageData && JSON.stringify(lastPageData) === JSON.stringify(responseData.data)) {
+                            console.log("데이터가 반복되고 있으므로 종료합니다.");
+                            break;
+                        }
+
+                        lastPageData = responseData.data;
+
                         responseData.data.forEach((item) => {
                             const lat1 = parseFloat(location.y);
                             const lon1 = parseFloat(location.x);
@@ -57,6 +68,7 @@ const Parking = ({ location }) => {
                 pageNo += 1; // 다음 페이지로 이동
             }
 
+            console.log(`총 ${filteredData.length}개의 데이터를 필터링했습니다.`);
             if (filteredData.length > 0) {
                 setData(filteredData);
             } else {
@@ -98,8 +110,8 @@ const Parking = ({ location }) => {
                 {data.map((parking, index) => (
                     <li key={index}>
                         <h3>{parking.name}</h3>
-                        <p>위도: {parking.latitude}</p>
-                        <p>경도: {parking.longitude}</p>
+                        {/* <p>위도: {parking.latitude}</p>
+                        <p>경도: {parking.longitude}</p> */}
                         <p>요금 정보: {parking.feeInfo}</p>
                         <p>도로명 주소: {parking.roadAddress}</p>
                         <p>지번 주소: {parking.roadAddress2}</p>

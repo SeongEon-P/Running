@@ -25,6 +25,9 @@ public class Notice extends BaseEntity {
     private String n_image;
     private boolean important;
 
+    @Column(name = "view_count", nullable = false)
+    private int viewCount = 0;
+
     @OneToMany(mappedBy = "notice",
             cascade = {CascadeType.ALL},
             fetch = FetchType.LAZY,
@@ -43,5 +46,9 @@ public class Notice extends BaseEntity {
     // 중요 공지사항 설정 메서드 추가
     public void markAsImportant(boolean important) {
         this.important = important;
+    }
+
+    public void incrementViewCount() {
+        this.viewCount++;
     }
 }

@@ -7,10 +7,11 @@ import com.example.running.Notice.dto.NoticeResourceDTO;
 import com.example.running.Notice.repository.NoticeRepository;
 import com.example.running.Notice.repository.NoticeResourceRepository;
 import com.example.running.member.domain.Member;
-import com.example.running.member.dto.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,6 @@ public class NoticeServiceImpl implements NoticeService {
                 .n_content(noticeDTO.getN_content())
                 .n_image(noticeDTO.getN_image())
                 .writer(noticeDTO.getWriter())
-                .important(noticeDTO.isImportant())
                 .build();
         Notice savedNotice = noticeRepository.save(notice);
         return modelMapper.map(savedNotice, NoticeDTO.class);
@@ -56,6 +57,10 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeDTO findOneNoticeById(Long nno) {
         Optional<Notice> result=noticeRepository.findById(nno);
         Notice notice = result.orElseThrow();
+
+        notice.incrementViewCount();
+        noticeRepository.save(notice);
+
         Set<NoticeResource> nrList = notice.getNoticeResourceSet();
         List<NoticeResourceDTO> nrDtoList = new ArrayList<>();
         for(NoticeResource noticeResource : nrList) {
@@ -74,9 +79,9 @@ public class NoticeServiceImpl implements NoticeService {
                 .n_title(notice.getN_title())
                 .n_content(notice.getN_content())
                 .n_image(notice.getN_image())
-                .important(notice.isImportant())
                 .writer(notice.getWriter())
                 .regDate(notice.getRegDate())
+                .viewCount(notice.getViewCount())
                 .notice_resource(nrDtoList)
                 .build();
         return noticeListDTO;
@@ -101,7 +106,6 @@ public class NoticeServiceImpl implements NoticeService {
                 noticeDTO.getN_image(),
                 Member.builder().mid(noticeDTO.getWriter()).build()
         );
-        notice.markAsImportant(noticeDTO.isImportant());
         Notice savedNotice = noticeRepository.save(notice);
         return savedNotice;
     }
@@ -114,11 +118,19 @@ public class NoticeServiceImpl implements NoticeService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
-    public List<NoticeDTO> findImportantNotices() {
-        List<Notice> importantNotices = noticeRepository.findByImportantTrueOrderByRegDateDesc();
-        return importantNotices.stream()
-                .map(notice -> modelMapper.map(notice, NoticeDTO.class))
-                .collect(Collectors.toList());
+    public boolean hasRecentNotices() {
+        try {
+            LocalDate threeDaysAgo = LocalDate.now().minusDays(3);
+            long count = noticeRepository.countNoticesWithinThreeDays(threeDaysAgo);
+            return count > 0;
+        } catch (Exception e) {
+            log.error("Error checking for recent notices", e);
+            return false; // 오류 발생 시 기본값 반환
+        }
     }
+
+
+
 }

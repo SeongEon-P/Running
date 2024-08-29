@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
+import './RecruitRead.css';
+import Sidebar from '../components/Sidebar/Sidebar';
 import Parking from './parking/Parking';
 import "./RecruitRead.css";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -255,14 +257,21 @@ const RecruitRead = () => {
                 </div>
 
 
-                {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
-                    <button className="recruitRead-button" onClick={() => handleModifyClick(rno)}>수정</button>
-                ) : null}
+        {currentUser && currentUser.mid === recruit.memberRecruit.mid ? (
+          <button
+            className="recruitRead-button"
+            onClick={() => handleModifyClick(rno)}
+          >
+            수정
+          </button>
+        ) : null}
 
-                {(currentUser && currentUser.mid === recruit.memberRecruit.mid) || (currentUser.role === 'ADMIN') ? (
-                    <button className="recruitRead-button" onClick={handleDeleteClick}>삭제</button>
-                ) : null}
-
+        {(currentUser && currentUser.mid === recruit.memberRecruit.mid) ||
+        currentUser.role === 'ADMIN' ? (
+          <button className="recruitRead-button" onClick={handleDeleteClick}>
+            삭제
+          </button>
+        ) : null}
 
                 {currentUser.mid &&
                     currentUser.mid !== recruit.memberRecruit.mid &&

@@ -1,0 +1,119 @@
+/* IncruitRegister.css */
+
+/* 전체 배경과 기본 스타일 설정 */
+.IncruitRegister_body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+/* 메인 컨테이너 스타일 */
+.IncruitRegister_container {
+    width: 60%;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 스타일 */
+.IncruitRegister_h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 폼 그룹 스타일 */
+.IncruitRegister_formGroup {
+    margin-bottom: 20px;
+}
+
+/* 라벨 스타일 */
+.IncruitRegister_label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+/* 인풋 필드 스타일 */
+.IncruitRegister_input,
+.IncruitRegister_select,
+.IncruitRegister_textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* 텍스트 에어리어 스타일 */
+.IncruitRegister_textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* 이미지 스타일 */
+.IncruitRegister_image {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
+}
+
+/* 버튼 스타일 */
+.IncruitRegister_button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #111;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.IncruitRegister_button:hover {
+    background-color: #555;
+}
+
+/* 오류 메시지 스타일 */
+.IncruitRegister_error {
+    color: red;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 팀 정보 섹션 스타일 */
+.IncruitRegister_teamInfo {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.IncruitRegister_teamInfo h3 {
+    margin-bottom: 10px;
+}
+
+.IncruitRegister_teamInfo p {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* 이미지 컨테이너 */
+.IncruitRegister_imageContainer {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}

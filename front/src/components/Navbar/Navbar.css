@@ -8,10 +8,10 @@
 }
 
 .logo {
-    height: 50px; /* 로고 크기 조정 */
-    margin-right: 20px; /* 로고와 링크 사이에 여백 추가 */
-    margin-left: 50px;
+    max-height: 40px; /* 로고의 최대 높이를 설정하여 크기를 줄이기 */
+    height: auto; /* 원본 비율을 유지하면서 높이에 따라 크기 조정 */
 }
+
 
 .nav-links {
     display: flex;
