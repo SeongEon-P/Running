@@ -21,7 +21,7 @@ const RecruitList = () => {
 
   useEffect(() => {
     fetchRecruits();
-    const userInfo = JSON.parse(localStorage.getItem('login'));
+    const userInfo = JSON.parse(sessionStorage.getItem('login'));
     if (userInfo && userInfo.mid) {
       setCurrentUser((prevState) => ({
         ...prevState,

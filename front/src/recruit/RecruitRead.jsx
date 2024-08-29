@@ -49,7 +49,7 @@ const RecruitRead = () => {
         console.error('There was an error fetching the apply list!', error);
       });
 
-        const userInfo = JSON.parse(localStorage.getItem('login'));
+        const userInfo = JSON.parse(sessionStorage.getItem('login'));
         if (userInfo && userInfo.mid) {
             setCurrentUser((prevState) => ({
                 ...prevState,

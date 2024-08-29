@@ -19,7 +19,7 @@ const RecruitRegister = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const userInfo = JSON.parse(localStorage.getItem('login'));
+        const userInfo = JSON.parse(sessionStorage.getItem('login'));
         if(userInfo && userInfo.mid) {
             setRecruit((prevState) => ({
                 ...prevState,
