@@ -20,6 +20,7 @@
 }
 
 .recruitList-list-title {
+    display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
@@ -46,6 +47,8 @@
 
 .recruitList-table {
     min-height: 700px;
+}
+
 .recruitList-list table {
     border-collapse: collapse;
     margin-bottom: 20px;
@@ -160,6 +163,8 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .recruitList-search button:hover {
     background-color: #f0f0f0;
 }

@@ -5,7 +5,6 @@ import './RecruitRead.css';
 import Sidebar from '../components/Sidebar/Sidebar';
 import Parking from './parking/Parking';
 import "./RecruitRead.css";
-import Sidebar from "../components/Sidebar/Sidebar";
 
 const RecruitRead = () => {
   const { rno, ano } = useParams();
