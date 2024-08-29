@@ -6,7 +6,7 @@ import './FreeBoard.css';
 const FreeBoardList = ({ posts }) => {
     return (
         <div className="free-board-container">
-            <Sidebar /> {/* Sidebar 컴포넌트 추가 */}
+            <Sidebar />
             <div className="free-board">
                 <h1>Free Board</h1>
                 <Link to="/free/create">
