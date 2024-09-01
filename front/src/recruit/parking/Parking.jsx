@@ -9,70 +9,69 @@ const Parking = ({ location }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            let pageNo = 1;
-            const pageSize = 100;
-            const filteredData = [];
-            let lastPageData = null;
+            try {
+                const totalPages = 50; // 병렬 처리할 페이지 수
+                const pageSize = 300;
 
-            while (true) {
-                try {
-                    // const endpoint = `${API_URL}?serviceKey=${API_KEY}&pageNo=${pageNo}&numOfRows=${pageSize}&resultType=json`;
+                const requests = Array.from({ length: totalPages }, (_, i) => {
+                    const pageNo = i + 1;
                     const endpoint = `${API_URL}?page=${pageNo}&perPage=${pageSize}&serviceKey=${API_KEY}`;
-                    const response = await fetch(endpoint);
-                    const responseData = await response.json();
-
-                    console.log(`페이지 ${pageNo}에서 ${responseData.data.length}개의 데이터를 가져왔습니다.`);
-
-                    if (responseData.data && Array.isArray(responseData.data)) {
-                        if (lastPageData && JSON.stringify(lastPageData) === JSON.stringify(responseData.data)) {
-                            console.log("데이터가 반복되고 있으므로 종료합니다.");
-                            break;
-                        }
-
-                        lastPageData = responseData.data;
-
-                        responseData.data.forEach((item) => {
-                            const lat1 = parseFloat(location.y);
-                            const lon1 = parseFloat(location.x);
-                            const lat2 = parseFloat(item.위도);
-                            const lon2 = parseFloat(item.경도);
-
-                            const distance = calculateDistance(lat1, lon1, lat2, lon2);
-                            console.log(`주차장: ${item.주차장명}, 좌표: (${lat2}, ${lon2}), 거리: ${distance.toFixed(2)} km`);
-
-                            if (distance <= 3) { // 3km 이내 필터링
-                                filteredData.push({
-                                    name: item.주차장명,
-                                    latitude: lat2,
-                                    longitude: lon2,
-                                    feeInfo: item.요금정보,
-                                    roadAddress: item.주차장도로명주소,
-                                    roadAddress2: item.주차장지번주소,
-                                });
+                    return fetch(endpoint)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
                             }
+                            return response.json();
+                        })
+                        .catch(err => {
+                            console.error(`페이지 ${pageNo}에서 데이터를 가져오는 중 오류 발생:`, err);
                         });
+                });
 
-                        if (responseData.data.length < pageSize) {
-                            // 모든 데이터를 다 불러왔으므로 종료
-                            break;
+                const responses = await Promise.all(requests);
+
+                // responses가 undefined를 포함할 수 있으므로, 필터링
+                const allData = responses
+                    .filter(response => response && response.data)
+                    .flatMap(response => response.data);
+
+                console.log(`총 ${allData.length}개의 데이터를 가져왔습니다.`);
+
+                // 중복 제거를 위한 Map 사용
+                const uniqueDataMap = new Map();
+
+                allData.forEach(item => {
+                    const lat1 = parseFloat(location.y);
+                    const lon1 = parseFloat(location.x);
+                    const lat2 = parseFloat(item.위도);
+                    const lon2 = parseFloat(item.경도);
+
+                    const distance = calculateDistance(lat1, lon1, lat2, lon2);
+
+                    if (distance <= 3) { // 원하는 km 이내 필터링
+                        const uniqueKey = `${item.주차장명}-${lat2}-${lon2}`;
+                        if (!uniqueDataMap.has(uniqueKey)) {
+                            uniqueDataMap.set(uniqueKey, {
+                                name: item.주차장명,
+                                latitude: lat2,
+                                longitude: lon2,
+                                feeInfo: item.요금정보,
+                                roadAddress: item.주차장도로명주소,
+                                contact: item.연락처 || '연락처 없음',
+                            });
+                            console.log(`주차장명: ${item.주차장명}, 연락처: ${item.연락처}`);
                         }
-                    } else {
-                        setError(new Error("API 응답 데이터 형식이 올바르지 않습니다."));
-                        break;
                     }
-                } catch (error) {
-                    setError(error);
-                    break;
-                }
+                });
 
-                pageNo += 1; // 다음 페이지로 이동
-            }
+                const filteredData = Array.from(uniqueDataMap.values());
 
-            console.log(`총 ${filteredData.length}개의 데이터를 필터링했습니다.`);
-            if (filteredData.length > 0) {
                 setData(filteredData);
-            } else {
-                console.log("전체 데이터에서 필터링된 결과가 없습니다.");
+
+                console.log(`총 ${filteredData.length}개의 데이터를 필터링했습니다.`);
+            } catch (error) {
+                console.error('데이터를 가져오는 중 오류 발생:', error);
+                setError(error);
             }
         };
 
@@ -100,7 +99,7 @@ const Parking = ({ location }) => {
     }
 
     if (data.length === 0) {
-        return <div>주변 주차장이 없습니다.</div>;
+        return <div>3km 이내 주변 주차장이 없습니다.</div>;
     }
 
     return (
@@ -110,11 +109,9 @@ const Parking = ({ location }) => {
                 {data.map((parking, index) => (
                     <li key={index}>
                         <h3>{parking.name}</h3>
-                        {/* <p>위도: {parking.latitude}</p>
-                        <p>경도: {parking.longitude}</p> */}
                         <p>요금 정보: {parking.feeInfo}</p>
                         <p>도로명 주소: {parking.roadAddress}</p>
-                        <p>지번 주소: {parking.roadAddress2}</p>
+                        <p>연락처: {parking.contact}</p>
                     </li>
                 ))}
             </ul>
