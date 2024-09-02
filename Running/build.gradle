@@ -74,6 +74,10 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+    // RDS
+    implementation 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'org.hibernate.orm:hibernate-core:6.2.4.Final'
+
 }
 
 tasks.named('test') {
