@@ -10,12 +10,25 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface RecruitRepository extends JpaRepository<Recruit, Long> {
+//    @Query("SELECT r FROM Recruit r WHERE " +
+//            "(LOWER(r.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+//            "LOWER(r.content) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+//            "LOWER(r.memberRecruit.mid) LIKE LOWER(CONCAT('%', :keyword, '%'))) and " +
+//            "(r.date between :startDate and :endDate) and " +
+//            "(r.time between :startTime and :endTime) ")
+//    List<Recruit> searchRecruitsByKeywordAndDateTime(
+//            @Param("keyword") String keyword,
+//            @Param("startDate") LocalDate startDate,
+//            @Param("endDate") LocalDate endDate,
+//            @Param("startTime") LocalTime startTime,
+//            @Param("endTime") LocalTime endTime);
+
     @Query("SELECT r FROM Recruit r WHERE " +
-            "(LOWER(r.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(r.content) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(r.memberRecruit.mid) LIKE LOWER(CONCAT('%', :keyword, '%'))) and " +
+            "(LOWER(r.title) LIKE LOWER(:keyword) OR " +
+            "LOWER(r.content) LIKE LOWER(:keyword) OR " +
+            "LOWER(r.memberRecruit.mid) LIKE LOWER(:keyword)) and " +
             "(r.date between :startDate and :endDate) and " +
-            "(r.time between :startTime and :endTime) ")
+            "(r.time between :startTime and :endTime)")
     List<Recruit> searchRecruitsByKeywordAndDateTime(
             @Param("keyword") String keyword,
             @Param("startDate") LocalDate startDate,

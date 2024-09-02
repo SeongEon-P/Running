@@ -100,11 +100,15 @@ public class RecruitServiceImpl implements RecruitService {
     public List<Recruit> searchRecruits(String keyword,
                                         LocalDate startDate, LocalDate endDate,
                                         LocalTime startTime, LocalTime endTime) {
+        // keyword가 null이거나 빈 문자열이 아닌 경우에만 %를 추가
+        String processedKeyword = (keyword != null && !keyword.isEmpty()) ? "%" + keyword + "%" : "%";
+
         return recruitRepository.searchRecruitsByKeywordAndDateTime(
-                keyword,
+                processedKeyword,
                 startDate != null ? startDate : LocalDate.of(1900, 1, 1),
                 endDate != null ? endDate : LocalDate.of(9999, 12, 31),
                 startTime != null ? startTime : LocalTime.of(0, 0),
                 endTime != null ? endTime : LocalTime.of(23, 59));
     }
+
 }
