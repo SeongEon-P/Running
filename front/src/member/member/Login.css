@@ -1,0 +1,104 @@
+.login-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+  }
+  
+  /* 1. 로그인 제목 중앙 정렬 */
+  .login-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .login-title h1{
+    margin-top: 10px;
+  }
+
+  .login-title img.logo {
+    width: auto;
+    height: auto;
+  }
+  
+  /* 버튼 공통 스타일 */
+  .btn-block {
+    width: 100%;
+  }
+  
+  /* 2. 로그인 버튼 스타일 변경 */
+  .btn-black {
+    background-color: #000000;
+    color: #fff;
+  }
+  
+  .btn-black:hover {
+    background-color: #555;
+  }
+  
+  /* 폼 스타일 */
+  .form-outline {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-outline input {
+    width: 500px !important;
+    max-width: 500px !important; /* 최대 너비도 500px로 고정 */
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+
+  
+  
+  .form-outline label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background-color: #fff;
+    padding: 0 5px;
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+  
+  /* 3. 아이디/비밀번호 찾기 링크 스타일 */
+  .link {
+    color: #000;
+    text-decoration: underline; /* 밑줄 추가 */
+  }
+  
+  .bold-link {
+    font-weight: bold; /* 볼드체 */
+  }
+  
+  /* 4. 회원가입 링크 중앙 정렬 */
+  .text-center p {
+    text-align: center;
+  }
+
+  .col.text-center.bold-link {
+    text-align: center;
+    margin-top: 16px;
+  }
+  
+  /* 5. 카카오 로그인 버튼 스타일 */
+  .kakao-login-btn {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border: none;
+    width: 10%; /* 크기 10% 줄이기 */
+    height: 50px;
+    cursor: pointer;
+  }
+  
+  .social-login {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
